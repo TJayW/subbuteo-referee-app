@@ -1,0 +1,104 @@
+import React, { useRef, useEffect } from 'react';
+import type { DomainMatchState, ComputedTeamStats } from '@/domain/match/types';
+import { HeaderMatchInfo } from './HeaderMatchInfo';
+import { HeaderStatusIndicator } from './HeaderStatusIndicator';
+import { HeaderToolbar } from './HeaderToolbar';
+import { LAYOUT_HEIGHTS } from '@/constants/layout';
+
+interface AppHeaderProps {
+  state: DomainMatchState;
+  teamStats: ComputedTeamStats;
+  canUndo: boolean;
+  canRedo: boolean;
+  audioVolume: number;
+  audioEnabled: boolean;
+  onUndo: () => void;
+  onRedo: () => void;
+  onSettings: () => void;
+  onToggleAudio: (enabled: boolean) => void;
+  onVolumeChange: (volume: number) => void;
+  onAdvancedControls: () => void;
+  homeTeamName: string;
+  awayTeamName: string;
+  exportPopover?: React.ReactNode;
+  globalTimeTravel: {
+    isTimeTraveling: boolean;
+    position: { current: number; total: number };
+    onJumpToPresent: () => void;
+  };
+  isSidebarCollapsed?: boolean;
+  onToggleSidebar?: () => void;
+}
+
+export const AppHeader: React.FC<AppHeaderProps> = ({
+  state,
+  teamStats,
+  canUndo,
+  canRedo,
+  audioVolume,
+  audioEnabled,
+  onUndo,
+  onRedo,
+  onSettings,
+  onToggleAudio,
+  onVolumeChange,
+  onAdvancedControls,
+  homeTeamName,
+  awayTeamName,
+  exportPopover,
+  globalTimeTravel,
+  isSidebarCollapsed,
+  onToggleSidebar,
+}) => {
+  const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      const updateHeight = () => {
+        const height = headerRef.current?.offsetHeight || 56;
+        document.documentElement.style.setProperty('--topbar-height', `${height}px`);
+      };
+      updateHeight();
+      const observer = new ResizeObserver(updateHeight);
+      observer.observe(headerRef.current);
+      return () => observer.disconnect();
+    }
+  }, []);
+
+  return (
+    <header ref={headerRef} className="bg-white sticky top-0 z-40 border-b border-slate-200">
+      <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ minHeight: `${LAYOUT_HEIGHTS.TOP_BAR}px` }}>
+        <div className="flex items-center gap-4 min-w-0 flex-1">
+          <HeaderMatchInfo
+            homeTeamName={homeTeamName}
+            awayTeamName={awayTeamName}
+            teamStats={teamStats}
+          />
+          <div className="hidden sm:block w-px h-6 bg-slate-200 flex-shrink-0" />
+          <div className="hidden sm:block flex-shrink-0">
+            <HeaderStatusIndicator period={state.period} />
+          </div>
+        </div>
+        <HeaderToolbar
+          canUndo={canUndo}
+          canRedo={canRedo}
+          audioVolume={audioVolume}
+          audioEnabled={audioEnabled}
+          onUndo={onUndo}
+          onRedo={onRedo}
+          onSettings={onSettings}
+          onToggleAudio={onToggleAudio}
+          onVolumeChange={onVolumeChange}
+          onAdvancedControls={onAdvancedControls}
+          exportPopover={exportPopover}
+          globalTimeTravel={globalTimeTravel}
+          isSidebarCollapsed={isSidebarCollapsed}
+          onToggleSidebar={onToggleSidebar}
+        />
+      </div>
+      <div className="sm:hidden px-4 py-2 border-t border-slate-100 flex items-center justify-center">
+        <HeaderStatusIndicator period={state.period} />
+      </div>
+    </header>
+  );
+};

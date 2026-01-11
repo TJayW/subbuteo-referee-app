@@ -1,0 +1,19 @@
+# Code Owners
+# These users will be automatically requested for review when PRs modify these paths
+
+# Global owners (fallback)
+* @YOUR_USERNAME
+
+# Architecture decisions
+/docs/spec.md @YOUR_USERNAME
+
+# CI/CD workflows
+/.github/workflows/ @YOUR_USERNAME
+
+# Core domain logic
+/src/domain/ @YOUR_USERNAME
+
+# Build configuration
+/vite.config.ts @YOUR_USERNAME
+/tsconfig.json @YOUR_USERNAME
+/package.json @YOUR_USERNAME

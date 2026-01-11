@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50 text-gray-900;
+  }
+
+  * {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  /* CSS Containment for layout stability (§I Phase 3) */
+  .operator-rail {
+    contain: layout style; /* Isolate layout calculations */
+  }
+  
+  .event-log-card {
+    contain: size; /* Size doesn't affect siblings */
+  }
+  
+  /* Status bar reserved space - CTA never shrinks (§E.1) */
+  .status-bar-cta {
+    flex-shrink: 0;
+    min-width: 80px; /* Enough for "Torna al presente" */
+  }
+  
+  /* Hide scrollbar on mobile horizontal scroll (§H Mobile) */
+  .snap-x::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+  }
+  
+  /* Reduced motion support for enterprise animations */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Line clamp utilities for text truncation (event button labels) */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+}
+
+
