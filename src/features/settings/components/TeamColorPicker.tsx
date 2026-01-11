@@ -12,9 +12,16 @@ export const TeamColorPicker: React.FC<TeamColorPickerProps> = ({ color, onChang
   const [customHex, setCustomHex] = useState(color.primary);
   const [customError, setCustomError] = useState('');
 
-  const handlePresetClick = (paletteColor: TeamColor) => {
-    onChange?.(paletteColor);
+  const applyColorChange = (nextColor: TeamColor, options?: { clearError?: boolean }) => {
+    onChange?.(nextColor);
     setShowCustom(false);
+    if (options?.clearError) {
+      setCustomError('');
+    }
+  };
+
+  const handlePresetClick = (paletteColor: TeamColor) => {
+    applyColorChange(paletteColor, { clearError: false });
   };
 
   const handleCustomSubmit = () => {
@@ -22,12 +29,13 @@ export const TeamColorPicker: React.FC<TeamColorPickerProps> = ({ color, onChang
       setCustomError('Formato non valido. Usa #RRGGBB');
       return;
     }
-    onChange?.({
-      primary: customHex,
-      secondary: color.secondary,
-    });
-    setShowCustom(false);
-    setCustomError('');
+    applyColorChange(
+      {
+        primary: customHex,
+        secondary: color.secondary,
+      },
+      { clearError: true },
+    );
   };
 
   return (

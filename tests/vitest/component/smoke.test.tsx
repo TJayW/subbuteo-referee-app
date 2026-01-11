@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render } from '@testing-library/react';
-import AppShell from '../../../src/app/AppShell';
-import { selectTeamStats, clearSelectorCache } from '../../../src/domain/match/selectors';
-import type { DomainMatchState } from '../domain/match/types';
-import { ConsoleFocusProvider } from '../shared/hooks/use_console_focus_manager';
+import AppShell from '@/app/AppShell';
+import { selectTeamStats, clearSelectorCache } from '@/domain/match/selectors';
+import type { DomainMatchState } from '../../../src/domain/match/types';
+import { ConsoleFocusProvider } from '@/hooks/use-console-focus-manager';
 
 /**
  * Smoke Tests: Verify critical operator console invariants
