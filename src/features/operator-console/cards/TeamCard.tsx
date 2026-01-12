@@ -3,7 +3,7 @@
  * Full implementation with radiogroup and event buttons
  */
 import React from 'react';
-import { Target, AlertCircle, Clock, Zap, CornerDownRight, UserMinus, UserPlus } from 'lucide-react';
+import { Target, AlertCircle, Clock, Zap, CornerDownRight, UserMinus } from 'lucide-react';
 import type { DomainMatchState, TeamKey, EventType, ComputedTeamStats, MatchEvent } from '@/domain/match/types';
 
 interface TeamCardProps {

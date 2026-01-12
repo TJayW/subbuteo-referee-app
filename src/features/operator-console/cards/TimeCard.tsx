@@ -30,8 +30,8 @@ export const TimeCard: React.FC<TimeCardProps> = ({
   isPlaying,
   onPlayPause,
 }) => {
-  const minutes = Math.floor(state.totalSeconds / 60);
-  const seconds = state.totalSeconds % 60;
+  const minutes = Math.floor(state.elapsedSeconds / 60);
+  const seconds = state.elapsedSeconds % 60;
   const displayTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
   return (
