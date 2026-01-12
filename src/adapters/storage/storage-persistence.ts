@@ -2,6 +2,7 @@ import type { SettingsState, DomainMatchState } from '@/domain/match/types';
 import { STORAGE_VERSION, STORAGE_KEY, VERSION_KEY } from './constants';
 import { STORAGE_KEYS } from '@/constants/storage';
 import { clampVolume, MATCH_TIMING_DEFAULTS, TEAM_DEFAULTS, AUDIO_DEFAULTS } from '@/constants/defaults';
+import logger from '@/utils/logger';
 
 // Removed: clampAudioVolume - now using clampVolume from @/domain/constants/defaults
 
@@ -82,7 +83,7 @@ export function loadSettingsFromStorage(): SettingsState | null {
 
     return parsed;
   } catch (error) {
-    console.error('Failed to load settings from storage:', error);
+    logger.error('Failed to load settings from storage:', error);
     return null;
   }
 }
@@ -95,7 +96,7 @@ export function saveSettingsToStorage(settings: SettingsState): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
     localStorage.setItem(VERSION_KEY, STORAGE_VERSION.toString());
   } catch (error) {
-    console.error('Failed to save settings to storage:', error);
+    logger.error('Failed to save settings to storage:', error);
   }
 }
 
@@ -108,7 +109,7 @@ export function loadMatchStateFromStorage(): DomainMatchState | null {
     if (!data) return null;
     return JSON.parse(data) as DomainMatchState;
   } catch (error) {
-    console.error('Failed to load match state from storage:', error);
+    logger.error('Failed to load match state from storage:', error);
     return null;
   }
 }
@@ -120,7 +121,7 @@ export function saveMatchStateToStorage(matchState: DomainMatchState): void {
   try {
     localStorage.setItem(STORAGE_KEYS.MATCH, JSON.stringify(matchState));
   } catch (error) {
-    console.error('Failed to save match state to storage:', error);
+    logger.error('Failed to save match state to storage:', error);
   }
 }
 

@@ -13,6 +13,7 @@
  */
 
 import React, { createContext, useContext, useCallback, useState, useRef, useEffect } from 'react';
+import logger from '@/utils/logger';
 
 // Zone identifiers (order matters for navigation)
 export type ZoneId = 'topbar' | 'eventlog' | 'teamcard' | 'timer';
@@ -115,7 +116,7 @@ export const ConsoleFocusProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const focusPrimary = useCallback((zoneId: ZoneId) => {
     const config = zones.get(zoneId);
     if (!config?.ref.current) {
-      console.warn(`[FocusManager] Cannot focus primary for zone "${zoneId}": zone ref not available`);
+      logger.warn(`[FocusManager] Cannot focus primary for zone "${zoneId}": zone ref not available`);
       return;
     }
 
@@ -124,7 +125,7 @@ export const ConsoleFocusProvider: React.FC<{ children: React.ReactNode }> = ({ 
       primary.focus();
       rememberFocus(zoneId, primary);
     } else {
-      console.warn(`[FocusManager] Primary control not found for zone "${zoneId}" with selector "${config.primarySelector}"`);
+      logger.warn(`[FocusManager] Primary control not found for zone "${zoneId}" with selector "${config.primarySelector}"`);
       
       // Fallback: focus first focusable element in zone
       const firstFocusable = config.ref.current.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])') as HTMLElement;

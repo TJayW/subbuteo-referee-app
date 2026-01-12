@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Download, Info, Zap } from 'lucide-react';
 import { LAYOUT_WIDTHS } from '@/constants/layout';
+import logger from '@/utils/logger';
 
 export interface ExportOption {
   id: 'json' | 'csv' | 'png' | 'html';
@@ -41,7 +42,7 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
     try {
       await option.action();
     } catch (error) {
-      console.error(`Export ${option.id} failed:`, error);
+      logger.error(`Export ${option.id} failed:`, error);
     } finally {
       setIsLoading(false);
       setIsOpen(false);

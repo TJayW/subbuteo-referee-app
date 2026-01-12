@@ -251,8 +251,17 @@ export function selectExportPreview(
   state: DomainMatchState,
   homeGoals: number,
   awayGoals: number,
-  settings: { officiating?: { referee1?: string; referee2?: string } }
+  settings: { 
+    officiating?: { referee1?: string; referee2?: string };
+    homeTeamConfig?: { formation?: { scheme?: string; players: any[] } };
+    awayTeamConfig?: { formation?: { scheme?: string; players: any[] } };
+  }
 ): ExportPreview {
+  const hasFormations = Boolean(
+    (settings.homeTeamConfig?.formation?.scheme && settings.homeTeamConfig.formation.players.length > 0) ||
+    (settings.awayTeamConfig?.formation?.scheme && settings.awayTeamConfig.formation.players.length > 0)
+  );
+
   return {
     matchId: state.matchId,
     totalEvents: state.events.length,
@@ -261,7 +270,7 @@ export function selectExportPreview(
     awayScore: awayGoals,
     currentPeriod: state.period,
     hasRefereeInfo: !!(settings.officiating?.referee1 || settings.officiating?.referee2),
-    hasFormations: false, // TODO: Check if formations configured
+    hasFormations,
     hasTeamColors: true, // Assume always configured
   };
 }

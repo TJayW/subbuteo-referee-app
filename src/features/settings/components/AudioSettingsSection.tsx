@@ -14,6 +14,7 @@ import { VolumeDial } from '@/ui/primitives/VolumeDial';
 import AudioEngine from '@/adapters/audio/audio-engine';
 import type { SoundCategory } from '@/adapters/audio/audio-manifest';
 import { CATEGORY_LABELS, CATEGORY_TEST_SOUNDS } from '@/adapters/audio/constants';
+import logger from '@/utils/logger';
 
 interface AudioSettingsSectionProps {
   masterVolume: number; // 0-1
@@ -44,7 +45,7 @@ export const AudioSettingsSection: React.FC<AudioSettingsSectionProps> = ({
       const soundId = CATEGORY_TEST_SOUNDS[category];
       await engine.play(soundId);
     } catch (error) {
-      console.error('Test sound failed:', error);
+      logger.error('Test sound failed:', error);
     }
   }, [engine]);
 

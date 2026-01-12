@@ -1,11 +1,14 @@
 import AppShell from "./AppShell";
 import { ConsoleFocusProvider } from "@/hooks/use-console-focus-manager";
+import ErrorBoundary from "@/ui/components/ErrorBoundary";
 
 function App() {
   return (
-    <ConsoleFocusProvider>
-      <AppShell />
-    </ConsoleFocusProvider>
+    <ErrorBoundary>
+      <ConsoleFocusProvider>
+        <AppShell />
+      </ConsoleFocusProvider>
+    </ErrorBoundary>
   );
 }
 

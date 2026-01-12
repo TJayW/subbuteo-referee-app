@@ -23,6 +23,7 @@ import { loadAudioSettingsFromStorage } from '@/adapters/audio/audio-persistence
 import { ANIMATION_TIMINGS, SIDEBAR_RESIZE } from '@/constants/layout';
 import { STORAGE_KEYS } from '@/constants/storage';
 import { applySnap, isCollapsed as isWidthCollapsed } from '@/utils/sidebar-resize';
+import logger from '@/utils/logger';
 import {
   getLayoutMode,
   clampWidthToBreakpoint,
@@ -152,7 +153,6 @@ export default function AppShell() {
   // UI State (non-global)
   const [showSettings, setShowSettings] = useState(false);
   const [showMatchInfo, setShowMatchInfo] = useState(false);
-  // Removed unused overrideTransitions state
   const [showCommandPalette, setShowCommandPalette] = useState(false);
 
   // Global history (settings + selected team) - MUST NOT touch event cursor/events (P0 invariant)
@@ -328,7 +328,7 @@ export default function AppShell() {
     };
 
     if (!ACTION_GATES.RECORD_EVENT(gateCtx)) {
-      console.warn(GATE_ERROR_MESSAGES.RECORD_EVENT_PERIOD);
+      logger.warn(GATE_ERROR_MESSAGES.RECORD_EVENT_PERIOD);
       return;
     }
 
@@ -353,7 +353,7 @@ export default function AppShell() {
         globalHistory.jumpToPresent();
         return;
       }
-      console.warn(GATE_ERROR_MESSAGES.TOGGLE_TIMER_TIME_TRAVEL);
+      logger.warn(GATE_ERROR_MESSAGES.TOGGLE_TIMER_TIME_TRAVEL);
       return;
     }
     if (match.state.period === 'pre_match') {
@@ -370,17 +370,9 @@ export default function AppShell() {
     match.executeCommand('jumpToPhase', period as any);
   };
 
-  // const handleResetMatch = () => {
-  //   match.executeCommand('reset', 'confirm_reset');
-  // };
-
   const handleSetTotalPeriodSeconds = (seconds: number) => {
     match.executeCommand('setPeriodDurationPreset', { seconds });
   };
-
-  // const handleSetElapsedSeconds = (seconds: number) => {
-  //   match.executeCommand('setExactTime', { seconds });
-  // };
 
   const handleAddTime = (seconds: number) => {
     match.executeCommand('adjustTimeBy', seconds);

@@ -10,6 +10,7 @@
 
 import { useCallback, useState, useEffect } from 'react';
 import AudioEngine from '@/adapters/audio/audio-engine';
+import logger from '@/utils/logger';
 
 export function useAudio() {
   const engine = AudioEngine.getInstance();
@@ -35,7 +36,7 @@ export function useAudio() {
     try {
       await engine.init();
     } catch (error) {
-      console.warn('Audio initialization failed:', error);
+      logger.warn('Audio initialization failed:', error);
     }
   }, [engine]);
 

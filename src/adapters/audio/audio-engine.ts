@@ -15,6 +15,7 @@
 
 import type { SoundCategory } from '@/adapters/audio/audio-manifest';
 import { getSoundMetadata } from '@/adapters/audio/audio-manifest';
+import logger from '@/utils/logger';
 
 type AudioContextType = AudioContext | (Record<string, unknown> & { state?: string });
 
@@ -62,7 +63,7 @@ class AudioEngine {
       // Try to create AudioContext
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioContextClass) {
-        console.warn('AudioContext not supported in this browser');
+        logger.warn('AudioContext not supported in this browser');
         this.isInitializing = false;
         return;
       }
@@ -88,9 +89,9 @@ class AudioEngine {
       }
 
       this.isInitialized = true;
-      console.debug('[AudioEngine] Initialized successfully');
+      logger.debug('[AudioEngine] Initialized successfully');
     } catch (error) {
-      console.error('[AudioEngine] Initialization failed:', error);
+      logger.error('[AudioEngine] Initialization failed:', error);
       this.audioContext = null;
     } finally {
       this.isInitializing = false;
@@ -112,7 +113,7 @@ class AudioEngine {
 
     const metadata = getSoundMetadata(soundId);
     if (!metadata) {
-      console.warn(`[AudioEngine] Sound not found: ${soundId}`);
+      logger.warn(`[AudioEngine] Sound not found: ${soundId}`);
       return;
     }
 
@@ -149,7 +150,7 @@ class AudioEngine {
       // Play with delay
       source.start(now + delay);
     } catch (error) {
-      console.warn(`[AudioEngine] Failed to play ${soundId}:`, error);
+      logger.warn(`[AudioEngine] Failed to play ${soundId}:`, error);
     }
   }
 
@@ -166,14 +167,14 @@ class AudioEngine {
 
       const metadata = getSoundMetadata(soundId);
       if (!metadata) {
-        console.warn(`[AudioEngine] Cannot preload unknown sound: ${soundId}`);
+        logger.warn(`[AudioEngine] Cannot preload unknown sound: ${soundId}`);
         continue;
       }
 
       try {
         const response = await fetch(metadata.path);
         if (!response.ok) {
-          console.warn(`[AudioEngine] Sound file not found: ${metadata.path}`);
+          logger.warn(`[AudioEngine] Sound file not found: ${metadata.path}`);
           continue;
         }
 
@@ -181,7 +182,7 @@ class AudioEngine {
         const decoded = await ctx.decodeAudioData(arrayBuffer);
         this.bufferCache.set(soundId, decoded);
       } catch (error) {
-        console.warn(`[AudioEngine] Failed to preload ${soundId}:`, error);
+        logger.warn(`[AudioEngine] Failed to preload ${soundId}:`, error);
       }
     }
   }

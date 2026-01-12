@@ -9,6 +9,7 @@
 
 import { AUDIO_STORAGE_VERSION, AUDIO_SETTINGS_KEY, AUDIO_VERSION_KEY } from './constants';
 import { clampVolume, AUDIO_DEFAULTS } from '@/constants/defaults';
+import logger from '@/utils/logger';
 
 export interface AudioSettingsV1 {
   masterVolume: number; // 0.0-1.0
@@ -70,7 +71,7 @@ export function loadAudioSettingsFromStorage(): AudioSettingsV1 {
     const parsed = JSON.parse(data);
     return validateAudioSettings(parsed);
   } catch (error) {
-    console.warn('Audio settings load failed, using defaults:', error);
+    logger.warn('Audio settings load failed, using defaults:', error);
     return getDefaultAudioSettings();
   }
 }
@@ -102,7 +103,7 @@ export function saveAudioSettingsToStorage(settings: AudioSettingsV1): void {
     localStorage.setItem(AUDIO_SETTINGS_KEY, JSON.stringify(settings));
     localStorage.setItem(AUDIO_VERSION_KEY, AUDIO_STORAGE_VERSION.toString());
   } catch (error) {
-    console.error('Failed to save audio settings:', error);
+    logger.error('Failed to save audio settings:', error);
   }
 }
 
@@ -114,6 +115,6 @@ export function clearAudioSettingsFromStorage(): void {
     localStorage.removeItem(AUDIO_SETTINGS_KEY);
     localStorage.removeItem(AUDIO_VERSION_KEY);
   } catch (error) {
-    console.error('Failed to clear audio settings:', error);
+    logger.error('Failed to clear audio settings:', error);
   }
 }

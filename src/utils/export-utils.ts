@@ -1,4 +1,5 @@
 import html2canvas from 'html2canvas';
+import logger from '@/utils/logger';
 import type { DomainMatchState, SettingsState } from '@/domain/match/types';
 import { selectAppliedEvents, selectTeamStats } from '@/domain/match/selectors';
 import { getEventMetadata, formatEventTime } from '@/utils/event-helpers';
@@ -41,7 +42,7 @@ export async function exportStatsPNG(
       container.parentNode.removeChild(container);
     }
   } catch (error) {
-    console.error('PNG export failed:', error);
+    logger.error('PNG export failed:', error);
   }
 }
 

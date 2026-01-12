@@ -14,6 +14,7 @@ import { ChevronDown, Play } from 'lucide-react';
 import AudioEngine from '@/adapters/audio/audio-engine';
 import type { SoundCategory } from '@/adapters/audio/audio-manifest';
 import { CATEGORY_LABELS, CATEGORY_TEST_SOUNDS } from '@/adapters/audio/constants';
+import logger from '@/utils/logger';
 
 interface AudioTabProps {
   audioEnabled: boolean;
@@ -54,7 +55,7 @@ export const AudioTab: React.FC<AudioTabProps> = ({
         await engine.play(soundId);
         setTimeout(() => setTestingSoundId(null), 500);
       } catch (error) {
-        console.error('Test sound failed:', error);
+        logger.error('Test sound failed:', error);
         setTestingSoundId(null);
       }
     },

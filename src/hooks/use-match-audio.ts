@@ -12,6 +12,7 @@ import type { DomainMatchState, EventType } from '@/domain/match/types';
 import AudioEngine from '@/adapters/audio/audio-engine';
 import { getSoundsForEvent } from '@/adapters/audio/audio-map';
 import { getSoundMetadata } from '@/adapters/audio/audio-manifest';
+import logger from '@/utils/logger';
 
 interface UseMatchAudioProps {
   matchState: DomainMatchState;
@@ -79,7 +80,7 @@ export function useMatchAudio({
         for (const soundSpec of sounds) {
           const metadata = getSoundMetadata(soundSpec.soundId);
           if (!metadata) {
-            console.warn(`Sound not found: ${soundSpec.soundId}`);
+            logger.warn(`Sound not found: ${soundSpec.soundId}`);
             continue;
           }
 
@@ -89,7 +90,7 @@ export function useMatchAudio({
           });
         }
       } catch (error) {
-        console.error('Audio playback failed:', error);
+        logger.error('Audio playback failed:', error);
       }
     };
 
@@ -119,7 +120,7 @@ export function useMatchAudio({
           });
         }
       } catch (error) {
-        console.warn('Undo sound failed:', error);
+        logger.warn('Undo sound failed:', error);
       }
     };
 
@@ -149,7 +150,7 @@ export function useMatchAudio({
           });
         }
       } catch (error) {
-        console.warn('Redo sound failed:', error);
+        logger.warn('Redo sound failed:', error);
       }
     };
 
@@ -182,7 +183,7 @@ export function useMatchAudio({
         ];
         await engine.preload(commonSounds);
       } catch (error) {
-        console.warn('Preload failed:', error);
+        logger.warn('Preload failed:', error);
       }
     };
 

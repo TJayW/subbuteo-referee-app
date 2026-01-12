@@ -7,6 +7,7 @@ import html2canvas from 'html2canvas';
 import type { DomainMatchState, SettingsState, TeamConfig } from '@/domain/match/types';
 import { selectAppliedEvents, selectTeamStats } from '@/domain/match/selectors';
 import { getEventMetadata } from '@/utils/event-helpers';
+import logger from '@/utils/logger';
 
 // ===== PNG EXPORT - STADIUM DESIGN =====
 export async function exportPNG(
@@ -117,7 +118,7 @@ export async function exportPNG(
 
     document.body.removeChild(container);
   } catch (error) {
-    console.error('PNG export failed:', error);
+    logger.error('PNG export failed:', error);
   }
 }
 
