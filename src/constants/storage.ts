@@ -25,17 +25,23 @@ export const STORAGE_KEYS = {
   /** Audio storage version */
   AUDIO_VERSION: 'subbuteo_audio_version',
   
-  /** UI state: sidebar collapsed/expanded (legacy boolean) */
-  UI_SIDEBAR_COLLAPSED: 'subbuteo_ui_sidebar_collapsed',
+  /** UI state: console panel collapsed/expanded */
+  UI_PANEL_COLLAPSED: 'subbuteo_ui_panel_collapsed',
   
-  /** UI state: sidebar width (desktop, px) */
-  SIDEBAR_WIDTH_DESKTOP: 'subbuteo_sidebar_width_desktop',
+  /** UI state: console panel width (desktop, px) */
+  PANEL_WIDTH_DESKTOP: 'subbuteo_panel_width_desktop',
   
-  /** UI state: sidebar width (tablet, px) */
-  SIDEBAR_WIDTH_TABLET: 'subbuteo_sidebar_width_tablet',
+  /** UI state: console panel width (tablet, px) */
+  PANEL_WIDTH_TABLET: 'subbuteo_panel_width_tablet',
   
-  /** UI state: mobile bottom dock collapsed (boolean) */
-  MOBILE_DOCK_COLLAPSED: 'subbuteo_mobile_dock_collapsed',
+  /** UI state: mobile action bar collapsed (boolean) */
+  MOBILE_ACTIONBAR_COLLAPSED: 'subbuteo_mobile_actionbar_collapsed',
+  
+  // Legacy aliases for backward compatibility
+  UI_SIDEBAR_COLLAPSED: 'subbuteo_ui_panel_collapsed',
+  SIDEBAR_WIDTH_DESKTOP: 'subbuteo_panel_width_desktop',
+  SIDEBAR_WIDTH_TABLET: 'subbuteo_panel_width_tablet',
+  MOBILE_DOCK_COLLAPSED: 'subbuteo_mobile_actionbar_collapsed',
 } as const;
 
 /**

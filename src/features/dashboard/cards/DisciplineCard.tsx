@@ -3,9 +3,9 @@
  */
 
 import React, { useMemo } from 'react';
-import { DashboardCard } from './DashboardCard';
+import { DashboardCard } from '../components/DashboardCard';
 import type { DomainMatchState, ComputedTeamStats, SettingsState } from '@/domain/match/types';
-import { selectDisciplineRates } from './dashboard-selectors';
+import { selectDisciplineRates } from '@/domain/match/stats-selectors';
 import { AlertTriangle } from 'lucide-react';
 
 interface DisciplineCardProps {

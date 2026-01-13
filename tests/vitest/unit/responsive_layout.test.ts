@@ -38,34 +38,34 @@ describe('getLayoutConfig', () => {
   it('desktop config has full resize range (80-360)', () => {
     const config = getLayoutConfig('desktop');
     expect(config.mode).toBe('desktop');
-    expect(config.minSidebarWidth).toBe(80);
-    expect(config.maxSidebarWidth).toBe(360);
-    expect(config.defaultSidebarWidth).toBe(280);
+    expect(config.minPanelWidth).toBe(80);
+    expect(config.maxPanelWidth).toBe(360);
+    expect(config.defaultPanelWidth).toBe(280);
     expect(config.resizeEnabled).toBe(true);
-    expect(config.showSidebar).toBe(true);
-    expect(config.showBottomDock).toBe(false);
+    expect(config.showPanel).toBe(true);
+    expect(config.showActionBar).toBe(false);
   });
 
   it('tablet config caps max at 320px', () => {
     const config = getLayoutConfig('tablet');
     expect(config.mode).toBe('tablet');
-    expect(config.minSidebarWidth).toBe(80);
-    expect(config.maxSidebarWidth).toBe(320); // Capped for tablet
-    expect(config.defaultSidebarWidth).toBe(280);
+    expect(config.minPanelWidth).toBe(80);
+    expect(config.maxPanelWidth).toBe(320); // Capped for tablet
+    expect(config.defaultPanelWidth).toBe(280);
     expect(config.resizeEnabled).toBe(true);
-    expect(config.showSidebar).toBe(true);
-    expect(config.showBottomDock).toBe(false);
+    expect(config.showPanel).toBe(true);
+    expect(config.showActionBar).toBe(false);
   });
 
   it('mobile config disables sidebar and resize', () => {
     const config = getLayoutConfig('mobile');
     expect(config.mode).toBe('mobile');
-    expect(config.minSidebarWidth).toBe(0);
-    expect(config.maxSidebarWidth).toBe(0);
-    expect(config.defaultSidebarWidth).toBe(0);
+    expect(config.minPanelWidth).toBe(0);
+    expect(config.maxPanelWidth).toBe(0);
+    expect(config.defaultPanelWidth).toBe(0);
     expect(config.resizeEnabled).toBe(false);
-    expect(config.showSidebar).toBe(false);
-    expect(config.showBottomDock).toBe(true);
+    expect(config.showPanel).toBe(false);
+    expect(config.showActionBar).toBe(true);
   });
 });
 
@@ -114,11 +114,11 @@ describe('clampWidthToBreakpoint', () => {
 
 describe('getStorageKeyForMode', () => {
   it('returns desktop key for desktop mode', () => {
-    expect(getStorageKeyForMode('desktop')).toBe('subbuteo_sidebar_width_desktop');
+    expect(getStorageKeyForMode('desktop')).toBe('subbuteo_panel_width_desktop');
   });
 
   it('returns tablet key for tablet mode', () => {
-    expect(getStorageKeyForMode('tablet')).toBe('subbuteo_sidebar_width_tablet');
+    expect(getStorageKeyForMode('tablet')).toBe('subbuteo_panel_width_tablet');
   });
 
   it('returns null for mobile (no persistence)', () => {

@@ -5,3 +5,4 @@
 
 export type { AuditabilitySnapshot } from './auditability';
 export type { TimeTravelScope, ActionType } from './ui';
+export * from './console';

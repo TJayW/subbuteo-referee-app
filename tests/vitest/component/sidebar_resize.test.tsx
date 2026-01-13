@@ -140,7 +140,7 @@ describe('Sidebar Resize - Keyboard & Accessibility (Unit)', () => {
     
     // Wait for debounce (300ms) + assertion
     await waitFor(() => {
-      const saved = localStorage.getItem('subbuteo_sidebar_width_desktop');
+      const saved = localStorage.getItem('subbuteo_panel_width_desktop');
       expect(saved).toBe('288'); // 280 + 8
     }, { timeout: 500 });
   });

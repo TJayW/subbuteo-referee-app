@@ -4,9 +4,9 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { DashboardCard } from './DashboardCard';
+import { DashboardCard } from '../components/DashboardCard';
 import type { DomainMatchState, ComputedTeamStats, SettingsState } from '@/domain/match/types';
-import { selectPeriodBreakdown } from './dashboard-selectors';
+import { selectPeriodBreakdown } from '@/domain/match/stats-selectors';
 import { BarChart3 } from 'lucide-react';
 
 interface StatsMatrixCardProps {

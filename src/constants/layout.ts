@@ -82,9 +82,9 @@ export const LAYOUT_WIDTHS = {
 } as const;
 
 /**
- * Sidebar resize behavior
+ * Console panel resize behavior
  */
-export const SIDEBAR_RESIZE = {
+export const PANEL_RESIZE = {
   /** Minimum width */
   MIN_WIDTH: 80,
   
@@ -106,9 +106,12 @@ export const SIDEBAR_RESIZE = {
   /** Keyboard large step (shift+arrow) */
   KEYBOARD_STEP_LARGE: 24,
   
-  /** Collapse threshold (width below which sidebar is "collapsed") */
+  /** Collapse threshold (width below which panel is "collapsed") */
   COLLAPSE_THRESHOLD: 120,
 } as const;
+
+// Legacy alias for backward compatibility
+export const SIDEBAR_RESIZE = PANEL_RESIZE;
 
 /**
  * Maximum widths (content containers)
@@ -153,7 +156,7 @@ export const RESPONSIVE_MODES = {
     operatorRailWidth: 280,
     dashboardColumns: 3,
     statusBarsVisible: true,
-    bottomDockVisible: false,
+    actionBarVisible: false,
   },
   
   /** Tablet: Narrower layout (768-1023px) */
@@ -162,17 +165,17 @@ export const RESPONSIVE_MODES = {
     operatorRailWidth: 240,
     dashboardColumns: 2,
     statusBarsVisible: true,
-    bottomDockVisible: false,
+    actionBarVisible: false,
   },
   
   /** Mobile: Collapsed layout (<768px) */
   MOBILE: {
     breakpoint: 0,
-    operatorRailWidth: 0, // Collapsed to bottom dock
+    operatorRailWidth: 0, // Collapsed to action bar
     dashboardColumns: 1,
     statusBarsVisible: false, // Reduced header
-    bottomDockVisible: true, // Replaces operator rail
-    bottomDockHeight: 64, // Taller for touch targets
+    actionBarVisible: true, // Replaces operator rail
+    actionBarHeight: 64, // Taller for touch targets
   },
 } as const;
 
@@ -195,7 +198,11 @@ export const TOUCH_TARGETS = {
  * Transition durations and easing curves
  */
 export const ANIMATION_TIMINGS = {
-  /** Sidebar expand/collapse transition */
+  /** Console panel expand/collapse transition */
+  PANEL_TRANSITION_MS: 200,
+  PANEL_TRANSITION_EASING: 'ease-out' as const,
+  
+  // Legacy aliases for backward compatibility
   SIDEBAR_TRANSITION_MS: 200,
   SIDEBAR_TRANSITION_EASING: 'ease-out' as const,
   

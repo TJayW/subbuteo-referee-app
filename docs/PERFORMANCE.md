@@ -4,8 +4,78 @@
 # Performance Instrumentation & Monitoring
 
 **Created:** 11 gennaio 2026  
-**Status:** Baseline established  
+**Updated:** 12 gennaio 2026  
+**Status:** Baseline established + CI gates active  
 **Target Environment:** Chrome/Firefox/Safari (ES2020+)
+
+---
+
+## Bundle Size Gate
+
+### Threshold and Enforcement
+
+| Metric | Current | Threshold | Status |
+|--------|---------|-----------|--------|
+| **Gzipped Bundle** | 215.75 KB | 225 KB | ✅ PASS |
+| **Enforcement** | CI workflow | Fail on exceed | Active |
+
+**Rationale:**  
+Zod validation library adds ~18 KB gzipped. Threshold set with buffer for future growth while preventing unchecked bloat.
+
+**Measurement:**  
+CI workflow (`.github/workflows/ci.yml`) measures `gzip -c dist/assets/*.js | wc -c` after build and fails if exceeds threshold.
+
+**Monitoring:**  
+Bundle size printed in GitHub Actions job summary on every CI run.
+
+---
+
+## Storage Validation
+
+### Zod Schema Validation for Persisted State
+
+**Implementation:**  
+`src/adapters/storage/schemas.ts` defines `MatchStateSchema` (Zod) covering persisted match state structure.
+
+**Behavior on Load:**
+1. Parse JSON from localStorage
+2. Validate with `MatchStateSchema.safeParse()`
+3. **If invalid:**
+   - Return `null` (caller uses default initial state)
+   - Log via `logger.warn` with Zod error details
+4. **If valid:**
+   - Return validated data as `DomainMatchState`
+
+**Graceful Degradation:**  
+Missing optional fields (e.g., `recoverySeconds`, `suspensionReason`) use defaults via Zod schema. Invalid structures fall back to clean initial state without crashing.
+
+**Testing:**  
+`tests/vitest/unit/storage-validation.test.ts` validates:
+- Valid persisted state loads successfully
+- Invalid persisted state falls back with warning
+- Corrupted JSON handled gracefully
+- Event structure validated within state
+
+---
+
+## Export Tests
+
+### Location and Coverage
+
+**Test File:**  
+`tests/vitest/integration/export-flows.test.tsx`
+
+**Validated Formats:**
+- **JSON:** Parse JSON, validate required keys (`matchId`, `events`, `cursor`, `phase`, `period`)
+- **CSV:** Validate header row + data rows for seeded fixture match
+- **HTML:** Contains expected markup and match summary
+- **PNG:** Valid mime type (`image/png`) + graceful canvas API error handling
+
+**Testing Strategy:**  
+- Blob interception via mocked `URL.createObjectURL`
+- FileReader-based content validation (jsdom-compatible)
+- Deterministic fixtures in `tests/fixtures/matchState.ts`
+- Frozen timestamps and predictable event IDs
 
 ---
 

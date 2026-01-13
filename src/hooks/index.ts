@@ -17,3 +17,4 @@ export { useMatch } from './use-match-logic';
 export { ConsoleFocusProvider, useConsoleFocus } from './use-console-focus-manager';
 export { useFocusZone } from './use-focus-zone';
 export { useDashboardFilters } from './use-dashboard-filters';
+export { useConsoleState } from './use-console-state';

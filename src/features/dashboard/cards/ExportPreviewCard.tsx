@@ -3,9 +3,9 @@
  */
 
 import React, { useMemo } from 'react';
-import { DashboardCard } from './DashboardCard';
+import { DashboardCard } from '../components/DashboardCard';
 import type { DomainMatchState, SettingsState } from '@/domain/match/types';
-import { selectExportPreview } from './dashboard-selectors';
+import { selectExportPreview } from '@/domain/match/stats-selectors';
 import { FileText, Check, X } from 'lucide-react';
 
 interface ExportPreviewCardProps {

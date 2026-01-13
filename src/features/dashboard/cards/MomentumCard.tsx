@@ -4,9 +4,9 @@
  */
 
 import React, { useMemo } from 'react';
-import { DashboardCard } from './DashboardCard';
+import { DashboardCard } from '../components/DashboardCard';
 import type { DomainMatchState, SettingsState } from '@/domain/match/types';
-import { selectEventBuckets } from './dashboard-selectors';
+import { selectEventBuckets } from '@/domain/match/stats-selectors';
 import { TrendingUp } from 'lucide-react';
 
 interface MomentumCardProps {

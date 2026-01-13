@@ -3,18 +3,18 @@
  * Manages breakpoint detection and layout mode computation
  */
 
-import { BREAKPOINTS, SIDEBAR_RESIZE } from '@/constants/layout';
+import { BREAKPOINTS, PANEL_RESIZE } from '@/constants/layout';
 
 export type LayoutMode = 'desktop' | 'tablet' | 'mobile';
 
 export interface LayoutConfig {
   mode: LayoutMode;
-  maxSidebarWidth: number;
-  minSidebarWidth: number;
-  defaultSidebarWidth: number;
+  maxPanelWidth: number;
+  minPanelWidth: number;
+  defaultPanelWidth: number;
   resizeEnabled: boolean;
-  showBottomDock: boolean;
-  showSidebar: boolean;
+  showActionBar: boolean;
+  showPanel: boolean;
 }
 
 /**
@@ -34,34 +34,34 @@ export function getLayoutConfig(mode: LayoutMode): LayoutConfig {
     case 'desktop':
       return {
         mode: 'desktop',
-        maxSidebarWidth: SIDEBAR_RESIZE.MAX_WIDTH,
-        minSidebarWidth: SIDEBAR_RESIZE.MIN_WIDTH,
-        defaultSidebarWidth: SIDEBAR_RESIZE.DEFAULT_WIDTH,
+        maxPanelWidth: PANEL_RESIZE.MAX_WIDTH,
+        minPanelWidth: PANEL_RESIZE.MIN_WIDTH,
+        defaultPanelWidth: PANEL_RESIZE.DEFAULT_WIDTH,
         resizeEnabled: true,
-        showBottomDock: false,
-        showSidebar: true,
+        showActionBar: false,
+        showPanel: true,
       };
     
     case 'tablet':
       return {
         mode: 'tablet',
-        maxSidebarWidth: 320, // Capped for tablet
-        minSidebarWidth: SIDEBAR_RESIZE.MIN_WIDTH,
-        defaultSidebarWidth: SIDEBAR_RESIZE.DEFAULT_WIDTH,
+        maxPanelWidth: 320, // Capped for tablet
+        minPanelWidth: PANEL_RESIZE.MIN_WIDTH,
+        defaultPanelWidth: PANEL_RESIZE.DEFAULT_WIDTH,
         resizeEnabled: true,
-        showBottomDock: false,
-        showSidebar: true,
+        showActionBar: false,
+        showPanel: true,
       };
     
     case 'mobile':
       return {
         mode: 'mobile',
-        maxSidebarWidth: 0,
-        minSidebarWidth: 0,
-        defaultSidebarWidth: 0,
+        maxPanelWidth: 0,
+        minPanelWidth: 0,
+        defaultPanelWidth: 0,
         resizeEnabled: false,
-        showBottomDock: true,
-        showSidebar: false,
+        showActionBar: true,
+        showPanel: false,
       };
   }
 }
@@ -88,7 +88,7 @@ export function isMobileBreakpoint(width: number = window.innerWidth): boolean {
 }
 
 /**
- * Clamp sidebar width to current breakpoint constraints
+ * Clamp panel width to current breakpoint constraints
  */
 export function clampWidthToBreakpoint(
   width: number,
@@ -96,8 +96,8 @@ export function clampWidthToBreakpoint(
 ): number {
   const config = getLayoutConfig(mode);
   return Math.max(
-    config.minSidebarWidth,
-    Math.min(config.maxSidebarWidth, width)
+    config.minPanelWidth,
+    Math.min(config.maxPanelWidth, width)
   );
 }
 
@@ -105,9 +105,9 @@ export function clampWidthToBreakpoint(
  * Get storage key for current layout mode
  */
 export function getStorageKeyForMode(mode: LayoutMode): string | null {
-  if (mode === 'desktop') return 'subbuteo_sidebar_width_desktop';
-  if (mode === 'tablet') return 'subbuteo_sidebar_width_tablet';
-  return null; // Mobile doesn't persist sidebar width
+  if (mode === 'desktop') return 'subbuteo_panel_width_desktop';
+  if (mode === 'tablet') return 'subbuteo_panel_width_tablet';
+  return null; // Mobile doesn't persist panel width
 }
 
 /**

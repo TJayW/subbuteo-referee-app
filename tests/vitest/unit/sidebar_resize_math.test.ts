@@ -1,5 +1,5 @@
 /**
- * Unit tests for pure sidebar resize math functions
+ * Unit tests for pure console panel resize math functions
  */
 
 import { describe, it, expect } from 'vitest';
@@ -10,7 +10,7 @@ import {
   computeWidthFromDrag,
   isCollapsed,
   applySnap,
-} from '@/utils/sidebar-resize';
+} from '@/utils/console-panel-resize';
 
 const SNAP_POINTS = [80, 280, 320] as const;
 const SNAP_THRESHOLD = 12;

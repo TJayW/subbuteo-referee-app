@@ -1,8 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import type { DomainMatchState, ComputedTeamStats } from '@/domain/match/types';
-import { HeaderMatchInfo } from './HeaderMatchInfo';
-import { HeaderStatusIndicator } from './HeaderStatusIndicator';
-import { HeaderToolbar } from './HeaderToolbar';
+import { HeaderMatchInfo } from './components/HeaderMatchInfo';
+import { HeaderStatusIndicator } from './components/HeaderStatusIndicator';
+import { HeaderToolbar } from './components/HeaderToolbar';
 import { LAYOUT_HEIGHTS } from '@/constants/layout';
 
 interface AppHeaderProps {
@@ -26,8 +26,8 @@ interface AppHeaderProps {
     position: { current: number; total: number };
     onJumpToPresent: () => void;
   };
-  isSidebarCollapsed?: boolean;
-  onToggleSidebar?: () => void;
+  isPanelCollapsed?: boolean;
+  onTogglePanel?: () => void;
 }
 
 export const AppHeader: React.FC<AppHeaderProps> = ({
@@ -47,8 +47,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   awayTeamName,
   exportPopover,
   globalTimeTravel,
-  isSidebarCollapsed,
-  onToggleSidebar,
+  isPanelCollapsed,
+  onTogglePanel,
 }) => {
   const headerRef = useRef<HTMLElement>(null);
 
@@ -92,8 +92,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
           onAdvancedControls={onAdvancedControls}
           exportPopover={exportPopover}
           globalTimeTravel={globalTimeTravel}
-          isSidebarCollapsed={isSidebarCollapsed}
-          onToggleSidebar={onToggleSidebar}
+          isPanelCollapsed={isPanelCollapsed}
+          onTogglePanel={onTogglePanel}
         />
       </div>
       <div className="sm:hidden px-4 py-2 border-t border-slate-100 flex items-center justify-center">

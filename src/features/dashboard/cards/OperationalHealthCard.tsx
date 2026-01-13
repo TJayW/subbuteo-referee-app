@@ -3,9 +3,9 @@
  */
 
 import React, { useMemo } from 'react';
-import { DashboardCard } from './DashboardCard';
+import { DashboardCard } from '../components/DashboardCard';
 import type { DomainMatchState } from '@/domain/match/types';
-import { selectOperationalHealth, type HealthCheck } from './dashboard-selectors';
+import { selectOperationalHealth, type HealthCheck } from '@/domain/match/stats-selectors';
 import { Shield, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface OperationalHealthCardProps {

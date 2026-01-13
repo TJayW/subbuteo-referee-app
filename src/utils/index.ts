@@ -8,4 +8,4 @@ export { formatTime } from './format-time';
 export * from './export-utils';
 export * from './event-helpers';
 export * from './responsive-layout';
-export * from './sidebar-resize';
+export * from './console-panel-resize';

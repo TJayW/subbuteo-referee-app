@@ -6,13 +6,13 @@
 
 import React, { useMemo } from 'react';
 import type { DomainMatchState, ComputedTeamStats, SettingsState, Period } from '@/domain/match/types';
-import { ConsoleFilterBar } from './ConsoleFilterBar';
-import { MatchOverviewCard } from './MatchOverviewCard';
-import { StatsMatrixCard } from './StatsMatrixCard';
-import { MomentumCard } from './MomentumCard';
-import { DisciplineCard } from './DisciplineCard';
-import { OperationalHealthCard } from './OperationalHealthCard';
-import { ExportPreviewCard } from './ExportPreviewCard';
+import { ConsoleFilterBar } from './components/ConsoleFilterBar';
+import { MatchOverviewCard } from './cards/MatchOverviewCard';
+import { StatsMatrixCard } from './cards/StatsMatrixCard';
+import { MomentumCard } from './cards/MomentumCard';
+import { DisciplineCard } from './cards/DisciplineCard';
+import { OperationalHealthCard } from './cards/OperationalHealthCard';
+import { ExportPreviewCard } from './cards/ExportPreviewCard';
 import { selectAppliedEvents, selectIsTimeTraveling } from '@/domain/match/selectors';
 import { DashboardFiltersProvider, useDashboardFilters } from '@/hooks/use-dashboard-filters';
 import { LAYOUT_MAX_WIDTHS } from '@/constants/layout';

@@ -15,7 +15,7 @@ interface TeamCardProps {
   homeTeamName: string;
   awayTeamName: string;
   lastEvent: MatchEvent | null;
-  layout?: 'sidebar' | 'horizontal' | 'mobile';
+  layout?: 'panel' | 'horizontal' | 'mobile';
 }
 
 export const TeamCard: React.FC<TeamCardProps> = ({

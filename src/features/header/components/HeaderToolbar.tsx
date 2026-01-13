@@ -34,8 +34,8 @@ interface HeaderToolbarProps {
     position: { current: number; total: number };
     onJumpToPresent: () => void;
   };
-  isSidebarCollapsed?: boolean;
-  onToggleSidebar?: () => void;
+  isPanelCollapsed?: boolean;
+  onTogglePanel?: () => void;
 }
 
 /**
@@ -58,8 +58,8 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
   onAdvancedControls,
   exportPopover,
   globalTimeTravel,
-  isSidebarCollapsed = false,
-  onToggleSidebar,
+  isPanelCollapsed = false,
+  onTogglePanel,
 }) => {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -168,18 +168,18 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
       <div className="hidden sm:block w-px h-5 bg-slate-200 flex-shrink-0" />
 
       {/* Sidebar Toggle (Desktop/Tablet only) */}
-      {onToggleSidebar && (
+      {onTogglePanel && (
         <div className="hidden md:flex">
           <IconButton
             size="sm"
             variant="ghost"
-            onClick={onToggleSidebar}
-            aria-label={isSidebarCollapsed ? 'Espandi sidebar' : 'Comprimi sidebar'}
-            aria-pressed={!isSidebarCollapsed}
-            title={isSidebarCollapsed ? 'Espandi sidebar (Ctrl+\\)' : 'Comprimi sidebar (Ctrl+\\)'}
+            onClick={onTogglePanel}
+            aria-label={isPanelCollapsed ? 'Espandi sidebar' : 'Comprimi sidebar'}
+            aria-pressed={!isPanelCollapsed}
+            title={isPanelCollapsed ? 'Espandi sidebar (Ctrl+\\)' : 'Comprimi sidebar (Ctrl+\\)'}
             data-sidebar-toggle
           >
-            {isSidebarCollapsed ? (
+            {isPanelCollapsed ? (
               <PanelLeft className="w-4 h-4" />
             ) : (
               <PanelLeftClose className="w-4 h-4" />
@@ -189,7 +189,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
       )}
 
       {/* Divider (if sidebar toggle visible) */}
-      {onToggleSidebar && <div className="hidden md:block w-px h-5 bg-slate-200 flex-shrink-0" />}
+      {onTogglePanel && <div className="hidden md:block w-px h-5 bg-slate-200 flex-shrink-0" />}
 
       {/* Desktop: Volume Control Inline */}
       <div className="hidden lg:flex items-center gap-1.5 px-1.5 py-1">

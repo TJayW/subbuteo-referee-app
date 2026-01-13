@@ -1,10 +1,10 @@
 /**
- * Advanced selectors for dashboard cards
- * Centralizes all derived data computation for the console UI
+ * Match Statistics Selectors
+ * Derived data computation for dashboard and analytics
  */
 
-import type { DomainMatchState, MatchEvent, Period, TeamKey } from '@/domain/match/types';
-import { selectAppliedEvents } from '@/domain/match/selectors';
+import type { DomainMatchState, MatchEvent, Period, TeamKey } from './types';
+import { selectAppliedEvents } from './selectors';
 
 export interface FilterState {
   team: 'all' | 'home' | 'away';

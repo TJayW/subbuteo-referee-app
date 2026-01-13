@@ -21,7 +21,7 @@ interface TimeCardProps {
   timerLocked?: boolean;
   defaultExtraTimeDurationMinutes?: number;
   lastEvent?: MatchEvent | null;
-  layout?: 'sidebar' | 'horizontal' | 'mobile';
+  layout?: 'panel' | 'horizontal' | 'mobile';
   onSettingsClick?: () => void;
 }
 

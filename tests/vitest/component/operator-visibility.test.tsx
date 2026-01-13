@@ -2,14 +2,14 @@
  * Operator Card Visibility Tests
  * 
  * Validates:
- * - Desktop: Sidebar shows all 4 cards (EventLog, Team, Time, MatchControl)
+ * - Desktop: OperatorPanel shows all 4 cards (EventLog, Team, Time, MatchControl)
  * - Mobile: BottomDock shows all cards when expanded
  * - No responsive hiding of cards
  */
 
 import { describe, it, expect } from 'vitest';
 import { renderApp, setViewport } from '../utils/render';
-import { Sidebar } from '@/features/operator-console/desktop/Sidebar';
+import { OperatorPanel } from "@/features/console/desktop/OperatorPanel";
 import { ConsoleFocusProvider } from '@/hooks/use-console-focus-manager';
 import type { DomainMatchState, ComputedTeamStats } from '@/domain/match/types';
 
@@ -36,13 +36,13 @@ const mockStats: ComputedTeamStats = {
   away: { name: 'AWAY', goals: 0, shots: 0, shotsOnTarget: 0, fouls: 0, yellowCards: 0, redCards: 0, corners: 0, timeouts: 0, throwIns: 0 },
 };
 
-describe('Desktop Sidebar', () => {
+describe('Desktop OperatorPanel', () => {
   it('renders all 4 cards when expanded', () => {
     setViewport('desktop');
     
     const { container } = renderApp(
       <ConsoleFocusProvider>
-        <Sidebar
+        <OperatorPanel
           state={mockState}
           teamStats={mockStats}
           selectedTeam="home"

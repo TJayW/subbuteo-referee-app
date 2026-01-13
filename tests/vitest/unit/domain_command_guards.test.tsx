@@ -14,7 +14,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render } from '@testing-library/react';
 import { useMatch } from '@/hooks/use-match-logic';
-import { MatchCommands } from '@/domain/commands/command_api';
+import { MatchCommands } from "@/domain/commands/command-api";
 import type { CommandContext } from '@/domain/commands/types';
 
 // Test harness wrapper

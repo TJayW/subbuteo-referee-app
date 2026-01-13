@@ -30,3 +30,25 @@ jobs:
       
       - name: Build
         run: npm run build
+      
+      - name: Check bundle size
+        run: |
+          # Measure gzipped bundle size
+          BUNDLE_SIZE=$(gzip -c dist/assets/*.js | wc -c | awk '{print $1}')
+          THRESHOLD=225000  # 220 KB (current ~216 KB + Zod overhead + buffer)
+          
+          echo "📦 Bundle size: $(numfmt --to=iec-i --suffix=B $BUNDLE_SIZE) (gzipped)"
+          echo "🎯 Threshold: $(numfmt --to=iec-i --suffix=B $THRESHOLD)"
+          
+          if [ $BUNDLE_SIZE -gt $THRESHOLD ]; then
+            echo "❌ Bundle size exceeds threshold!"
+            echo "Bundle: $(numfmt --to=iec-i --suffix=B $BUNDLE_SIZE)"
+            echo "Limit: $(numfmt --to=iec-i --suffix=B $THRESHOLD)"
+            exit 1
+          fi
+          
+          echo "✅ Bundle size within threshold"
+          echo "### Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "- **Size**: $(numfmt --to=iec-i --suffix=B $BUNDLE_SIZE) (gzipped)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Threshold**: $(numfmt --to=iec-i --suffix=B $THRESHOLD)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ✅ PASS" >> $GITHUB_STEP_SUMMARY

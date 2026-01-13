@@ -17,7 +17,7 @@ interface EventLogCardProps {
   onSetCursor: (cursor: number) => void;
   canNavigateEventCursor?: boolean;
   canNavigate?: boolean;  // Alternative prop name for backward compatibility
-  layout?: 'sidebar' | 'horizontal' | 'mobile';
+  layout?: 'panel' | 'horizontal' | 'mobile';
 }
 
 export const EventLogCard: React.FC<EventLogCardProps> = ({

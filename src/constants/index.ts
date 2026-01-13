@@ -18,4 +18,7 @@ export * from './timing';
 // Domain constants
 export * from './defaults';
 export * from './events';
+
+// Console constants
+export * from './console';
 export * from './periods';

@@ -3,9 +3,9 @@
  */
 
 import React, { useMemo } from 'react';
-import { DashboardCard } from './DashboardCard';
+import { DashboardCard } from '../components/DashboardCard';
 import type { DomainMatchState, ComputedTeamStats, SettingsState, MatchEvent } from '@/domain/match/types';
-import { selectRecentTimeline } from './dashboard-selectors';
+import { selectRecentTimeline } from '@/domain/match/stats-selectors';
 import { getEventMetadata, formatEventTime } from '@/utils/event-helpers';
 import { getContrastTextColor } from '@/domain/settings/defaults';
 import { Trophy, Activity } from 'lucide-react';

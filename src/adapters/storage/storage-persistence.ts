@@ -3,6 +3,7 @@ import { STORAGE_VERSION, STORAGE_KEY, VERSION_KEY } from './constants';
 import { STORAGE_KEYS } from '@/constants/storage';
 import { clampVolume, MATCH_TIMING_DEFAULTS, TEAM_DEFAULTS, AUDIO_DEFAULTS } from '@/constants/defaults';
 import logger from '@/utils/logger';
+import { MatchStateSchema } from './schemas';
 
 // Removed: clampAudioVolume - now using clampVolume from @/domain/constants/defaults
 
@@ -101,13 +102,26 @@ export function saveSettingsToStorage(settings: SettingsState): void {
 }
 
 /**
- * Load match state from localStorage
+ * Load match state from localStorage with Zod validation
  */
 export function loadMatchStateFromStorage(): DomainMatchState | null {
   try {
     const data = localStorage.getItem(STORAGE_KEYS.MATCH);
     if (!data) return null;
-    return JSON.parse(data) as DomainMatchState;
+    
+    const parsed = JSON.parse(data);
+    
+    // Validate with Zod schema
+    const validation = MatchStateSchema.safeParse(parsed);
+    
+    if (!validation.success) {
+      logger.warn('Invalid match state in localStorage, falling back to default:', {
+        errors: validation.error.issues,
+      });
+      return null;
+    }
+    
+    return validation.data as DomainMatchState;
   } catch (error) {
     logger.error('Failed to load match state from storage:', error);
     return null;

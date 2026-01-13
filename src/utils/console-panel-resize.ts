@@ -1,5 +1,5 @@
 /**
- * Pure resize math functions for testable sidebar behavior
+ * Pure resize math functions for testable console panel behavior
  * All functions are pure (no side effects) and can be unit tested
  */
 

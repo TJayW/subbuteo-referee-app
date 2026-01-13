@@ -7,10 +7,10 @@ import { ACTION_GATES, GATE_ERROR_MESSAGES } from '@/domain/match/action-gating'
 import type { ActionGatingContext } from '@/domain/match/action-gating';
 import { AppHeader } from '@/features/header/AppHeader';
 import { MatchDashboard } from '@/features/dashboard/MatchDashboard';
-import { Sidebar } from '@/features/operator-console/desktop/Sidebar';
+import { Console } from '@/features/console';
 import { SettingsSheet } from '@/features/settings/sheets/SettingsSheet';
 import { MatchInfoSheet } from '@/features/settings/sheets/MatchInfoSheet';
-import { ExportPopover, type ExportOption } from '@/features/dashboard/ExportPopover';
+import { ExportPopover, type ExportOption } from '@/features/dashboard';
 import { CommandPalette } from '@/ui/components/CommandPalette';
 import type { TeamKey, EventType, SettingsState, RegulationPeriod, MatchPhase } from '@/domain/match/types';
 import { exportJSON } from '@/utils/export-utils';
@@ -20,9 +20,9 @@ import { FileJson, FileText, Image, Code } from 'lucide-react';
 import { createDefaultTeamConfig } from '@/domain/settings/defaults';
 import { loadSettingsFromStorage, saveSettingsToStorage } from '@/adapters/storage/storage-persistence';
 import { loadAudioSettingsFromStorage } from '@/adapters/audio/audio-persistence';
-import { ANIMATION_TIMINGS, SIDEBAR_RESIZE } from '@/constants/layout';
+import { ANIMATION_TIMINGS, PANEL_RESIZE } from '@/constants/layout';
 import { STORAGE_KEYS } from '@/constants/storage';
-import { applySnap, isCollapsed as isWidthCollapsed } from '@/utils/sidebar-resize';
+import { isCollapsed as isWidthCollapsed } from '@/utils/console-panel-resize';
 import logger from '@/utils/logger';
 import {
   getLayoutMode,
@@ -53,7 +53,7 @@ export default function AppShell() {
   }, []);
 
   // Sidebar width state with persistence (per breakpoint)
-  const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
+  const [panelWidth, setPanelWidth] = useState<number>(() => {
     try {
       const mode = getLayoutMode();
       const storageKey = getStorageKeyForMode(mode);
@@ -64,29 +64,29 @@ export default function AppShell() {
       }
       
       const stored = localStorage.getItem(storageKey);
-      const parsedWidth = stored ? parseInt(stored, 10) : SIDEBAR_RESIZE.DEFAULT_WIDTH;
+      const parsedWidth = stored ? parseInt(stored, 10) : PANEL_RESIZE.DEFAULT_WIDTH;
       
       // Clamp to breakpoint-specific range
       return clampWidthToBreakpoint(parsedWidth, mode);
     } catch {
-      return SIDEBAR_RESIZE.DEFAULT_WIDTH;
+      return PANEL_RESIZE.DEFAULT_WIDTH;
     }
   });
 
   // Derived: is sidebar collapsed?
-  const isSidebarCollapsed = isWidthCollapsed(sidebarWidth, SIDEBAR_RESIZE.COLLAPSE_THRESHOLD);
+  const isPanelCollapsed = isWidthCollapsed(panelWidth, PANEL_RESIZE.COLLAPSE_THRESHOLD);
 
   // Track previous expanded width in memory (for immediate toggle without waiting for storage)
   const prevExpandedWidthRef = useRef<number>(
-    sidebarWidth > SIDEBAR_RESIZE.COLLAPSE_THRESHOLD ? sidebarWidth : SIDEBAR_RESIZE.DEFAULT_WIDTH
+    panelWidth > PANEL_RESIZE.COLLAPSE_THRESHOLD ? panelWidth : PANEL_RESIZE.DEFAULT_WIDTH
   );
 
   // Update prevExpandedWidth when width changes (if not collapsed)
   useEffect(() => {
-    if (sidebarWidth > SIDEBAR_RESIZE.COLLAPSE_THRESHOLD) {
-      prevExpandedWidthRef.current = sidebarWidth;
+    if (panelWidth > PANEL_RESIZE.COLLAPSE_THRESHOLD) {
+      prevExpandedWidthRef.current = panelWidth;
     }
-  }, [sidebarWidth]);
+  }, [panelWidth]);
 
   // Persist sidebar width (debounced, per breakpoint)
   useEffect(() => {
@@ -96,24 +96,24 @@ export default function AppShell() {
         
         if (storageKey) {
           // Only persist for desktop/tablet, not mobile
-          localStorage.setItem(storageKey, String(sidebarWidth));
+          localStorage.setItem(storageKey, String(panelWidth));
         }
         
         // Sync legacy boolean key for compatibility
-        localStorage.setItem(STORAGE_KEYS.UI_SIDEBAR_COLLAPSED, String(isSidebarCollapsed));
+        localStorage.setItem(STORAGE_KEYS.UI_SIDEBAR_COLLAPSED, String(isPanelCollapsed));
       } catch {
         // Silently fail on localStorage error
       }
     }, 300); // Debounce 300ms
 
     return () => clearTimeout(timeoutId);
-  }, [sidebarWidth, layoutMode, isSidebarCollapsed]);
+  }, [panelWidth, layoutMode, isPanelCollapsed]);
 
   // Add CSS variables for operator rail width and transition
   useEffect(() => {
-    document.documentElement.style.setProperty('--operator-rail-width', `${sidebarWidth}px`);
+    document.documentElement.style.setProperty('--operator-rail-width', `${panelWidth}px`);
     document.documentElement.style.setProperty('--operator-rail-transition', `${ANIMATION_TIMINGS.SIDEBAR_TRANSITION_MS}ms ${ANIMATION_TIMINGS.SIDEBAR_TRANSITION_EASING}`);
-  }, [sidebarWidth]);
+  }, [panelWidth]);
 
   // Load settings from localStorage with schema versioning
   const getDefaultSettings = (): SettingsState => {
@@ -183,48 +183,35 @@ export default function AppShell() {
   };
 
   // Toggle sidebar collapse/expand
-  const toggleSidebarCollapse = () => {
-    if (isSidebarCollapsed) {
+  const togglePanelCollapse = () => {
+    if (isPanelCollapsed) {
       // Expand: restore from memory first (immediate), then storage (fallback)
       const memoryWidth = prevExpandedWidthRef.current;
-      if (memoryWidth > SIDEBAR_RESIZE.COLLAPSE_THRESHOLD) {
-        setSidebarWidth(memoryWidth);
+      if (memoryWidth > PANEL_RESIZE.COLLAPSE_THRESHOLD) {
+        setPanelWidth(memoryWidth);
       } else {
         // Fallback to storage
         try {
           const storageKey = getStorageKeyForMode(layoutMode);
           const stored = storageKey ? localStorage.getItem(storageKey) : null;
-          const restoredWidth = stored ? parseInt(stored, 10) : SIDEBAR_RESIZE.DEFAULT_WIDTH;
+          const restoredWidth = stored ? parseInt(stored, 10) : PANEL_RESIZE.DEFAULT_WIDTH;
           
-          if (restoredWidth > SIDEBAR_RESIZE.COLLAPSE_THRESHOLD) {
-            setSidebarWidth(restoredWidth);
+          if (restoredWidth > PANEL_RESIZE.COLLAPSE_THRESHOLD) {
+            setPanelWidth(restoredWidth);
             prevExpandedWidthRef.current = restoredWidth;
           } else {
-            setSidebarWidth(SIDEBAR_RESIZE.DEFAULT_WIDTH);
-            prevExpandedWidthRef.current = SIDEBAR_RESIZE.DEFAULT_WIDTH;
+            setPanelWidth(PANEL_RESIZE.DEFAULT_WIDTH);
+            prevExpandedWidthRef.current = PANEL_RESIZE.DEFAULT_WIDTH;
           }
         } catch {
-          setSidebarWidth(SIDEBAR_RESIZE.DEFAULT_WIDTH);
-          prevExpandedWidthRef.current = SIDEBAR_RESIZE.DEFAULT_WIDTH;
+          setPanelWidth(PANEL_RESIZE.DEFAULT_WIDTH);
+          prevExpandedWidthRef.current = PANEL_RESIZE.DEFAULT_WIDTH;
         }
       }
     } else {
       // Collapse to min width
-      setSidebarWidth(SIDEBAR_RESIZE.MIN_WIDTH);
+      setPanelWidth(PANEL_RESIZE.MIN_WIDTH);
     }
-  };
-
-  // Handle width change from resize handle
-  const handleWidthChange = (newWidth: number) => {
-    // Clamp to current breakpoint constraints
-    const clampedWidth = clampWidthToBreakpoint(newWidth, layoutMode);
-    setSidebarWidth(clampedWidth);
-  };
-
-  // Handle drag end (apply snapping)
-  const handleResizeDragEnd = (finalWidth: number) => {
-    const snappedWidth = applySnap(finalWidth, SIDEBAR_RESIZE.SNAP_POINTS, SIDEBAR_RESIZE.SNAP_THRESHOLD);
-    setSidebarWidth(snappedWidth);
   };
 
   // Keyboard shortcut: Ctrl+\ (Cmd+\ on Mac) to toggle sidebar
@@ -233,13 +220,13 @@ export default function AppShell() {
       // Ctrl+\ or Cmd+\ to toggle sidebar
       if ((e.ctrlKey || e.metaKey) && e.key === '\\') {
         e.preventDefault();
-        toggleSidebarCollapse();
+        togglePanelCollapse();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggleSidebarCollapse]);
+  }, [togglePanelCollapse]);
 
   // Load audio settings on mount and clamp values
   useEffect(() => {
@@ -543,14 +530,15 @@ export default function AppShell() {
           position: globalHistory.getHistoryPosition(),
           onJumpToPresent: globalHistory.jumpToPresent,
         }}
-        isSidebarCollapsed={isSidebarCollapsed}
-        onToggleSidebar={toggleSidebarCollapse}
+        isPanelCollapsed={isPanelCollapsed}
+        onTogglePanel={togglePanelCollapse}
       />
 
-      {/* LAYOUT: Sidebar + Main Content */}
+      {/* LAYOUT: Console Panel + Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* LEFT OPERATOR RAIL */}
-        <Sidebar
+        {/* DESKTOP CONSOLE (Vertical) */}
+        <Console
+          orientation="vertical"
           state={match.state}
           teamStats={match.teamStats}
           selectedTeam={selectedTeam}
@@ -564,15 +552,11 @@ export default function AppShell() {
           onSetPeriod={handleSetPeriod}
           onSetTotalPeriodSeconds={handleSetTotalPeriodSeconds}
           defaultExtraTimeDurationMinutes={settings.extratimeDurationMinutes}
+          onDeleteEvent={(eventId: string) => match.dispatch({ type: 'DELETE_EVENT', payload: eventId })}
           onUpdateEvent={(event: any) => match.dispatch({ type: 'UPDATE_EVENT', payload: event })}
           onSetCursor={(cursor: number) => match.dispatch({ type: 'SET_CURSOR', payload: cursor })}
-          eventHistory={eventHistory}
           canNavigateEventCursor={ACTION_GATES.NAVIGATE_EVENT_CURSOR(getGatingContext())}
-          isCollapsed={isSidebarCollapsed}
-          onToggleCollapse={toggleSidebarCollapse}
-          width={sidebarWidth}
-          onWidthChange={handleWidthChange}
-          onResizeDragEnd={handleResizeDragEnd}
+          onToggleCollapse={togglePanelCollapse}
           onToggleTimerLock={handleToggleTimerLock}
           onSetExactTime={handleSetExactTime}
           onAddRecovery={handleAddRecovery}
@@ -597,6 +581,43 @@ export default function AppShell() {
             settings={settings}
           />
         </main>
+
+        {/* MOBILE CONSOLE (Horizontal) */}
+        <Console
+          orientation="horizontal"
+          state={match.state}
+          teamStats={match.teamStats}
+          selectedTeam={selectedTeam}
+          onSelectTeam={setSelectedTeam}
+          onPlayPause={handlePlayPause}
+          onAddEvent={handleAddEvent}
+          onAddTime={handleAddTime}
+          onRemoveTime={handleRemoveTime}
+          homeTeamName={settings.homeTeamName}
+          awayTeamName={settings.awayTeamName}
+          onSetPeriod={handleSetPeriod}
+          onSetTotalPeriodSeconds={handleSetTotalPeriodSeconds}
+          defaultExtraTimeDurationMinutes={settings.extratimeDurationMinutes}
+          onDeleteEvent={(eventId: string) => match.dispatch({ type: 'DELETE_EVENT', payload: eventId })}
+          onUpdateEvent={(event: any) => match.dispatch({ type: 'UPDATE_EVENT', payload: event })}
+          onSetCursor={(cursor: number) => match.dispatch({ type: 'SET_CURSOR', payload: cursor })}
+          canNavigateEventCursor={ACTION_GATES.NAVIGATE_EVENT_CURSOR(getGatingContext())}
+          onToggleTimerLock={handleToggleTimerLock}
+          onSetExactTime={handleSetExactTime}
+          onAddRecovery={handleAddRecovery}
+          onSetRecovery={handleSetRecovery}
+          onRequireExtraTime={handleRequireExtraTime}
+          onAllowOverride={handleAllowOverride}
+          onEndPeriod={handleEndPeriod}
+          onSkipHalftime={handleSkipHalftime}
+          onTerminateMatch={handleTerminate}
+          onSetMatchPhase={handleSetMatchPhase}
+          onUndoDomain={() => match.undoCommand()}
+          onRedoDomain={() => match.redoCommand()}
+          undoDomainAvailable={match.canUndo}
+          redoDomainAvailable={match.canRedo}
+          timerLocked={match.state.timerLocked}
+        />
       </div>
 
       {/* OVERLAYS & MODALS */}
