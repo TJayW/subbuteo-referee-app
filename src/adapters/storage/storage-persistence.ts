@@ -1,7 +1,8 @@
 import type { SettingsState, DomainMatchState } from '@/domain/match/types';
 import { STORAGE_VERSION, STORAGE_KEY, VERSION_KEY } from './constants';
 import { STORAGE_KEYS } from '@/constants/storage';
-import { clampVolume, MATCH_TIMING_DEFAULTS, TEAM_DEFAULTS, AUDIO_DEFAULTS } from '@/constants/defaults';
+import { MATCH_TIMING_DEFAULTS, TEAM_DEFAULTS, AUDIO_DEFAULTS } from '@/constants/defaults';
+import { clampVolume } from '@/utils/audio-helpers';
 import logger from '@/utils/logger';
 import { MatchStateSchema } from './schemas';
 

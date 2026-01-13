@@ -8,6 +8,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Clock, Target, AlertCircle, X } from 'lucide-react';
 import type { MatchEvent } from '@/domain/match/types';
+import { fuzzyMatch } from '@/utils/search-helpers';
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -26,21 +27,6 @@ interface CommandItem {
   subtitle?: string;
   icon: React.ComponentType<any>;
   action: () => void;
-}
-
-/**
- * Simple fuzzy search: checks if all query characters appear in order
- */
-function fuzzyMatch(query: string, target: string): boolean {
-  const q = query.toLowerCase();
-  const t = target.toLowerCase();
-  let qIndex = 0;
-  
-  for (let i = 0; i < t.length && qIndex < q.length; i++) {
-    if (t[i] === q[qIndex]) qIndex++;
-  }
-  
-  return qIndex === q.length;
 }
 
 export const CommandPalette: React.FC<CommandPaletteProps> = ({

@@ -1,18 +1,23 @@
 /**
- * HTML Export - Stadium Style
- * Pagina HTML responsive con design stile stadio
+ * HTML Generator - Pure Domain Logic
+ * Genera HTML string senza side effects
+ * NO DOM manipulation - solo generazione dati
  */
 
 import type { DomainMatchState, SettingsState } from '@/domain/match/types';
 import { selectAppliedEvents, selectTeamStats } from '@/domain/match/selectors';
 import { getEventMetadata } from '@/utils/event-helpers';
 
-export function exportHTML(
+/**
+ * Genera HTML report come string
+ * PURE FUNCTION - no side effects, no DOM access
+ */
+export function generateHTMLReport(
   state: DomainMatchState,
   homeTeamName: string = 'Casa',
   awayTeamName: string = 'Ospite',
   settings?: SettingsState
-) {
+): string {
   const appliedEvents = selectAppliedEvents(state);
   const stats = selectTeamStats(state);
   const homeDisplay = settings?.homeTeamConfig?.displayName || homeTeamName;
@@ -33,24 +38,26 @@ export function exportHTML(
     .map((p) => `<div class="player-item"><span class="player-num">${p.number}</span><span>${p.name}</span></div>`)
     .join('') || '';
 
-  // Build event log
-  const eventLogHTML = appliedEvents
+  // Build event rows
+  const eventsHTML = appliedEvents
     .map((e) => {
       const meta = getEventMetadata(e.type);
-      const player = ((e as unknown as Record<string, unknown>).player as string) || '';
+      const minutes = Math.floor(e.secondsInPeriod / 60);
+      const teamDisplay = e.team === 'home' ? homeDisplay : e.team === 'away' ? awayDisplay : 'Sistema';
+
       return `
-    <div class="event-row">
-      <span class="event-time">${e.secondsInPeriod}"</span>
-      <span class="event-period">${e.period}</span>
-      <span class="event-team" style="color: ${e.team === 'home' ? homeBg : awayBg}">${e.team === 'home' ? homeDisplay : awayDisplay}</span>
-      <span class="event-type">${meta.label}</span>
-      <span class="event-player">${player}</span>
-    </div>
-  `;
+        <div class="event-row">
+          <span class="event-time">${minutes}'</span>
+          <span class="event-period">${e.period}</span>
+          <span class="event-team">${teamDisplay}</span>
+          <span class="event-type">${meta.label}</span>
+          <span class="event-player">${e.note || '-'}</span>
+        </div>
+      `;
     })
     .join('');
 
-  const html = `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
@@ -64,38 +71,41 @@ export function exportHTML(
     }
 
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: linear-gradient(180deg, #0a1428 0%, #1a2a4a 100%);
-      color: #e2e8f0;
-      padding: 40px 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f1923 100%);
+      color: #f0f0f0;
+      padding: 30px 20px;
+      min-height: 100vh;
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      background: linear-gradient(180deg, #1a1a2e 0%, #0f1923 100%);
+      background: linear-gradient(180deg, #162a4a 0%, #0f1923 100%);
       border-radius: 20px;
-      padding: 40px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      padding: 50px 40px;
+      border: 2px solid rgba(255, 184, 28, 0.2);
     }
 
     .title {
       text-align: center;
-      margin-bottom: 40px;
-      font-size: 14px;
+      font-size: 18px;
       text-transform: uppercase;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
       color: #ffb81c;
-      font-weight: 600;
+      margin-bottom: 40px;
+      font-weight: 300;
     }
 
     .teams-score {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
-      gap: 30px;
+      gap: 60px;
       align-items: center;
-      margin-bottom: 50px;
-      padding: 0 40px;
+      padding: 40px 0;
+      border-bottom: 2px solid rgba(255, 184, 28, 0.2);
+      margin-bottom: 40px;
     }
 
     .team-col {
@@ -409,37 +419,35 @@ export function exportHTML(
       </div>
     </div>
 
+    ${homePlayersHTML || awayPlayersHTML ? `
     <div class="players-section">
-      <div class="players-title">${homeDisplay.toUpperCase()}</div>
-      <div class="players-grid">
-        ${homePlayersHTML}
+      <div class="players-title">Rosa Squadre</div>
+      <div class="stats-grid">
+        <div>
+          <h4 style="color: #ffb81c; margin-bottom: 15px; font-size: 14px;">${homeDisplay}</h4>
+          <div class="players-grid">
+            ${homePlayersHTML}
+          </div>
+        </div>
+        <div>
+          <h4 style="color: #ffb81c; margin-bottom: 15px; font-size: 14px;">${awayDisplay}</h4>
+          <div class="players-grid">
+            ${awayPlayersHTML}
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="players-section">
-      <div class="players-title">${awayDisplay.toUpperCase()}</div>
-      <div class="players-grid">
-        ${awayPlayersHTML}
-      </div>
-    </div>
+    ` : ''}
 
     <div class="events-section">
-      <div class="events-title">EVENTO LOG</div>
-      ${eventLogHTML}
+      <div class="events-title">Cronologia Eventi (${appliedEvents.length})</div>
+      ${eventsHTML}
     </div>
 
     <div class="footer">
-      Generato il ${new Date().toLocaleDateString('it-IT')} • Subbuteo Referee App
+      Generato da Subbuteo Referee App | ${new Date().toLocaleDateString('it-IT')}
     </div>
   </div>
 </body>
 </html>`;
-
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
-  const link = document.createElement('a');
-  const url = URL.createObjectURL(blob);
-  link.setAttribute('href', url);
-  link.setAttribute('download', `match-${homeDisplay}-vs-${awayDisplay}-${new Date().toISOString().split('T')[0]}.html`);
-  link.click();
-  URL.revokeObjectURL(url);
 }

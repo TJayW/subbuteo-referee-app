@@ -22,3 +22,6 @@ export * from './events';
 // Console constants
 export * from './console';
 export * from './periods';
+
+// Match control constants
+export * from './match-control';

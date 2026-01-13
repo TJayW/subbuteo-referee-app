@@ -9,6 +9,7 @@ import { Play, Pause, Goal, AlertCircle, Target, Zap, Clock } from 'lucide-react
 import type { DomainMatchState, TeamKey, EventType } from '@/domain/match/types';
 import type { ConsoleOrientation } from '@/types/console';
 import { FOCUS_RING } from '@/styles/focus-ring';
+import { EVENT_BUTTONS } from '@/constants/console';
 
 interface ConsoleActionBarProps {
   state: DomainMatchState;
@@ -20,21 +21,6 @@ interface ConsoleActionBarProps {
   awayTeamName: string;
   orientation: ConsoleOrientation;
 }
-
-/**
- * P0 Event Buttons Configuration
- * Eventi principali sempre disponibili nella ActionBar
- */
-const EVENT_BUTTONS = [
-  { type: 'goal' as const, icon: Goal, color: 'text-emerald-600', bg: 'bg-emerald-50', hoverBg: 'hover:bg-emerald-100', label: 'Goal', shortcut: 'G' },
-  { type: 'shot_on_target' as const, icon: Target, color: 'text-blue-600', bg: 'bg-blue-50', hoverBg: 'hover:bg-blue-100', label: 'Tiro Porta', shortcut: 'O' },
-  { type: 'shot' as const, icon: AlertCircle, color: 'text-slate-600', bg: 'bg-slate-50', hoverBg: 'hover:bg-slate-100', label: 'Tiro', shortcut: 'S' },
-  { type: 'corner' as const, icon: Zap, color: 'text-orange-600', bg: 'bg-orange-50', hoverBg: 'hover:bg-orange-100', label: 'Angolo', shortcut: 'C' },
-  { type: 'foul' as const, icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50', hoverBg: 'hover:bg-amber-100', label: 'Fallo', shortcut: 'F' },
-  { type: 'yellow_card' as const, icon: AlertCircle, color: 'text-yellow-600', bg: 'bg-yellow-50', hoverBg: 'hover:bg-yellow-100', label: 'Giallo', shortcut: 'Y' },
-  { type: 'red_card' as const, icon: Zap, color: 'text-red-600', bg: 'bg-red-50', hoverBg: 'hover:bg-red-100', label: 'Rosso', shortcut: 'R' },
-  { type: 'timeout' as const, icon: Clock, color: 'text-purple-600', bg: 'bg-purple-50', hoverBg: 'hover:bg-purple-100', label: 'Timeout', shortcut: 'T' },
-] as const;
 
 export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
   state,

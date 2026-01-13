@@ -2,24 +2,23 @@
  * DisciplineCard: Fouls, cards, set pieces with rate indicators
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { DashboardCard } from '../components/DashboardCard';
-import type { DomainMatchState, ComputedTeamStats, SettingsState } from '@/domain/match/types';
-import { selectDisciplineRates } from '@/domain/match/stats-selectors';
+import type { ComputedTeamStats, SettingsState } from '@/domain/match/types';
+import type { DisciplineRates } from '@/domain/match/stats-selectors';
 import { AlertTriangle } from 'lucide-react';
 
 interface DisciplineCardProps {
-  state: DomainMatchState;
   teamStats: ComputedTeamStats;
   settings: SettingsState;
+  rates: DisciplineRates;
 }
 
 export const DisciplineCard: React.FC<DisciplineCardProps> = ({
-  state,
   teamStats,
   settings,
+  rates,
 }) => {
-  const rates = useMemo(() => selectDisciplineRates(state), [state]);
   
   const home = teamStats.home;
   const away = teamStats.away;

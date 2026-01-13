@@ -3,53 +3,38 @@
  * Optional per-period breakdown
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { DashboardCard } from '../components/DashboardCard';
-import type { DomainMatchState, ComputedTeamStats, SettingsState } from '@/domain/match/types';
-import { selectPeriodBreakdown } from '@/domain/match/stats-selectors';
+import type { ComputedTeamStats, SettingsState } from '@/domain/match/types';
+import type { PeriodStats } from '@/domain/match/stats-selectors';
+import { STATS_METRICS } from '@/constants/match-control';
+import { PERIOD_LABELS } from '@/constants/periods';
 import { BarChart3 } from 'lucide-react';
 
 interface StatsMatrixCardProps {
-  state: DomainMatchState;
   teamStats: ComputedTeamStats;
   settings: SettingsState;
+  periodBreakdown: PeriodStats[];
 }
 
 export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
-  state,
   teamStats,
   settings,
+  periodBreakdown,
 }) => {
   const [viewMode, setViewMode] = useState<'total' | 'period'>('total');
-  const periodBreakdown = useMemo(() => selectPeriodBreakdown(state), [state]);
 
   const home = teamStats.home;
   const away = teamStats.away;
   const homeDisplayName = settings.homeTeamConfig.displayName;
   const awayDisplayName = settings.awayTeamConfig.displayName;
 
-  const metrics = [
-    { label: 'Gol', homeValue: home.goals, awayValue: away.goals },
-    { label: 'Tiri', homeValue: home.shots, awayValue: away.shots },
-    { label: 'Tiri in Porta', homeValue: home.shotsOnTarget, awayValue: away.shotsOnTarget },
-    { label: 'Angoli', homeValue: home.corners, awayValue: away.corners },
-    { label: 'Rimesse', homeValue: home.throwIns, awayValue: away.throwIns },
-    { label: 'Falli', homeValue: home.fouls, awayValue: away.fouls },
-    { label: 'Gialli', homeValue: home.yellowCards, awayValue: away.yellowCards },
-    { label: 'Rossi', homeValue: home.redCards, awayValue: away.redCards },
-    { label: 'Timeout', homeValue: home.timeouts, awayValue: away.timeouts },
-  ];
-
-  const periodLabels: Record<string, string> = {
-    pre_match: 'Pre',
-    first_half: '1° T',
-    half_time: 'Int',
-    second_half: '2° T',
-    extra_time_1: 'S1',
-    extra_time_2: 'S2',
-    shootout: 'Rig',
-    finished: 'Fine',
-  };
+  // Build metrics dynamically from STATS_METRICS constant
+  const metrics = STATS_METRICS.map(m => ({
+    label: m.label,
+    homeValue: home[m.key as keyof typeof home] as number,
+    awayValue: away[m.key as keyof typeof away] as number,
+  }));
 
   return (
     <DashboardCard
@@ -125,7 +110,7 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
           {periodBreakdown.map((period) => (
             <div key={period.period} className="border-l-2 border-blue-500 pl-3">
               <div className="text-xs font-semibold text-slate-700 mb-1">
-                {periodLabels[period.period] || period.period}
+                {PERIOD_LABELS[period.period] || period.period}
               </div>
               <div className="grid grid-cols-3 gap-2 text-xs">
                 <div>

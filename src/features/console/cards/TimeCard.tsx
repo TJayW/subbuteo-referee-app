@@ -8,6 +8,7 @@ import type { DomainMatchState, MatchEvent } from '@/domain/match/types';
 
 interface TimeCardProps {
   state: DomainMatchState;
+  displayTime: string;
   isPlaying: boolean;
   onPlayPause: () => void;
   onAddTime: (seconds: number) => void;
@@ -27,13 +28,10 @@ interface TimeCardProps {
 
 export const TimeCard: React.FC<TimeCardProps> = ({
   state,
+  displayTime,
   isPlaying,
   onPlayPause,
 }) => {
-  const minutes = Math.floor(state.elapsedSeconds / 60);
-  const seconds = state.elapsedSeconds % 60;
-  const displayTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-
   return (
     <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-3" data-testid="time-card">
       <div className="flex items-center justify-between">

@@ -41,10 +41,3 @@ export const PLAYING_PERIODS: readonly Period[] = [
   'extra_time_2',
   'shootout',
 ] as const;
-
-/**
- * Check if period is active/playing
- */
-export function isPlayingPeriod(period: Period): boolean {
-  return (PLAYING_PERIODS as readonly string[]).includes(period);
-}

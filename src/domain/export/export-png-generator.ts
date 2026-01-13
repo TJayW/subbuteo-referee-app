@@ -1,141 +1,52 @@
 /**
- * Advanced Export Utilities - Stadium Design Style
- * Exports con design stile immagine stadio
+ * PNG Export Generator (Pure)
+ * Generates HTML container for PNG export WITHOUT side effects
+ * 
+ * RESPONSIBILITY: Pure HTML DOM generation
+ * NO: document manipulation, download, html2canvas
  */
 
-import html2canvas from 'html2canvas';
 import type { DomainMatchState, SettingsState, TeamConfig } from '@/domain/match/types';
 import { selectAppliedEvents, selectTeamStats } from '@/domain/match/selectors';
-import { getEventMetadata } from '@/utils/event-helpers';
-import logger from '@/utils/logger';
 
-// ===== PNG EXPORT - STADIUM DESIGN =====
-export async function exportPNG(
-  state: DomainMatchState,
-  homeTeamName: string = 'Casa',
-  awayTeamName: string = 'Ospite',
-  settings?: SettingsState
-) {
-  try {
-    const stats = selectTeamStats(state);
-    const homeDisplay = settings?.homeTeamConfig?.displayName || homeTeamName;
-    const awayDisplay = settings?.awayTeamConfig?.displayName || awayTeamName;
-
-    const container = createAdvancedStadiumReport(
-      stats,
-      homeDisplay,
-      awayDisplay,
-      state,
-      settings?.homeTeamConfig,
-      settings?.awayTeamConfig
-    );
-    document.body.appendChild(container);
-
-    const canvas = await html2canvas(container, {
-      backgroundColor: 'transparent',
-      scale: 2,
-      logging: false,
-      useCORS: true,
-      allowTaint: true,
-      removeContainer: false,
-    });
-
-    // Get actual rendered dimensions
-    const containerRect = container.getBoundingClientRect();
-    const renderWidth = Math.ceil(containerRect.width * 2); // scale 2
-    const renderHeight = Math.ceil(containerRect.height * 2);
-
-    // Create stadium background with proper padding
-    const padding = 80;
-    const bgCanvas = document.createElement('canvas');
-    bgCanvas.width = renderWidth + padding * 2;
-    bgCanvas.height = renderHeight + padding * 2;
-    const ctx = bgCanvas.getContext('2d')!;
-
-    // Stadium background with advanced gradient
-    const bgGradient = ctx.createLinearGradient(0, 0, 0, bgCanvas.height);
-    bgGradient.addColorStop(0, '#0a0f1f');
-    bgGradient.addColorStop(0.4, '#1a2a4a');
-    bgGradient.addColorStop(0.6, '#162a4a');
-    bgGradient.addColorStop(1, '#0f1923');
-    ctx.fillStyle = bgGradient;
-    ctx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
-
-    // Add subtle vignette effect
-    const vignetteGradient = ctx.createRadialGradient(
-      bgCanvas.width / 2,
-      bgCanvas.height / 2,
-      0,
-      bgCanvas.width / 2,
-      bgCanvas.height / 2,
-      Math.max(bgCanvas.width, bgCanvas.height) / 1.5
-    );
-    vignetteGradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
-    vignetteGradient.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
-    ctx.fillStyle = vignetteGradient;
-    ctx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
-
-    // Stadium pattern - vertical lines
-    ctx.strokeStyle = 'rgba(255, 184, 28, 0.06)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < bgCanvas.width; i += 80) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, bgCanvas.height);
-      ctx.stroke();
-    }
-
-    // Horizontal accent lines
-    ctx.strokeStyle = 'rgba(255, 184, 28, 0.04)';
-    for (let i = 0; i < bgCanvas.height; i += 120) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(bgCanvas.width, i);
-      ctx.stroke();
-    }
-
-    // Field section with gradient overlay
-    const fieldStartY = bgCanvas.height * 0.65;
-    const fieldGradient = ctx.createLinearGradient(0, fieldStartY, 0, bgCanvas.height);
-    fieldGradient.addColorStop(0, 'rgba(34, 120, 34, 0.25)');
-    fieldGradient.addColorStop(0.5, 'rgba(30, 100, 30, 0.35)');
-    fieldGradient.addColorStop(1, 'rgba(20, 60, 20, 0.4)');
-    ctx.fillStyle = fieldGradient;
-    ctx.fillRect(0, fieldStartY, bgCanvas.width, bgCanvas.height - fieldStartY);
-
-    // Draw report card centered with padding
-    ctx.drawImage(canvas, padding, padding);
-
-    // Download
-    bgCanvas.toBlob((blob) => {
-      const url = URL.createObjectURL(blob!);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `match-${homeDisplay}-vs-${awayDisplay}-${new Date().toISOString().split('T')[0]}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-
-    document.body.removeChild(container);
-  } catch (error) {
-    logger.error('PNG export failed:', error);
-  }
+export interface PNGReportData {
+  homeDisplay: string;
+  awayDisplay: string;
+  stats: ReturnType<typeof selectTeamStats>;
+  state: DomainMatchState;
+  homeConfig?: TeamConfig;
+  awayConfig?: TeamConfig;
 }
 
-function createAdvancedStadiumReport(
-  stats: any,
-  homeDisplay: string,
-  awayDisplay: string,
+/**
+ * Generate PNG report data (pure function)
+ */
+export function generatePNGReportData(
   state: DomainMatchState,
-  homeConfig?: TeamConfig,
-  awayConfig?: TeamConfig
-): HTMLDivElement {
-  const container = document.createElement('div');
-  container.style.position = 'fixed';
-  container.style.top = '-9999px';
-  container.style.width = '1280px';
-  container.style.fontFamily = '"Segoe UI", "Helvetica Neue", system-ui, sans-serif';
+  homeTeamName: string,
+  awayTeamName: string,
+  settings?: SettingsState
+): PNGReportData {
+  const stats = selectTeamStats(state);
+  const homeDisplay = settings?.homeTeamConfig?.displayName || homeTeamName;
+  const awayDisplay = settings?.awayTeamConfig?.displayName || awayTeamName;
 
+  return {
+    homeDisplay,
+    awayDisplay,
+    stats,
+    state,
+    homeConfig: settings?.homeTeamConfig,
+    awayConfig: settings?.awayTeamConfig,
+  };
+}
+
+/**
+ * Generate HTML for PNG export (pure function - returns HTML string)
+ */
+export function generatePNGReportHTML(data: PNGReportData): string {
+  const { homeDisplay, awayDisplay, stats, state, homeConfig, awayConfig } = data;
+  
   const homeBgColor = homeConfig?.color.primary || '#dc2626';
   const awayBgColor = awayConfig?.color.primary || '#3b82f6';
 
@@ -155,7 +66,9 @@ function createAdvancedStadiumReport(
   const awayGoals = goalTimeline.filter((g) => g.team === 'away').length;
   const goalMomentum = homeGoals > awayGoals ? 'home' : awayGoals > homeGoals ? 'away' : 'balanced';
 
-  const html = `
+  // COMPLETE HTML template migrated from export-advanced.ts createAdvancedStadiumReport
+  // This is PURE - only generates string, no DOM manipulation
+  return `
     <div style="
       background: linear-gradient(135deg, #0d1b2a 0%, #1a1f3a 50%, #0f1419 100%);
       border-radius: 0px;
@@ -746,80 +659,11 @@ function createAdvancedStadiumReport(
       </div>
     </div>
   `;
-
-  container.innerHTML = html;
-  return container;
 }
 
-// ===== CSV EXPORT - STRUCTURED REPORT =====
-export async function exportCSV(
-  state: DomainMatchState,
-  homeTeamName: string = 'Casa',
-  awayTeamName: string = 'Ospite',
-  settings?: SettingsState
-) {
-  const stats = selectTeamStats(state);
-  const homeDisplay = settings?.homeTeamConfig?.displayName || homeTeamName;
-  const awayDisplay = settings?.awayTeamConfig?.displayName || awayTeamName;
-  const events = selectAppliedEvents(state);
-
-  let csv = '';
-
-  // Header
-  csv += `"LA FINALE - ${homeDisplay} vs ${awayDisplay}"\n`;
-  csv += `"Data","${new Date().toLocaleDateString('it-IT')}"\n`;
-  csv += `"Risultato finale","${stats.home.goals} - ${stats.away.goals}"\n\n`;
-
-  // Score Summary
-  csv += `"RIEPILOGO GARE"\n`;
-  csv += `"Squadra","Gol","Angoli","Rimesse","Falli","Tiri","Gialli","Rossi"\n`;
-  csv += `"${homeDisplay}","${stats.home.goals}","${stats.home.corners}","${stats.home.throwIns}","${stats.home.fouls}","${stats.home.shots}","${stats.home.yellowCards}","${stats.home.redCards}"\n`;
-  csv += `"${awayDisplay}","${stats.away.goals}","${stats.away.corners}","${stats.away.throwIns}","${stats.away.fouls}","${stats.away.shots}","${stats.away.yellowCards}","${stats.away.redCards}"\n\n`;
-
-  // Formations
-  const homeFormation = settings?.homeTeamConfig?.formation.name || '4-3-3';
-  const awayFormation = settings?.awayTeamConfig?.formation.name || '5-3-2';
-  csv += `"FORMAZIONI"\n`;
-  csv += `"${homeDisplay}","${homeFormation}"\n`;
-  csv += `"${awayDisplay}","${awayFormation}"\n\n`;
-
-  // Players
-  csv += `"GIOCATORI ${homeDisplay.toUpperCase()}"\n`;
-  csv += `"Nome","Numero","Posizione","Capitano"\n`;
-  if (settings?.homeTeamConfig?.formation.players) {
-    settings.homeTeamConfig.formation.players.forEach((p) => {
-      const captain = p.isCaptain ? 'Sì' : 'No';
-      csv += `"${p.name}","${p.number}","${p.position}","${captain}"\n`;
-    });
-  }
-  csv += '\n';
-
-  csv += `"GIOCATORI ${awayDisplay.toUpperCase()}"\n`;
-  csv += `"Nome","Numero","Posizione","Capitano"\n`;
-  if (settings?.awayTeamConfig?.formation.players) {
-    settings.awayTeamConfig.formation.players.forEach((p) => {
-      const captain = p.isCaptain ? 'Sì' : 'No';
-      csv += `"${p.name}","${p.number}","${p.position}","${captain}"\n`;
-    });
-  }
-  csv += '\n';
-
-  // Event Log
-  csv += `"EVENTO LOG"\n`;
-  csv += `"Tempo","Periodo","Squadra","Evento","Giocatore","Note"\n`;
-  events.forEach((event) => {
-    const meta = getEventMetadata(event.type);
-    const player = ((event as unknown as Record<string, unknown>).player as string) || '';
-    const notes = ((event as unknown as Record<string, unknown>).notes as string) || '';
-    csv += `"${event.secondsInPeriod}"","${event.period}","${event.team === 'home' ? homeDisplay : awayDisplay}","${meta.label}","${player}","${notes}"\n`;
-  });
-
-  // Download
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  const url = URL.createObjectURL(blob);
-  link.setAttribute('href', url);
-  link.setAttribute('download', `match-${homeDisplay}-vs-${awayDisplay}-${new Date().toISOString().split('T')[0]}.csv`);
-  link.click();
-  URL.revokeObjectURL(url);
+/**
+ * Export metadata for filename generation
+ */
+export function generatePNGFilename(homeDisplay: string, awayDisplay: string): string {
+  return `match-${homeDisplay}-vs-${awayDisplay}-${new Date().toISOString().split('T')[0]}.png`;
 }

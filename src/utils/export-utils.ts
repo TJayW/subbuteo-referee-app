@@ -2,7 +2,7 @@ import html2canvas from 'html2canvas';
 import logger from '@/utils/logger';
 import type { DomainMatchState, SettingsState } from '@/domain/match/types';
 import { selectAppliedEvents, selectTeamStats } from '@/domain/match/selectors';
-import { getEventMetadata, formatEventTime } from '@/utils/event-helpers';
+import { getEventMetadata, formatEventTime } from './event-helpers';
 
 export async function exportStatsPNG(
   state: DomainMatchState,

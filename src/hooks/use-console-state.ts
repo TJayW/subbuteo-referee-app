@@ -10,9 +10,8 @@ import {
   MOBILE_CONSOLE_SIZES,
   CONSOLE_RESIZE_CONFIG,
   CONSOLE_STORAGE_KEYS,
-  getStateFromSize,
-  getSizeFromState,
 } from '@/constants/console';
+import { getStateFromSize, getSizeFromState } from '@/utils/console-helpers';
 
 interface UseConsoleStateOptions {
   /** Orientamento console (vertical=desktop, horizontal=mobile) */

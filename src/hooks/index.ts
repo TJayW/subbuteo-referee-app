@@ -18,3 +18,10 @@ export { ConsoleFocusProvider, useConsoleFocus } from './use-console-focus-manag
 export { useFocusZone } from './use-focus-zone';
 export { useDashboardFilters } from './use-dashboard-filters';
 export { useConsoleState } from './use-console-state';
+
+// Settings & Configuration hooks
+export { useAppSettings, getDefaultSettings } from './use-app-settings';
+export { usePanelResize } from './use-panel-resize';
+export { useActionGating } from './use-action-gating';
+export { useKeyboardShortcuts } from './use-keyboard-shortcuts';
+export { useTeamConfig } from './use-team-config';

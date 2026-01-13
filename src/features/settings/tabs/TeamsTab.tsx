@@ -2,6 +2,7 @@ import React from "react";
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { TEAM_COLOR_PALETTE } from "@/domain/settings/defaults";
 import type { TeamConfig, Player } from "@/domain/match/types";
+import { useTeamConfig } from "@/hooks/use-team-config";
 
 interface TeamsTabProps {
   homeTeamConfig: TeamConfig;
@@ -21,6 +22,10 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
   const [homeFormationExpanded, setHomeFormationExpanded] = React.useState(false);
   const [awayFormationExpanded, setAwayFormationExpanded] = React.useState(false);
 
+  // Use custom hooks for team configuration management
+  const homeTeam = useTeamConfig({ config: homeTeamConfig, onChange: onHomeTeamChange });
+  const awayTeam = useTeamConfig({ config: awayTeamConfig, onChange: onAwayTeamChange });
+
   // Standard formations
   const FORMATIONS = [
     '4-4-2',
@@ -31,148 +36,21 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
     '3-3-4',
   ];
 
-  const handleTeamNameChange = (team: 'home' | 'away', name: string) => {
-    if (team === 'home') {
-      onHomeTeamChange({ ...homeTeamConfig, displayName: name });
-    } else {
-      onAwayTeamChange({ ...awayTeamConfig, displayName: name });
-    }
-  };
-
-  const handleCoachChange = (team: 'home' | 'away', coach: string) => {
-    if (team === 'home') {
-      onHomeTeamChange({ ...homeTeamConfig, coach });
-    } else {
-      onAwayTeamChange({ ...awayTeamConfig, coach });
-    }
-  };
-
-  const handleFormationChange = (team: 'home' | 'away', formationName: string) => {
-    if (team === 'home') {
-      onHomeTeamChange({
-        ...homeTeamConfig,
-        formation: {
-          ...homeTeamConfig.formation,
-          name: formationName,
-        },
-      });
-    } else {
-      onAwayTeamChange({
-        ...awayTeamConfig,
-        formation: {
-          ...awayTeamConfig.formation,
-          name: formationName,
-        },
-      });
-    }
-  };
-
-  const handleColorChange = (team: 'home' | 'away', colorKey: string) => {
-    const color = TEAM_COLOR_PALETTE[colorKey];
-    if (color) {
-      if (team === 'home') {
-        onHomeTeamChange({
-          ...homeTeamConfig,
-          color,
-        });
-      } else {
-        onAwayTeamChange({
-          ...awayTeamConfig,
-          color,
-        });
-      }
-    }
-  };
-
-  const handleAddPlayer = (team: 'home' | 'away') => {
-    const newPlayer: Player = {
-      id: `player-${Date.now()}`,
-      name: `Giocatore`,
-      number: (team === 'home' ? homeTeamConfig.formation.players.length : awayTeamConfig.formation.players.length) + 1,
-      position: 'MID',
-    };
-
-    if (team === 'home') {
-      onHomeTeamChange({
-        ...homeTeamConfig,
-        formation: {
-          ...homeTeamConfig.formation,
-          players: [...homeTeamConfig.formation.players, newPlayer],
-        },
-      });
-    } else {
-      onAwayTeamChange({
-        ...awayTeamConfig,
-        formation: {
-          ...awayTeamConfig.formation,
-          players: [...awayTeamConfig.formation.players, newPlayer],
-        },
-      });
-    }
-  };
-
-  const handleUpdatePlayer = (
-    team: 'home' | 'away',
-    playerId: string,
-    updatedPlayer: Partial<Player>
-  ) => {
-    if (team === 'home') {
-      onHomeTeamChange({
-        ...homeTeamConfig,
-        formation: {
-          ...homeTeamConfig.formation,
-          players: homeTeamConfig.formation.players.map((p) =>
-            p.id === playerId ? { ...p, ...updatedPlayer } : p
-          ),
-        },
-      });
-    } else {
-      onAwayTeamChange({
-        ...awayTeamConfig,
-        formation: {
-          ...awayTeamConfig.formation,
-          players: awayTeamConfig.formation.players.map((p) =>
-            p.id === playerId ? { ...p, ...updatedPlayer } : p
-          ),
-        },
-      });
-    }
-  };
-
-  const handleRemovePlayer = (team: 'home' | 'away', playerId: string) => {
-    if (team === 'home') {
-      onHomeTeamChange({
-        ...homeTeamConfig,
-        formation: {
-          ...homeTeamConfig.formation,
-          players: homeTeamConfig.formation.players.filter((p) => p.id !== playerId),
-        },
-      });
-    } else {
-      onAwayTeamChange({
-        ...awayTeamConfig,
-        formation: {
-          ...awayTeamConfig.formation,
-          players: awayTeamConfig.formation.players.filter((p) => p.id !== playerId),
-        },
-      });
-    }
-  };
-
   const TeamSection = ({
     config,
     expanded,
     formationExpanded,
     setExpanded,
     setFormationExpanded,
-    onNameChange,
-    onCoachChange,
-    onFormationChange,
-    onColorChange,
-    onAddPlayer,
-    onUpdatePlayer,
-    onRemovePlayer,
-  }: any) => (
+    teamHandlers,
+  }: {
+    config: TeamConfig;
+    expanded: boolean;
+    formationExpanded: boolean;
+    setExpanded: (v: boolean) => void;
+    setFormationExpanded: (v: boolean) => void;
+    teamHandlers: ReturnType<typeof useTeamConfig>;
+  }) => (
     <div className="border border-gray-300 rounded-lg overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
@@ -195,7 +73,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
             <input
               type="text"
               value={config.displayName}
-              onChange={(e) => onNameChange(e.target.value)}
+              onChange={(e) => teamHandlers.updateName(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -208,7 +86,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
             <input
               type="text"
               value={config.coach || ''}
-              onChange={(e) => onCoachChange(e.target.value)}
+              onChange={(e) => teamHandlers.updateCoach(e.target.value)}
               placeholder="Nome allenatore/manager"
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -223,7 +101,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
               {Object.entries(TEAM_COLOR_PALETTE).map(([key, color]) => (
                 <button
                   key={key}
-                  onClick={() => onColorChange(key)}
+                  onClick={() => teamHandlers.updateColor(key, TEAM_COLOR_PALETTE)}
                   className={`h-10 rounded-md border-2 transition ${
                     config.color.primary === color.primary
                       ? 'border-gray-800'
@@ -275,7 +153,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
                     {FORMATIONS.map((f) => (
                       <button
                         key={f}
-                        onClick={() => onFormationChange(f)}
+                        onClick={() => teamHandlers.updateFormation(f)}
                         className={`px-3 py-2 text-xs font-medium rounded-md transition ${
                           config.formation.name === f
                             ? 'bg-blue-600 text-white'
@@ -295,7 +173,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
                       Giocatori ({config.formation.players.length})
                     </label>
                     <button
-                      onClick={() => onAddPlayer()}
+                      onClick={teamHandlers.addPlayer}
                       className="flex items-center gap-1 px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition"
                     >
                       <Plus size={14} />
@@ -317,7 +195,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
                             max="99"
                             value={player.number || idx + 1}
                             onChange={(e) =>
-                              onUpdatePlayer(player.id, {
+                              teamHandlers.updatePlayer(player.id, {
                                 number: parseInt(e.target.value) || 0,
                               })
                             }
@@ -329,7 +207,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
                             type="text"
                             value={player.name}
                             onChange={(e) =>
-                              onUpdatePlayer(player.id, { name: e.target.value })
+                              teamHandlers.updatePlayer(player.id, { name: e.target.value })
                             }
                             className="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Nome"
@@ -338,7 +216,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
                           <select
                             value={player.position || 'MID'}
                             onChange={(e) =>
-                              onUpdatePlayer(player.id, { position: e.target.value })
+                              teamHandlers.updatePlayer(player.id, { position: e.target.value })
                             }
                             className="w-16 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                           >
@@ -349,7 +227,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
                           </select>
 
                           <button
-                            onClick={() => onRemovePlayer(player.id)}
+                            onClick={() => teamHandlers.removePlayer(player.id)}
                             className="p-1 text-red-600 hover:bg-red-100 rounded transition"
                           >
                             <Trash2 size={14} />
@@ -368,35 +246,23 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <TeamSection
         config={homeTeamConfig}
         expanded={homeExpanded}
         formationExpanded={homeFormationExpanded}
         setExpanded={setHomeExpanded}
         setFormationExpanded={setHomeFormationExpanded}
-        onNameChange={(name: string) => handleTeamNameChange('home', name)}
-        onCoachChange={(coach: string) => handleCoachChange('home', coach)}
-        onFormationChange={(formationName: string) => handleFormationChange('home', formationName)}
-        onColorChange={(colorKey: string) => handleColorChange('home', colorKey)}
-        onAddPlayer={() => handleAddPlayer('home')}
-        onUpdatePlayer={(playerId: string, player: Partial<Player>) => handleUpdatePlayer('home', playerId, player)}
-        onRemovePlayer={(playerId: string) => handleRemovePlayer('home', playerId)}
+        teamHandlers={homeTeam}
       />
-
+      
       <TeamSection
         config={awayTeamConfig}
         expanded={awayExpanded}
         formationExpanded={awayFormationExpanded}
         setExpanded={setAwayExpanded}
         setFormationExpanded={setAwayFormationExpanded}
-        onNameChange={(name: string) => handleTeamNameChange('away', name)}
-        onCoachChange={(coach: string) => handleCoachChange('away', coach)}
-        onFormationChange={(formationName: string) => handleFormationChange('away', formationName)}
-        onColorChange={(colorKey: string) => handleColorChange('away', colorKey)}
-        onAddPlayer={() => handleAddPlayer('away')}
-        onUpdatePlayer={(playerId: string, player: Partial<Player>) => handleUpdatePlayer('away', playerId, player)}
-        onRemovePlayer={(playerId: string) => handleRemovePlayer('away', playerId)}
+        teamHandlers={awayTeam}
       />
     </div>
   );

@@ -14,6 +14,14 @@ import { DisciplineCard } from './cards/DisciplineCard';
 import { OperationalHealthCard } from './cards/OperationalHealthCard';
 import { ExportPreviewCard } from './cards/ExportPreviewCard';
 import { selectAppliedEvents, selectIsTimeTraveling } from '@/domain/match/selectors';
+import {
+  selectEventBuckets,
+  selectDisciplineRates,
+  selectOperationalHealth,
+  selectExportPreview,
+  selectRecentTimeline,
+  selectPeriodBreakdown,
+} from '@/domain/match/stats-selectors';
 import { DashboardFiltersProvider, useDashboardFilters } from '@/hooks/use-dashboard-filters';
 import { LAYOUT_MAX_WIDTHS } from '@/constants/layout';
 
@@ -43,6 +51,14 @@ const MatchDashboardInner: React.FC<MatchDashboardProps> = ({
 
   const isTimeTraveling = useMemo(() => selectIsTimeTraveling(state), [state]);
 
+  // Call all selectors here (Dashboard cards will receive computed data as props)
+  const eventBuckets = useMemo(() => selectEventBuckets(state, 5), [state]);
+  const disciplineRates = useMemo(() => selectDisciplineRates(state), [state]);
+  const operationalHealth = useMemo(() => selectOperationalHealth(state), [state]);
+  const exportPreview = useMemo(() => selectExportPreview(state, teamStats.home.goals, teamStats.away.goals, settings), [state, teamStats, settings]);
+  const recentTimeline = useMemo(() => selectRecentTimeline(state, 8), [state]);
+  const periodBreakdown = useMemo(() => selectPeriodBreakdown(state), [state]);
+
   return (
     <div className="h-full overflow-y-auto bg-slate-50 p-4">
       <div className="mx-auto space-y-4" style={{ maxWidth: `${LAYOUT_MAX_WIDTHS.DASHBOARD}px` }}>
@@ -55,28 +71,43 @@ const MatchDashboardInner: React.FC<MatchDashboardProps> = ({
         />
 
         {/* Hero: Match Overview */}
-        <MatchOverviewCard state={state} teamStats={teamStats} settings={settings} />
+        <MatchOverviewCard 
+          state={state} 
+          teamStats={teamStats} 
+          settings={settings}
+          recentEvents={recentTimeline}
+        />
 
         {/* Grid: Cards - Responsive (1 col mobile, 2 col tablet, 3 col desktop) §H */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Stats Matrix */}
-          <StatsMatrixCard state={state} teamStats={teamStats} settings={settings} />
+          <StatsMatrixCard 
+            teamStats={teamStats} 
+            settings={settings}
+            periodBreakdown={periodBreakdown}
+          />
 
           {/* Momentum Chart */}
-          <MomentumCard state={state} settings={settings} />
+          <MomentumCard 
+            settings={settings}
+            buckets={eventBuckets}
+          />
 
           {/* Discipline */}
-          <DisciplineCard state={state} teamStats={teamStats} settings={settings} />
+          <DisciplineCard 
+            teamStats={teamStats} 
+            settings={settings}
+            rates={disciplineRates}
+          />
 
           {/* Operational Health */}
-          <OperationalHealthCard state={state} />
+          <OperationalHealthCard 
+            checks={operationalHealth}
+          />
 
           {/* Export Preview */}
           <ExportPreviewCard
-            state={state}
-            homeGoals={teamStats.home.goals}
-            awayGoals={teamStats.away.goals}
-            settings={settings}
+            preview={exportPreview}
           />
         </div>
 

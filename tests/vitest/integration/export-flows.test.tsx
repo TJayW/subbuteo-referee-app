@@ -5,8 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { exportJSON } from '@/utils/export-utils';
-import { exportPNG, exportCSV } from '@/domain/export/export-advanced';
-import { exportHTML } from '@/domain/export/export-html';
+import { exportPNG, exportCSV, exportHTML } from '@/adapters/export';
 import {
   FIXTURE_MATCH_STATE,
   FIXTURE_HOME_TEAM,

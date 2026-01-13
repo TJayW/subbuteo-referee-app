@@ -12,42 +12,13 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
+import { angleToVolume, volumeToAngle, getAngleFromPoint } from '@/utils/volume-helpers';
 
 interface VolumeDial {
   volume: number; // 0-100
   enabled: boolean;
   onChange: (volume: number) => void;
   onToggle: (enabled: boolean) => void;
-}
-
-/**
- * Helper: Convert angle (0-360°) to volume (0-100)
- * 0° = 0%, 180° = 50%, 360° = 100%
- */
-function angleToVolume(angle: number): number {
-  const clamped = Math.max(0, Math.min(360, angle));
-  return Math.round((clamped / 360) * 100);
-}
-
-/**
- * Helper: Convert volume (0-100) to angle (0-360°)
- */
-function volumeToAngle(volume: number): number {
-  return (Math.max(0, Math.min(100, volume)) / 100) * 360;
-}
-
-/**
- * Helper: Calculate angle from center point
- */
-function getAngleFromPoint(
-  centerX: number,
-  centerY: number,
-  pointX: number,
-  pointY: number
-): number {
-  const rad = Math.atan2(pointY - centerY, pointX - centerX);
-  const deg = (rad * 180) / Math.PI + 90; // 0° = top
-  return (deg + 360) % 360;
 }
 
 export const VolumeDial: React.FC<VolumeDial> = ({

@@ -8,7 +8,8 @@
  */
 
 import { AUDIO_STORAGE_VERSION, AUDIO_SETTINGS_KEY, AUDIO_VERSION_KEY } from './constants';
-import { clampVolume, AUDIO_DEFAULTS } from '@/constants/defaults';
+import { AUDIO_DEFAULTS } from '@/constants/defaults';
+import { clampVolume } from '@/utils/audio-helpers';
 import logger from '@/utils/logger';
 
 export interface AudioSettingsV1 {

@@ -3,7 +3,24 @@
  * Configurazioni dimensioni, resize e storage per il sistema console
  */
 
+import { Goal, AlertCircle, Target, Zap, Clock } from 'lucide-react';
 import type { ConsoleSizeConfig } from '@/types/console';
+import type { EventType } from '@/domain/match/types';
+
+/**
+ * P0 Event Buttons Configuration
+ * Eventi principali sempre disponibili nella ActionBar
+ */
+export const EVENT_BUTTONS = [
+  { type: 'goal' as EventType, icon: Goal, color: 'text-emerald-600', bg: 'bg-emerald-50', hoverBg: 'hover:bg-emerald-100', label: 'Goal', shortcut: 'G' },
+  { type: 'shot_on_target' as EventType, icon: Target, color: 'text-blue-600', bg: 'bg-blue-50', hoverBg: 'hover:bg-blue-100', label: 'Tiro Porta', shortcut: 'O' },
+  { type: 'shot' as EventType, icon: AlertCircle, color: 'text-slate-600', bg: 'bg-slate-50', hoverBg: 'hover:bg-slate-100', label: 'Tiro', shortcut: 'S' },
+  { type: 'corner' as EventType, icon: Zap, color: 'text-orange-600', bg: 'bg-orange-50', hoverBg: 'hover:bg-orange-100', label: 'Angolo', shortcut: 'C' },
+  { type: 'foul' as EventType, icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50', hoverBg: 'hover:bg-amber-100', label: 'Fallo', shortcut: 'F' },
+  { type: 'yellow_card' as EventType, icon: AlertCircle, color: 'text-yellow-600', bg: 'bg-yellow-50', hoverBg: 'hover:bg-yellow-100', label: 'Giallo', shortcut: 'Y' },
+  { type: 'red_card' as EventType, icon: Zap, color: 'text-red-600', bg: 'bg-red-50', hoverBg: 'hover:bg-red-100', label: 'Rosso', shortcut: 'R' },
+  { type: 'timeout' as EventType, icon: Clock, color: 'text-purple-600', bg: 'bg-purple-50', hoverBg: 'hover:bg-purple-100', label: 'Timeout', shortcut: 'T' },
+] as const;
 
 /**
  * Desktop/Tablet Console Sizes (Vertical Orientation)
@@ -56,40 +73,3 @@ export const CONSOLE_STORAGE_KEYS = {
   mobileState: 'subbuteo_console_mobile_state',
   mobileSize: 'subbuteo_console_mobile_size',
 } as const;
-
-/**
- * Helper: Determina stato da dimensione
- */
-export function getStateFromSize(
-  size: number,
-  config: ConsoleSizeConfig,
-  threshold: number = CONSOLE_RESIZE_CONFIG.snapThreshold
-): 'minimized' | 'actionbar' | 'full' {
-  // Se vicino a minimized
-  if (Math.abs(size - config.minimized) < threshold) {
-    return 'minimized';
-  }
-  // Se vicino ad actionbar
-  if (Math.abs(size - config.actionbar) < threshold) {
-    return 'actionbar';
-  }
-  // Se tra minimized e actionbar, considera più vicino
-  if (size < (config.minimized + config.actionbar) / 2) {
-    return 'minimized';
-  }
-  // Se tra actionbar e full, considera più vicino
-  if (size < (config.actionbar + config.full) / 2) {
-    return 'actionbar';
-  }
-  return 'full';
-}
-
-/**
- * Helper: Ottieni dimensione da stato
- */
-export function getSizeFromState(
-  state: 'minimized' | 'actionbar' | 'full',
-  config: ConsoleSizeConfig
-): number {
-  return config[state];
-}

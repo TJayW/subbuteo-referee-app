@@ -4,7 +4,8 @@ import type {
   MatchEvent,
   MatchPhase,
 } from '@/domain/match/types';
-import { MATCH_TIMING_DEFAULTS, TEAM_DEFAULTS, minutesToSeconds } from '@/constants/defaults';
+import { MATCH_TIMING_DEFAULTS, TEAM_DEFAULTS } from '@/constants/defaults';
+import { minutesToSeconds } from '@/utils/time-helpers';
 import {
   canTransition,
   defaultNextPhases,

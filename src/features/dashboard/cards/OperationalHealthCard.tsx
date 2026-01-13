@@ -2,18 +2,17 @@
  * OperationalHealthCard: Data integrity and operational checks
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { DashboardCard } from '../components/DashboardCard';
-import type { DomainMatchState } from '@/domain/match/types';
-import { selectOperationalHealth, type HealthCheck } from '@/domain/match/stats-selectors';
+
+import type { HealthCheck } from '@/domain/match/stats-selectors';
 import { Shield, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface OperationalHealthCardProps {
-  state: DomainMatchState;
+  checks: HealthCheck[];
 }
 
-export const OperationalHealthCard: React.FC<OperationalHealthCardProps> = ({ state }) => {
-  const checks = useMemo(() => selectOperationalHealth(state), [state]);
+export const OperationalHealthCard: React.FC<OperationalHealthCardProps> = ({ checks }) => {
 
   const severityConfig: Record<HealthCheck['severity'], { icon: React.ReactNode; color: string; bg: string }> = {
     info: {

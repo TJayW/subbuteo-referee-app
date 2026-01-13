@@ -173,12 +173,3 @@ export const EVENT_METADATA: Record<EventType, EventMetadata> = {
     variant: 'success',
   },
 };
-
-/**
- * Format event time display (MM:SS)
- */
-export function formatEventTime(secondsInPeriod: number): string {
-  const mins = Math.floor(secondsInPeriod / 60);
-  const secs = secondsInPeriod % 60;
-  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-}

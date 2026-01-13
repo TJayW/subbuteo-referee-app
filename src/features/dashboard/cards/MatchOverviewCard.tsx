@@ -2,26 +2,27 @@
  * MatchOverviewCard: Hero card with score, key stats, and event timeline
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { DashboardCard } from '../components/DashboardCard';
 import type { DomainMatchState, ComputedTeamStats, SettingsState, MatchEvent } from '@/domain/match/types';
-import { selectRecentTimeline } from '@/domain/match/stats-selectors';
 import { getEventMetadata, formatEventTime } from '@/utils/event-helpers';
 import { getContrastTextColor } from '@/domain/settings/defaults';
+import { PERIOD_LABELS } from '@/constants/periods';
 import { Trophy, Activity } from 'lucide-react';
 
 interface MatchOverviewCardProps {
   state: DomainMatchState;
   teamStats: ComputedTeamStats;
   settings: SettingsState;
+  recentEvents: MatchEvent[];
 }
 
 export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
   state,
   teamStats,
   settings,
+  recentEvents,
 }) => {
-  const recentEvents = useMemo(() => selectRecentTimeline(state, 8), [state]);
   
   const home = teamStats.home;
   const away = teamStats.away;
@@ -29,18 +30,6 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
   const awayColor = settings.awayTeamConfig.color.primary;
   const homeDisplayName = settings.homeTeamConfig.displayName;
   const awayDisplayName = settings.awayTeamConfig.displayName;
-
-  const periodLabels: Record<string, string> = {
-    pre_match: 'Pre-Partita',
-    first_half: '1° Tempo',
-    half_time: 'Intervallo',
-    second_half: '2° Tempo',
-    extra_time_1: 'Supplementare 1',
-    extra_time_2: 'Supplementare 2',
-    shootout: 'Rigori',
-    finished: 'Finita',
-    suspended: 'Sospesa',
-  };
 
   const statusBadge = () => {
     if (state.matchStatus === 'suspended') {
@@ -76,7 +65,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
     <DashboardCard
       title="Panoramica Match"
       icon={<Trophy size={18} />}
-      subtitle={periodLabels[state.period] || state.period}
+      subtitle={PERIOD_LABELS[state.period] || state.period}
       actions={statusBadge()}
     >
       <div className="space-y-6">

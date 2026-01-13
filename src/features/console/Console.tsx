@@ -10,7 +10,6 @@
  */
 
 import React, { useEffect } from 'react';
-import type { DomainMatchState } from '@/domain/match/types';
 import type { BaseConsoleProps, ConsoleOrientation } from '@/types/console';
 import { useConsoleState } from '@/hooks';
 import { TeamCard } from './cards/TeamCard';
@@ -20,6 +19,26 @@ import { MatchControlCard } from './cards/MatchControlCard';
 import { ConsoleActionBar } from './components/ConsoleActionBar';
 import { ConsoleHandle } from './components/ConsoleHandle';
 import { CONSOLE_RESIZE_CONFIG } from '@/constants/console';
+import { 
+  getAppliedEvents, 
+  getLastEvent, 
+  isMatchPlaying,
+  getRecentEvents,
+  isEventCursorActive,
+  getNextPeriod,
+  getPreviousPeriod
+} from '@/utils/match-helpers';
+import { 
+  formatTime, 
+  enrichEventsForDisplay,
+  getInitial,
+  getConsoleContainerClass,
+  getTeamSelectorClass,
+  getEventButtonsClass,
+  getButtonSizeClass
+} from '@/utils';
+import { PERIOD_SEQUENCE } from '@/constants';
+import { isMatchActive } from '@/utils/match-helpers';
 
 interface ConsoleProps extends BaseConsoleProps {
   /** Orientamento: vertical (desktop) o horizontal (mobile) */
@@ -44,8 +63,6 @@ export const Console: React.FC<ConsoleProps> = (props) => {
     onSetPeriod,
     onSetTotalPeriodSeconds,
     defaultExtraTimeDurationMinutes = 15,
-    onDeleteEvent,
-    onUpdateEvent,
     onSetCursor,
     canNavigateEventCursor = true,
     onToggleCollapse,
@@ -69,9 +86,15 @@ export const Console: React.FC<ConsoleProps> = (props) => {
     timerLocked,
   } = props;
 
-  const isPlaying = state.isRunning && state.period !== 'pre_match';
-  const appliedEvents = state.events.slice(0, state.cursor);
-  const lastEvent = appliedEvents.length > 0 ? appliedEvents[appliedEvents.length - 1] : null;
+  // Computed values using helpers
+  const isPlaying = isMatchPlaying(state);
+  const appliedEvents = getAppliedEvents(state.events, state.cursor);
+  const lastEvent = getLastEvent(appliedEvents);
+  const displayTime = formatTime(state.elapsedSeconds);
+  const currentCursor = state.cursor ?? state.events.length;
+  const isCursorActive = isEventCursorActive(currentCursor, state.events.length);
+  const recentEvents = enrichEventsForDisplay(getRecentEvents(appliedEvents, 5));
+  const canNav = canNavigateEventCursor;
 
   // Console state management
   const console = useConsoleState({
@@ -89,53 +112,37 @@ export const Console: React.FC<ConsoleProps> = (props) => {
 
   // Period navigation handlers
   const handlePreviousPeriod = () => {
-    const periodSequence: DomainMatchState['period'][] = [
-      'pre_match',
-      'first_half',
-      'first_half_recovery',
-      'half_time',
-      'second_half',
-      'second_half_recovery',
-      'extra_time_interval',
-      'extra_time_1',
-      'extra_time_1_recovery',
-      'extra_time_2',
-      'extra_time_2_recovery',
-      'shootout',
-      'penalties',
-      'finished',
-    ];
-    const currentIndex = periodSequence.indexOf(state.period);
-    if (currentIndex > 0) {
-      onSetPeriod?.(periodSequence[currentIndex - 1]);
+    const previousPeriod = getPreviousPeriod(state.period, PERIOD_SEQUENCE);
+    if (previousPeriod && onSetPeriod) {
+      onSetPeriod(previousPeriod);
     }
   };
 
   const handleNextPeriod = () => {
-    const periodSequence: DomainMatchState['period'][] = [
-      'pre_match',
-      'first_half',
-      'first_half_recovery',
-      'half_time',
-      'second_half',
-      'second_half_recovery',
-      'extra_time_interval',
-      'extra_time_1',
-      'extra_time_1_recovery',
-      'extra_time_2',
-      'extra_time_2_recovery',
-      'shootout',
-      'penalties',
-      'finished',
-    ];
-    const currentIndex = periodSequence.indexOf(state.period);
-    if (currentIndex < periodSequence.length - 1) {
-      onSetPeriod?.(periodSequence[currentIndex + 1]);
+    const nextPeriod = getNextPeriod(state.period, PERIOD_SEQUENCE);
+    if (nextPeriod && onSetPeriod) {
+      onSetPeriod(nextPeriod);
     }
   };
 
-  // Layout prop per card
+  // Event log handlers
+  const handleUndoLastEvent = () => {
+    if (appliedEvents.length > 0 && canNav && onSetCursor) {
+      onSetCursor(appliedEvents.length - 1);
+    }
+  };
+
+  // Card layout based on orientation
   const cardLayout = orientation === 'vertical' ? 'panel' : 'horizontal';
+
+  // ActionBar computed props
+  const isActive = isMatchActive(state.period);
+  const homeInitial = getInitial(homeTeamName);
+  const awayInitial = getInitial(awayTeamName);
+  const containerClass = getConsoleContainerClass(orientation);
+  const teamSelectorClass = getTeamSelectorClass(orientation);
+  const eventButtonsClass = getEventButtonsClass(orientation);
+  const buttonSize = getButtonSizeClass(orientation);
 
   // Render content based on console state
   const renderContent = () => {
@@ -148,14 +155,21 @@ export const Console: React.FC<ConsoleProps> = (props) => {
         // Barra veloce eventi
         return (
           <ConsoleActionBar
-            state={state}
+            isPlaying={isPlaying}
+            isMatchActive={isActive}
             selectedTeam={selectedTeam}
-            onSelectTeam={onSelectTeam}
-            onPlayPause={onPlayPause}
-            onAddEvent={onAddEvent}
+            homeInitial={homeInitial}
+            awayInitial={awayInitial}
             homeTeamName={homeTeamName}
             awayTeamName={awayTeamName}
             orientation={orientation}
+            containerClass={containerClass}
+            teamSelectorClass={teamSelectorClass}
+            eventButtonsClass={eventButtonsClass}
+            buttonSize={buttonSize}
+            onSelectTeam={onSelectTeam}
+            onPlayPause={onPlayPause}
+            onAddEvent={onAddEvent}
           />
         );
 
@@ -169,15 +183,15 @@ export const Console: React.FC<ConsoleProps> = (props) => {
                 {/* CARD 1: Event Log */}
                 <div className="flex-none" style={{ minHeight: '300px' }}>
                   <EventLogCard
-                    state={state}
-                    teamStats={teamStats}
-                    selectedTeam={selectedTeam}
+                    appliedEvents={enrichEventsForDisplay(appliedEvents)}
+                    recentEvents={recentEvents}
+                    isEventCursorActive={isCursorActive}
+                    currentCursor={currentCursor}
+                    totalEvents={state.events.length}
+                    canNavigate={canNav}
                     homeTeamName={homeTeamName}
                     awayTeamName={awayTeamName}
-                    onDeleteEvent={onDeleteEvent || (() => {})}
-                    onUpdateEvent={onUpdateEvent || (() => {})}
-                    onSetCursor={onSetCursor || (() => {})}
-                    canNavigateEventCursor={canNavigateEventCursor}
+                    onUndoLastEvent={handleUndoLastEvent}
                     layout={cardLayout}
                   />
                 </div>
@@ -220,6 +234,7 @@ export const Console: React.FC<ConsoleProps> = (props) => {
             <div className="flex-none">
               <TimeCard
                 state={state}
+                displayTime={displayTime}
                 isPlaying={isPlaying}
                 onPlayPause={onPlayPause}
                 onAddTime={onAddTime}
@@ -241,15 +256,15 @@ export const Console: React.FC<ConsoleProps> = (props) => {
             {orientation === 'horizontal' && (
               <div className="flex-none" style={{ minHeight: '200px' }}>
                 <EventLogCard
-                  state={state}
-                  teamStats={teamStats}
-                  selectedTeam={selectedTeam}
+                  appliedEvents={enrichEventsForDisplay(appliedEvents)}
+                  recentEvents={recentEvents}
+                  isEventCursorActive={isCursorActive}
+                  currentCursor={currentCursor}
+                  totalEvents={state.events.length}
+                  canNavigate={canNav}
                   homeTeamName={homeTeamName}
                   awayTeamName={awayTeamName}
-                  onDeleteEvent={onDeleteEvent || (() => {})}
-                  onUpdateEvent={onUpdateEvent || (() => {})}
-                  onSetCursor={onSetCursor || (() => {})}
-                  canNavigateEventCursor={canNavigateEventCursor}
+                  onUndoLastEvent={handleUndoLastEvent}
                   layout={cardLayout}
                 />
               </div>
@@ -260,28 +275,40 @@ export const Console: React.FC<ConsoleProps> = (props) => {
               <MatchControlCard
                 state={state}
                 isPlaying={isPlaying}
-                onPlayPause={onPlayPause}
-                onToggleTimerLock={onToggleTimerLock || (() => {})}
-                onAddTime={onAddTime}
-                onSetExactTime={onSetExactTime || (() => {})}
-                onSetTotalPeriodSeconds={onSetTotalPeriodSeconds || (() => {})}
-                onAddRecovery={onAddRecovery || (() => {})}
-                onSetRecovery={onSetRecovery || (() => {})}
-                onEndPeriod={onEndPeriod || (() => {})}
-                onSkipHalftime={onSkipHalftime || (() => {})}
-                onSetMatchPhase={onSetMatchPhase || (() => {})}
-                onTerminateMatch={onTerminateMatch || (() => {})}
-                onRequireExtraTime={onRequireExtraTime || (() => {})}
-                onAllowOverride={onAllowOverride || (() => {})}
-                onSuspend={(reason) => (onSuspend ? onSuspend(reason) : undefined)}
-                onResume={onResume || (() => {})}
-                onReset={onReset || (() => {})}
-                onUndo={onUndoDomain}
-                onRedo={onRedoDomain}
-                undoDisabled={undoDomainAvailable === false}
-                redoDisabled={redoDomainAvailable === false}
                 homeTeamGoals={teamStats.home.goals}
                 awayTeamGoals={teamStats.away.goals}
+                timerActions={{
+                  onPlayPause,
+                  onToggleTimerLock: onToggleTimerLock || (() => {}),
+                  onAddTime,
+                  onSetExactTime: onSetExactTime || (() => {}),
+                  onSetTotalPeriodSeconds: onSetTotalPeriodSeconds || (() => {}),
+                }}
+                recoveryActions={{
+                  onAddRecovery: onAddRecovery || (() => {}),
+                  onSetRecovery: onSetRecovery || (() => {}),
+                }}
+                phaseActions={{
+                  onEndPeriod: onEndPeriod || (() => {}),
+                  onSkipHalftime: onSkipHalftime || (() => {}),
+                  onSetMatchPhase: onSetMatchPhase || (() => {}),
+                  onTerminateMatch: onTerminateMatch || (() => {}),
+                }}
+                configActions={{
+                  onRequireExtraTime: onRequireExtraTime || (() => {}),
+                  onAllowOverride: onAllowOverride || (() => {}),
+                }}
+                emergencyActions={{
+                  onSuspend: (reason) => (onSuspend ? onSuspend(reason) : undefined),
+                  onResume: onResume || (() => {}),
+                  onReset: onReset || (() => {}),
+                }}
+                historyActions={{
+                  onUndo: onUndoDomain,
+                  onRedo: onRedoDomain,
+                  undoDisabled: undoDomainAvailable === false,
+                  redoDisabled: redoDomainAvailable === false,
+                }}
               />
             </div>
           </div>

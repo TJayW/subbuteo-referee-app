@@ -51,13 +51,6 @@ export const STORAGE_KEYS = {
 export const STORAGE_PREFIX = 'subbuteo_';
 
 /**
- * Generate namespaced storage key
- */
-export function createStorageKey(suffix: string): string {
-  return `${STORAGE_PREFIX}${suffix}`;
-}
-
-/**
  * Storage size limits (approximate, browser-dependent)
  */
 export const STORAGE_LIMITS = {

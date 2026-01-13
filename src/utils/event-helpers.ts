@@ -4,7 +4,8 @@
  */
 
 import type { EventType } from '@/domain/match/types';
-import { EVENT_METADATA, formatEventTime, type EventMetadata } from '@/constants/events';
+import { EVENT_METADATA, type EventMetadata } from '@/constants/events';
+import { formatEventTime } from './time-helpers';
 
 // Re-export from canonical source for backward compatibility
 export { EVENT_METADATA, formatEventTime, type EventMetadata };

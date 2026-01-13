@@ -1,45 +1,35 @@
 /**
  * EventLogCard - Event history display and navigation
- * Minimal implementation with event undo button for tests
+ * Pure UI component - all logic extracted
  */
 import React from 'react';
 import { Undo2 } from 'lucide-react';
-import type { DomainMatchState, TeamKey, ComputedTeamStats, MatchEvent } from '@/domain/match/types';
+import type { DisplayMatchEvent } from '@/utils/event-display-helpers';
 
 interface EventLogCardProps {
-  state: DomainMatchState;
-  teamStats?: ComputedTeamStats;
-  selectedTeam?: TeamKey;
+  appliedEvents: DisplayMatchEvent[];
+  recentEvents: DisplayMatchEvent[];
+  isEventCursorActive: boolean;
+  currentCursor: number;
+  totalEvents: number;
+  canNavigate: boolean;
   homeTeamName: string;
   awayTeamName: string;
-  onDeleteEvent: (eventId: string) => void;
-  onUpdateEvent: (event: MatchEvent) => void;
-  onSetCursor: (cursor: number) => void;
-  canNavigateEventCursor?: boolean;
-  canNavigate?: boolean;  // Alternative prop name for backward compatibility
+  onUndoLastEvent: () => void;
   layout?: 'panel' | 'horizontal' | 'mobile';
 }
 
 export const EventLogCard: React.FC<EventLogCardProps> = ({
-  state,
+  appliedEvents,
+  recentEvents,
+  isEventCursorActive,
+  currentCursor,
+  totalEvents,
+  canNavigate,
   homeTeamName,
   awayTeamName,
-  onSetCursor,
-  canNavigateEventCursor = true,
-  canNavigate = true,
+  onUndoLastEvent,
 }) => {
-  const events = state.events || [];
-  const canNav = canNavigateEventCursor || canNavigate;
-  const currentCursor = state.cursor ?? events.length;
-  const appliedEvents = events.slice(0, currentCursor);
-  const isEventCursorActive = currentCursor < events.length;
-
-  const handleUndoLastEvent = () => {
-    if (appliedEvents.length > 0 && canNav) {
-      onSetCursor(appliedEvents.length - 1);
-    }
-  };
-
   return (
     <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-3" data-testid="event-log-card" role="log" aria-label="Registro eventi">
       <div 
@@ -48,11 +38,11 @@ export const EventLogCard: React.FC<EventLogCardProps> = ({
         className="flex items-center justify-between"
       >
         <h3 className="font-semibold text-slate-900">
-          {isEventCursorActive ? `${currentCursor}/${events.length}` : `Eventi (${appliedEvents.length})`}
+          {isEventCursorActive ? `${currentCursor}/${totalEvents}` : `Eventi (${appliedEvents.length})`}
         </h3>
-        {appliedEvents.length > 0 && canNav && (
+        {appliedEvents.length > 0 && canNavigate && (
           <button
-            onClick={handleUndoLastEvent}
+            onClick={onUndoLastEvent}
             aria-label="Annulla ultimo evento"
             className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
           >
@@ -67,9 +57,9 @@ export const EventLogCard: React.FC<EventLogCardProps> = ({
 
       {appliedEvents.length > 0 && (
         <div className="space-y-2 max-h-48 overflow-y-auto">
-          {appliedEvents.slice(-5).map((event, idx) => {
+          {recentEvents.map((event, idx) => {
             const teamName = event.team === 'home' ? homeTeamName : awayTeamName;
-            const minutes = Math.floor(event.timestamp / 60);
+            const minutes = event.minutes;
             return (
               <div key={event.id || idx} className="flex items-center justify-between text-xs p-2 bg-slate-50 rounded">
                 <span className="font-medium">{teamName}</span>
@@ -83,7 +73,7 @@ export const EventLogCard: React.FC<EventLogCardProps> = ({
 
       {isEventCursorActive && (
         <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
-          Visualizzando evento {currentCursor} di {events.length}
+          Visualizzando evento {currentCursor} di {totalEvents}
         </div>
       )}
     </div>

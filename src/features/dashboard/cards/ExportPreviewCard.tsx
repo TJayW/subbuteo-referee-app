@@ -2,29 +2,19 @@
  * ExportPreviewCard: Show what will be exported (read-only preview)
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { DashboardCard } from '../components/DashboardCard';
-import type { DomainMatchState, SettingsState } from '@/domain/match/types';
-import { selectExportPreview } from '@/domain/match/stats-selectors';
+
+import type { ExportPreview } from '@/domain/match/stats-selectors';
 import { FileText, Check, X } from 'lucide-react';
 
 interface ExportPreviewCardProps {
-  state: DomainMatchState;
-  homeGoals: number;
-  awayGoals: number;
-  settings: SettingsState;
+  preview: ExportPreview;
 }
 
 export const ExportPreviewCard: React.FC<ExportPreviewCardProps> = ({
-  state,
-  homeGoals,
-  awayGoals,
-  settings,
+  preview,
 }) => {
-  const preview = useMemo(
-    () => selectExportPreview(state, homeGoals, awayGoals, settings),
-    [state, homeGoals, awayGoals, settings]
-  );
 
   const CheckItem: React.FC<{ label: string; checked: boolean }> = ({ label, checked }) => (
     <div className="flex items-center justify-between text-xs py-1">

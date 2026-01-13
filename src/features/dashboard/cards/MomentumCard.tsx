@@ -3,19 +3,18 @@
  * Custom SVG chart (no external deps)
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { DashboardCard } from '../components/DashboardCard';
-import type { DomainMatchState, SettingsState } from '@/domain/match/types';
-import { selectEventBuckets } from '@/domain/match/stats-selectors';
+import type { SettingsState } from '@/domain/match/types';
+import type { TimeBucket } from '@/domain/match/stats-selectors';
 import { TrendingUp } from 'lucide-react';
 
 interface MomentumCardProps {
-  state: DomainMatchState;
   settings: SettingsState;
+  buckets: TimeBucket[];
 }
 
-export const MomentumCard: React.FC<MomentumCardProps> = ({ state, settings }) => {
-  const buckets = useMemo(() => selectEventBuckets(state, 5), [state]);
+export const MomentumCard: React.FC<MomentumCardProps> = ({ settings, buckets }) => {
   
   const maxCount = Math.max(...buckets.map((b) => b.homeCount + b.awayCount), 1);
   const chartHeight = 120;

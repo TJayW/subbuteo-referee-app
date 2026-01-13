@@ -62,26 +62,4 @@ export const AUDIO_DEFAULTS = {
   MAX_VOLUME: 1.0,
 } as const;
 
-/**
- * Clamp audio volume to valid range [0, 1]
- * Handles legacy incorrect values (e.g., 70 instead of 0.7)
- */
-export function clampVolume(value: unknown): number {
-  if (typeof value !== 'number') return AUDIO_DEFAULTS.MASTER_VOLUME;
-  const clamped = Math.max(AUDIO_DEFAULTS.MIN_VOLUME, Math.min(AUDIO_DEFAULTS.MAX_VOLUME, value));
-  return isNaN(clamped) ? AUDIO_DEFAULTS.MASTER_VOLUME : clamped;
-}
 
-/**
- * Convert minutes to seconds
- */
-export function minutesToSeconds(minutes: number): number {
-  return Math.round(minutes * 60);
-}
-
-/**
- * Convert seconds to minutes
- */
-export function secondsToMinutes(seconds: number): number {
-  return Math.round(seconds / 60);
-}
