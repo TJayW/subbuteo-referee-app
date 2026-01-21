@@ -3,8 +3,8 @@
  * Full implementation with radiogroup and event buttons
  */
 import React from 'react';
-import { Target, AlertCircle, Clock, Zap, CornerDownRight, UserMinus } from 'lucide-react';
 import type { DomainMatchState, TeamKey, EventType, ComputedTeamStats, MatchEvent } from '@/domain/match/types';
+import { EVENT_BUTTONS } from '@/constants/console';
 
 interface TeamCardProps {
   state?: DomainMatchState;
@@ -31,17 +31,6 @@ export const TeamCard: React.FC<TeamCardProps> = ({
   
   // Allow events even in pre_match for testing purposes
   const isDisabled = state?.period === 'finished';
-
-  const EVENT_BUTTONS = [
-    { type: 'goal' as EventType, icon: Target, label: 'Goal', color: 'emerald' },
-    { type: 'yellow_card' as EventType, icon: AlertCircle, label: 'Giallo', color: 'yellow' },
-    { type: 'red_card' as EventType, icon: AlertCircle, label: 'Rosso', color: 'red' },
-    { type: 'foul' as EventType, icon: Zap, label: 'Fallo', color: 'amber' },
-    { type: 'corner' as EventType, icon: CornerDownRight, label: 'Corner', color: 'blue' },
-    { type: 'shot' as EventType, icon: Target, label: 'Tiro', color: 'slate' },
-    { type: 'substitution' as EventType, icon: UserMinus, label: 'Sostituzione', color: 'purple' },
-    { type: 'timeout' as EventType, icon: Clock, label: 'Timeout', color: 'orange' },
-  ];
 
   return (
     <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-4" data-testid="team-card-b1-b5-fixed">
@@ -85,7 +74,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
               onClick={() => onAddEvent(button.type, selectedTeam)}
               disabled={isDisabled}
               aria-label={`Aggiungi ${button.label}`}
-              className={`h-12 rounded-lg flex items-center justify-center gap-2 font-medium text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-${button.color}-50 text-${button.color}-600 hover:bg-${button.color}-100`}
+              className={`h-12 rounded-lg flex items-center justify-center gap-2 font-medium text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed ${button.bg} ${button.color} ${button.hoverBg}`}
             >
               <Icon className="w-4 h-4" />
               {button.label}

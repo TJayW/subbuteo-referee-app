@@ -9,7 +9,7 @@
  * 3. Full (280/360px): Console completa con tutte le card
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import type { BaseConsoleProps, ConsoleOrientation } from '@/types/console';
 import { useConsoleState } from '@/hooks';
 import { TeamCard } from './cards/TeamCard';
@@ -46,8 +46,6 @@ import { isMatchActive } from '@/utils/match-helpers';
 interface ConsoleProps extends BaseConsoleProps {
   /** Orientamento: vertical (desktop) o horizontal (mobile) */
   orientation: ConsoleOrientation;
-  /** Callback legacy per toggle (opzionale) */
-  onToggleCollapse?: () => void;
 }
 
 export const Console: React.FC<ConsoleProps> = (props) => {
@@ -68,7 +66,6 @@ export const Console: React.FC<ConsoleProps> = (props) => {
     defaultExtraTimeDurationMinutes = 15,
     onSetCursor,
     canNavigateEventCursor = true,
-    onToggleCollapse,
     onSuspend,
     onResume,
     onReset,
@@ -108,13 +105,6 @@ export const Console: React.FC<ConsoleProps> = (props) => {
     initialState: 'full',
     persist: true,
   });
-
-  // Sync legacy onToggleCollapse callback
-  useEffect(() => {
-    if (onToggleCollapse) {
-      onToggleCollapse();
-    }
-  }, [console.state]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Period navigation handlers
   const handlePreviousPeriod = () => {

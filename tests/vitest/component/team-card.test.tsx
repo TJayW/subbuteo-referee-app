@@ -59,7 +59,7 @@ describe('Event Buttons', () => {
     // Verify all 8 P0 event types present
     expect(screen.getAllByLabelText(/aggiungi goal/i).length).toBeGreaterThan(0);
     expect(screen.getAllByLabelText(/aggiungi tiro porta/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByLabelText(/aggiungi tiro per/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByLabelText(/aggiungi tiro$/i).length).toBeGreaterThan(0);
     expect(screen.getAllByLabelText(/aggiungi angolo/i).length).toBeGreaterThan(0);
     expect(screen.getAllByLabelText(/aggiungi fallo/i).length).toBeGreaterThan(0);
     expect(screen.getAllByLabelText(/aggiungi giallo/i).length).toBeGreaterThan(0);

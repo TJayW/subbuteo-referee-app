@@ -28,7 +28,7 @@ describe('Mobile Minimized Quick Controls (Desktop Parity)', () => {
     // Note: getAllByLabelText returns multiple (minimized + expanded), use first visible one
     const goalButtons = screen.getAllByLabelText(/aggiungi goal/i);
     const shotOnButtons = screen.getAllByLabelText(/aggiungi tiro porta/i);
-    const shotButtons = screen.getAllByLabelText(/aggiungi tiro per/i);
+    const shotButtons = screen.getAllByLabelText(/aggiungi tiro$/i);
     const cornerButtons = screen.getAllByLabelText(/aggiungi angolo/i);
     const foulButtons = screen.getAllByLabelText(/aggiungi fallo/i);
     const yellowButtons = screen.getAllByLabelText(/aggiungi giallo/i);
@@ -50,10 +50,9 @@ describe('Mobile Minimized Quick Controls (Desktop Parity)', () => {
     render(<App />);
     
     // Team selector buttons
-    const teamButtons = screen.getAllByRole('button').filter(btn => 
-      btn.getAttribute('aria-pressed') === 'true' || btn.getAttribute('aria-pressed') === 'false'
-    );
-    
+    const teamGroup = screen.getByRole('radiogroup', { name: /seleziona squadra/i });
+    const teamButtons = screen.getAllByRole('radio', { name: /casa|ospite/i });
+    expect(teamGroup).toBeTruthy();
     expect(teamButtons.length).toBeGreaterThanOrEqual(2);
   });
 

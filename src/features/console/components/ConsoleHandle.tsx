@@ -145,7 +145,7 @@ export const ConsoleHandle: React.FC<ConsoleHandleProps> = ({
   
   // Aria label
   const ariaLabel = orientation === 'vertical'
-    ? `Ridimensiona console. Usa Arrow Left/Right per ridimensionare, Enter per espandere/comprimere. Larghezza corrente: ${size}px.`
+    ? `Ridimensiona barra laterale. Usa Arrow Left/Right per ridimensionare, Enter per espandere/comprimere. Larghezza corrente: ${size}px.`
     : `Ridimensiona console. Usa Arrow Up/Down per ridimensionare, Enter per espandere/comprimere. Altezza corrente: ${size}px.`;
 
   return (

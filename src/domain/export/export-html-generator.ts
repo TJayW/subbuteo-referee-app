@@ -440,7 +440,7 @@ export function generateHTMLReport(
     ` : ''}
 
     <div class="events-section">
-      <div class="events-title">Cronologia Eventi (${appliedEvents.length})</div>
+      <div class="events-title">EVENTO LOG - Cronologia Eventi (${appliedEvents.length})</div>
       ${eventsHTML}
     </div>
 

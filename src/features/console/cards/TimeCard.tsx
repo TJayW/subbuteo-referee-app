@@ -43,7 +43,6 @@ export const TimeCard: React.FC<TimeCardProps> = ({
         onClick={onPlayPause}
         aria-label={isPlaying ? "Pausa cronometro" : "Avvia il cronometro"}
         aria-pressed={isPlaying}
-        role="switch"
         disabled={state.period === 'pre_match'}
         className={`w-full h-14 rounded-lg flex items-center justify-center gap-2 font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 ${
           isPlaying

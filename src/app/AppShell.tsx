@@ -303,7 +303,6 @@ export default function AppShell() {
             onUpdateEvent={(event: any) => match.dispatch({ type: 'UPDATE_EVENT', payload: event })}
             onSetCursor={(cursor: number) => match.dispatch({ type: 'SET_CURSOR', payload: cursor })}
             canNavigateEventCursor={ACTION_GATES.NAVIGATE_EVENT_CURSOR(getGatingContext())}
-            onToggleCollapse={togglePanelCollapse}
             onToggleTimerLock={handleToggleTimerLock}
             onSetExactTime={handleSetExactTime}
             onAddRecovery={handleAddRecovery}
