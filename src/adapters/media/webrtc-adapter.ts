@@ -477,6 +477,11 @@ export async function getCameraDevices(): Promise<MediaDeviceInfo[]> {
 /**
  * Generate shareable stream URL
  */
-export function generateStreamURL(streamKey: string, baseURL: string = window.location.origin): string {
-  return `${baseURL}/#/watch/${streamKey}`;
+export function generateStreamURL(
+  streamKey: string,
+  baseURL: string = window.location.origin
+): string {
+  const basePath = import.meta.env.BASE_URL || '/';
+  const normalizedBase = basePath.startsWith('/') ? basePath : `/${basePath}`;
+  return `${baseURL}${normalizedBase}#/watch/${streamKey}`;
 }
