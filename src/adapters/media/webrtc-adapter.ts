@@ -50,66 +50,81 @@ export class StreamBroadcaster {
    * Start broadcasting with camera
    * @returns Unique stream key for viewers to connect
    */
-  async startBroadcast(config: StreamConfig = { video: true, audio: true }): Promise<string> {
+  async startBroadcast(config: StreamConfig = { video: true, audio: false }): Promise<string> {
     try {
-      // Get camera stream first (so user sees permission prompt immediately)
-      console.log('📹 Richiesta accesso camera...');
-      this.localStream = await navigator.mediaDevices.getUserMedia(config);
-      console.log('✅ Camera ottenuta');
-
-      // Generate unique peer ID (stream key)
+      // 1. Crea peer PRIMA di getUserMedia
       const streamKey = `subbuteo-${Date.now()}-${Math.random().toString(36).substring(7)}`;
-
-      // Create peer with PeerJS cloud server (with timeout and fallback)
       this.peer = new Peer(streamKey, {
         debug: 2,
-        config: {
-          iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-          ]
-        }
+        // 3. Nessun STUN server (solo locale)
+        config: { iceServers: [] }
       });
 
-      // Wait for peer to connect to signaling server (with 10s timeout)
+      // Wait for peer to connect to signaling server (con timeout)
       await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => {
           reject(new Error('Timeout connessione al server PeerJS. Riprova tra qualche secondo.'));
         }, 10000);
-
         this.peer!.on('open', () => {
           clearTimeout(timeout);
           resolve();
         });
-        
         this.peer!.on('error', (err) => {
           clearTimeout(timeout);
-          // Provide user-friendly error messages
           let message = 'Errore connessione streaming';
-          if (err.type === 'network') {
-            message = 'Errore di rete. Controlla la connessione internet.';
-          } else if (err.type === 'peer-unavailable') {
-            message = 'Stream non disponibile. Verifica il link.';
-          } else if (err.type === 'server-error') {
-            message = 'Server temporaneamente non disponibile. Riprova tra poco.';
-          }
+          if (err.type === 'network') message = 'Errore di rete. Controlla la connessione internet.';
+          else if (err.type === 'peer-unavailable') message = 'Stream non disponibile. Verifica il link.';
+          else if (err.type === 'server-error') message = 'Server temporaneamente non disponibile. Riprova tra poco.';
           reject(new Error(message));
         });
       });
 
+      // 2. Ottieni la camera SOLO video
+      console.log('📹 Richiesta accesso camera (solo video)...');
+      this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      console.log('✅ Camera ottenuta');
+
       // Handle incoming viewer connections
       this.peer.on('call', (call) => {
         console.log('📞 Chiamata in arrivo da viewer:', call.peer);
-        
         if (!this.localStream) {
           console.error('❌ Local stream non disponibile!');
           return;
         }
-        
-        console.log('📤 Rispondo con stream. Tracks:', this.localStream.getTracks().length);
-        
-        // Answer with local stream
-        call.answer(this.localStream);
+
+        setTimeout(() => {
+          console.log('📤 Rispondo con stream (DELAYED). Tracks:', this.localStream.getTracks().length);
+          call.answer(this.localStream);
+
+          // LOG AVANZATO: eventi MediaConnection (ICE, stato, candidate, errori, chiusure)
+          if (call.peerConnection) {
+            const pc = call.peerConnection;
+            pc.addEventListener('iceconnectionstatechange', () => {
+              console.log('[BROADCASTER] ICE state:', pc.iceConnectionState);
+            });
+            pc.addEventListener('icegatheringstatechange', () => {
+              console.log('[BROADCASTER] ICE gathering state:', pc.iceGatheringState);
+            });
+            pc.addEventListener('signalingstatechange', () => {
+              console.log('[BROADCASTER] signaling state:', pc.signalingState);
+            });
+            pc.addEventListener('connectionstatechange', () => {
+              console.log('[BROADCASTER] connection state:', pc.connectionState);
+            });
+            pc.addEventListener('track', (event) => {
+              console.log('[BROADCASTER] track event:', event.track.kind, event.track.id, event.track.readyState);
+            });
+            pc.addEventListener('icecandidate', (event) => {
+              if (event.candidate) {
+                console.log('[BROADCASTER] ICE candidate:', event.candidate.candidate);
+              } else {
+                console.log('[BROADCASTER] ICE candidate: null (end of candidates)');
+              }
+            });
+          } else {
+            console.warn('[BROADCASTER] peerConnection non disponibile su call (dopo answer)');
+          }
+        }, 300); // workaround PeerJS bug
         this.connections.push(call);
         this.onViewerJoined(call.peer);
 
@@ -325,6 +340,24 @@ export class StreamViewer {
         });
         this.remoteStream = stream;
         this.onStreamReceived(stream);
+
+        // DEBUG: crea video HTML forzato
+        try {
+          const video = document.createElement('video');
+          video.srcObject = stream;
+          video.autoplay = true;
+          video.controls = true;
+          video.style.position = 'fixed';
+          video.style.bottom = '10px';
+          video.style.right = '10px';
+          video.style.zIndex = '9999';
+          video.style.width = '320px';
+          video.style.background = '#000';
+          document.body.appendChild(video);
+          console.log('✅ Video HTML di debug aggiunto al DOM');
+        } catch (e) {
+          console.error('❌ Errore creazione video debug:', e);
+        }
       });
 
       this.call.on('error', (err) => {
@@ -355,6 +388,16 @@ export class StreamViewer {
         console.log('📴 Data channel chiuso');
         this.disconnect();
       });
+
+      // LOG AVANZATO: tutti gli eventi PeerJS lato viewer
+      this.peer.on('disconnected', () => console.warn('PeerJS: disconnected'));
+      this.peer.on('close', () => console.warn('PeerJS: close'));
+      this.peer.on('error', (err) => console.error('PeerJS: error', err));
+      this.peer.on('connection', (conn) => console.log('PeerJS: connection', conn));
+      this.peer.on('call', (call) => console.log('PeerJS: call', call));
+      this.peer.on('open', (id) => console.log('PeerJS: open', id));
+      this.peer.on('signal', (data) => console.log('PeerJS: signal', data));
+      this.peer.on('stream', (stream) => console.log('PeerJS: stream', stream));
 
       console.log('✅ Connessione completata');
     } catch (error) {
