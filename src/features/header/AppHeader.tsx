@@ -1,8 +1,10 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import type { DomainMatchState, ComputedTeamStats } from '@/domain/match/types';
 import { HeaderMatchInfo } from './components/HeaderMatchInfo';
 import { HeaderStatusIndicator } from './components/HeaderStatusIndicator';
 import { HeaderToolbar } from './components/HeaderToolbar';
+import { StreamingIndicator } from '@/features/streaming/StreamingIndicator';
+import { StreamingDashboard } from '@/features/streaming/StreamingDashboard';
 import { LAYOUT_HEIGHTS } from '@/constants/layout';
 
 interface AppHeaderProps {
@@ -51,6 +53,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   onTogglePanel,
 }) => {
   const headerRef = useRef<HTMLElement>(null);
+  const [showStreamingDashboard, setShowStreamingDashboard] = useState(false);
 
   useEffect(() => {
     if (headerRef.current) {
@@ -65,6 +68,18 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
     }
   }, []);
 
+  // Show streaming dashboard overlay if opened
+  if (showStreamingDashboard) {
+    return (
+      <StreamingDashboard
+        matchState={state}
+        homeTeamName={homeTeamName}
+        awayTeamName={awayTeamName}
+        onClose={() => setShowStreamingDashboard(false)}
+      />
+    );
+  }
+
   return (
     <header ref={headerRef} className="bg-white sticky top-0 z-40 border-b border-slate-200">
       <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ minHeight: `${LAYOUT_HEIGHTS.TOP_BAR}px` }}>
@@ -78,6 +93,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
           <div className="hidden sm:block flex-shrink-0">
             <HeaderStatusIndicator period={state.period} />
           </div>
+          
+          {/* Streaming Indicator - shows when streaming is active */}
+          <StreamingIndicator onExpand={() => setShowStreamingDashboard(true)} />
         </div>
         <HeaderToolbar
           canUndo={canUndo}

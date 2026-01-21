@@ -24,6 +24,7 @@ import { EventLogCard } from '../cards/EventLogCard';
 import { MatchControlCard } from '../cards/MatchControlCard';
 import { LAYOUT_WIDTHS, ANIMATION_TIMINGS } from '@/constants/layout';
 import { getLayoutMode, getLayoutConfig, type LayoutMode } from '@/utils/responsive-layout';
+import { StreamingControl } from '@/features/streaming/StreamingControl';
 
 interface SidebarProps {
   state: DomainMatchState;
@@ -34,8 +35,6 @@ interface SidebarProps {
   onAddEvent: (type: EventType, team: TeamKey) => void;
   onAddTime: (seconds: number) => void;
   onRemoveTime: (seconds: number) => void;
-  homeTeamName: string;
-  awayTeamName: string;
   onSetPeriod?: (period: string) => void;
   onSetTotalPeriodSeconds?: (seconds: number) => void;
   defaultExtraTimeDurationMinutes?: number;
@@ -67,6 +66,8 @@ interface SidebarProps {
   undoDomainAvailable?: boolean;
   redoDomainAvailable?: boolean;
   timerLocked?: boolean;
+  homeTeamName: string;
+  awayTeamName: string;
 }
 
 /**
@@ -208,10 +209,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             awayTeamName={awayTeamName}
           />
         ) : (
-          /* EXPANDED MODE: 4-card layout with scroll */
+          /* EXPANDED MODE: 5-card layout with scroll */
           <>
-            {/* Card container: scrollable area with all 4 cards always visible */}
-            <div className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto">
+            {/* Card container: scrollable area with all 5 cards always visible */}
+            <div className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto relative">
+              {/* Scroll Indicator: mostra quando Card 5 non è visibile */}
+              <div className="sticky top-0 z-10 flex justify-center py-1 bg-gradient-to-b from-gray-900 via-gray-900/90 to-transparent pointer-events-none">
+                <div className="px-3 py-1 bg-purple-600/20 border border-purple-500/30 rounded-full text-purple-300 text-xs font-medium animate-pulse">
+                  ↓ Scroll per Streaming
+                </div>
+              </div>
               {/* CARD 1: Event Log - Flexible height */}
               <div className="flex-none" style={{ minHeight: '300px' }}>
                 <EventLogCard
@@ -294,6 +301,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 />
               </div>
             </div>
+
+            {/* CARD 5: Streaming Control - STICKY BOTTOM (sempre visibile) */}
+            <div className="flex-none border-t border-gray-700/50 bg-gray-900/95 backdrop-blur-sm">
+              <div className="p-3">
+                <StreamingControl
+                  matchState={state}
+                  homeTeamName={homeTeamName}
+                  awayTeamName={awayTeamName}
+                />
+              </div>
+            </div>
           </>
         )}
         
@@ -303,8 +321,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
             width={sidebarWidth}
             onWidthChange={onWidthChange}
             onDragEnd={onResizeDragEnd}
-            minWidth={layoutConfig.minSidebarWidth}
-            maxWidth={layoutConfig.maxSidebarWidth}
+            minWidth={layoutConfig.minPanelWidth}
+            maxWidth={layoutConfig.maxPanelWidth}
           />
         )}
       </aside>

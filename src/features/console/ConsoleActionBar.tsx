@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Play, Pause, Goal, AlertCircle, Target, Zap, Clock } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import type { DomainMatchState, TeamKey, EventType } from '@/domain/match/types';
 import type { ConsoleOrientation } from '@/types/console';
 import { FOCUS_RING } from '@/styles/focus-ring';

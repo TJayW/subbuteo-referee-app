@@ -18,6 +18,7 @@ export * from './dashboard-helpers';
 export * from './console-helpers';
 export * from './volume-helpers';
 export * from './search-helpers';
+export * from './hash-router';
 export * from './storage-helpers';
 export * from './time-helpers';
 export * from './audio-helpers';

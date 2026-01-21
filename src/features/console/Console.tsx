@@ -9,7 +9,7 @@
  * 3. Full (280/360px): Console completa con tutte le card
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { BaseConsoleProps, ConsoleOrientation } from '@/types/console';
 import { useConsoleState } from '@/hooks';
 import { TeamCard } from './cards/TeamCard';
@@ -18,6 +18,9 @@ import { EventLogCard } from './cards/EventLogCard';
 import { MatchControlCard } from './cards/MatchControlCard';
 import { ConsoleActionBar } from './components/ConsoleActionBar';
 import { ConsoleHandle } from './components/ConsoleHandle';
+import { MiniStreamPreview } from '@/features/streaming/MiniStreamPreview';
+import { StreamingDashboard } from '@/features/streaming/StreamingDashboard';
+import { StreamingControl } from '@/features/streaming/StreamingControl';
 import { CONSOLE_RESIZE_CONFIG } from '@/constants/console';
 import { 
   getAppliedEvents, 
@@ -85,6 +88,9 @@ export const Console: React.FC<ConsoleProps> = (props) => {
     redoDomainAvailable,
     timerLocked,
   } = props;
+
+  const [showStreamingDashboard, setShowStreamingDashboard] = useState(false);
+  const [showMiniPreview, setShowMiniPreview] = useState(true);
 
   // Computed values using helpers
   const isPlaying = isMatchPlaying(state);
@@ -176,9 +182,10 @@ export const Console: React.FC<ConsoleProps> = (props) => {
       case 'full':
         // Console completa con tutte le card
         return (
-          <div className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto">
-            {/* Desktop: EventLog first, Mobile: Team first */}
-            {orientation === 'vertical' ? (
+          <>
+            <div className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto">
+              {/* Desktop: EventLog first, Mobile: Team first */}
+              {orientation === 'vertical' ? (
               <>
                 {/* CARD 1: Event Log */}
                 <div className="flex-none" style={{ minHeight: '300px' }}>
@@ -312,6 +319,21 @@ export const Console: React.FC<ConsoleProps> = (props) => {
               />
             </div>
           </div>
+
+          {/* Streaming Control - STICKY BOTTOM (sempre visibile solo desktop) */}
+          {orientation === 'vertical' && (
+            <div className="flex-none border-t border-slate-200 bg-white/95 backdrop-blur-sm">
+              <div className="p-3">
+                <StreamingControl
+                  matchState={state}
+                  homeTeamName={homeTeamName}
+                  awayTeamName={awayTeamName}
+                  onExpandDashboard={() => setShowStreamingDashboard(true)}
+                />
+              </div>
+            </div>
+          )}
+        </>
         );
     }
   };
@@ -327,12 +349,33 @@ export const Console: React.FC<ConsoleProps> = (props) => {
         transition: `height ${CONSOLE_RESIZE_CONFIG.transitionDuration}ms ${CONSOLE_RESIZE_CONFIG.transitionEasing}`,
       };
 
+  // Show streaming dashboard overlay if opened
+  if (showStreamingDashboard) {
+    return (
+      <StreamingDashboard
+        matchState={state}
+        homeTeamName={homeTeamName}
+        awayTeamName={awayTeamName}
+        onClose={() => setShowStreamingDashboard(false)}
+      />
+    );
+  }
+
   // Render con layout specifico per orientamento
   if (orientation === 'vertical') {
     // Desktop: aside verticale a sinistra
     return (
-      <aside
-        className="hidden md:flex md:flex-col flex-none bg-gradient-to-b from-slate-50 to-white border-r border-slate-200 overflow-hidden relative"
+      <>
+        {/* Mini Stream Preview - floating overlay */}
+        {showMiniPreview && (
+          <MiniStreamPreview
+            onExpand={() => setShowStreamingDashboard(true)}
+            onClose={() => setShowMiniPreview(false)}
+          />
+        )}
+        
+        <aside
+          className="hidden md:flex md:flex-col flex-none bg-gradient-to-b from-slate-50 to-white border-r border-slate-200 overflow-hidden relative"
         style={transitionStyle}
         data-console-state={console.state}
       >
@@ -359,6 +402,7 @@ export const Console: React.FC<ConsoleProps> = (props) => {
           showStateIndicator
         />
       </aside>
+      </>
     );
   } else {
     // Mobile: div fixed bottom orizzontale

@@ -25,3 +25,6 @@ export { usePanelResize } from './use-panel-resize';
 export { useActionGating } from './use-action-gating';
 export { useKeyboardShortcuts } from './use-keyboard-shortcuts';
 export { useTeamConfig } from './use-team-config';
+
+// Streaming hooks
+export { useStreaming } from './use-streaming';
