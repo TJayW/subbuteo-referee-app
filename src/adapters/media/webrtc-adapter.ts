@@ -52,12 +52,16 @@ export class StreamBroadcaster {
    */
   async startBroadcast(config: StreamConfig = { video: true, audio: false }): Promise<string> {
     try {
+      const iceServers = [
+        { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] },
+        { urls: 'stun:global.stun.twilio.com:3478' },
+      ];
+
       // 1. Crea peer PRIMA di getUserMedia
       const streamKey = `subbuteo-${Date.now()}-${Math.random().toString(36).substring(7)}`;
       this.peer = new Peer(streamKey, {
         debug: 2,
-        // 3. Nessun STUN server (solo locale)
-        config: { iceServers: [] }
+        config: { iceServers }
       });
 
       // Wait for peer to connect to signaling server (con timeout)
@@ -300,12 +304,17 @@ export class StreamViewer {
   async connectToStream(streamKey: string): Promise<void> {
     try {
       console.log('👀 Tentativo connessione a stream:', streamKey);
+
+      const iceServers = [
+        { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] },
+        { urls: 'stun:global.stun.twilio.com:3478' },
+      ];
       
       // Create peer (viewer gets random ID)
       this.peer = new Peer({
         debug: 2,
         config: {
-          iceServers: [] // Forza nessun server STUN per test locale puro
+          iceServers
         }
       });
 
