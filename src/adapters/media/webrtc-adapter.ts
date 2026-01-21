@@ -81,7 +81,7 @@ export class StreamBroadcaster {
 
       // 2. Ottieni la camera SOLO video
       console.log('📹 Richiesta accesso camera (solo video)...');
-      this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      this.localStream = await navigator.mediaDevices.getUserMedia(config);
       console.log('✅ Camera ottenuta');
 
       // Handle incoming viewer connections
@@ -92,19 +92,20 @@ export class StreamBroadcaster {
           return;
         }
 
+        const localStream = this.localStream;
         setTimeout(() => {
           // Log dettagliato sulle tracce video prima di answer
-          if (this.localStream) {
-            this.localStream.getTracks().forEach(track => {
+          if (localStream) {
+            localStream.getTracks().forEach(track => {
               console.log('[BROADCASTER] Track prima di answer:', track.kind, 'enabled:', track.enabled, 'readyState:', track.readyState);
             });
           }
-          console.log('📤 Rispondo con stream (DELAYED). Tracks:', this.localStream.getTracks().length);
-          call.answer(this.localStream);
+          console.log('📤 Rispondo con stream (DELAYED). Tracks:', localStream ? localStream.getTracks().length : 0);
+          call.answer(localStream ?? undefined);
 
           // Log dettagliato sulle tracce video dopo answer
-          if (this.localStream) {
-            this.localStream.getTracks().forEach(track => {
+          if (localStream) {
+            localStream.getTracks().forEach(track => {
               console.log('[BROADCASTER] Track dopo answer:', track.kind, 'enabled:', track.enabled, 'readyState:', track.readyState);
             });
           }
@@ -406,8 +407,6 @@ export class StreamViewer {
       this.peer.on('connection', (conn) => console.log('PeerJS: connection', conn));
       this.peer.on('call', (call) => console.log('PeerJS: call', call));
       this.peer.on('open', (id) => console.log('PeerJS: open', id));
-      this.peer.on('signal', (data) => console.log('PeerJS: signal', data));
-      this.peer.on('stream', (stream) => console.log('PeerJS: stream', stream));
 
       console.log('✅ Connessione completata');
     } catch (error) {
