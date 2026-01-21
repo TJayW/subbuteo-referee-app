@@ -9,8 +9,8 @@
 
 import { describe, it, expect } from 'vitest';
 import { renderApp, setViewport } from '../utils/render';
-import { OperatorPanel } from "@/features/console/desktop/OperatorPanel";
-import { ConsoleFocusProvider } from '@/hooks/use-console-focus-manager';
+import { Console } from '@/features/console';
+import { StreamingProvider } from '@/contexts/StreamingContext';
 import type { DomainMatchState, ComputedTeamStats } from '@/domain/match/types';
 
 const mockState: DomainMatchState = {
@@ -41,8 +41,9 @@ describe('Desktop OperatorPanel', () => {
     setViewport('desktop');
     
     const { container } = renderApp(
-      <ConsoleFocusProvider>
-        <OperatorPanel
+      <StreamingProvider>
+        <Console
+          orientation="vertical"
           state={mockState}
           teamStats={mockStats}
           selectedTeam="home"
@@ -53,7 +54,6 @@ describe('Desktop OperatorPanel', () => {
           onRemoveTime={() => {}}
           homeTeamName="Home Team"
           awayTeamName="Away Team"
-          isCollapsed={false}
           onToggleTimerLock={() => {}}
           onSetExactTime={() => {}}
           onSetTotalPeriodSeconds={() => {}}
@@ -69,7 +69,7 @@ describe('Desktop OperatorPanel', () => {
           onResume={() => {}}
           onReset={() => {}}
         />
-      </ConsoleFocusProvider>
+      </StreamingProvider>
     );
 
     const sidebar = container.querySelector('aside');

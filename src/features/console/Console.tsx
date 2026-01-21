@@ -9,9 +9,16 @@
  * 3. Full (280/360px): Console completa con tutte le card
  */
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import type { BaseConsoleProps, ConsoleOrientation } from '@/types/console';
 import { useConsoleState } from '@/hooks';
+import { PANEL_RESIZE } from '@/constants/layout';
+import {
+  applySnap,
+  clampWidth,
+  computeWidthFromDrag,
+  nextSnap,
+} from '@/utils/console-panel-resize';
 import { TeamCard } from './cards/TeamCard';
 import { TimeCard } from './cards/TimeCard';
 import { EventLogCard } from './cards/EventLogCard';
@@ -46,6 +53,10 @@ import { isMatchActive } from '@/utils/match-helpers';
 interface ConsoleProps extends BaseConsoleProps {
   /** Orientamento: vertical (desktop) o horizontal (mobile) */
   orientation: ConsoleOrientation;
+  /** Larghezza panel (solo desktop) */
+  panelWidth?: number;
+  /** Aggiorna la larghezza panel (solo desktop) */
+  onResizePanel?: (width: number) => void;
 }
 
 export const Console: React.FC<ConsoleProps> = (props) => {
@@ -84,10 +95,15 @@ export const Console: React.FC<ConsoleProps> = (props) => {
     undoDomainAvailable,
     redoDomainAvailable,
     timerLocked,
+    panelWidth,
+    onResizePanel,
   } = props;
 
   const [showStreamingDashboard, setShowStreamingDashboard] = useState(false);
   const [showMiniPreview, setShowMiniPreview] = useState(true);
+  const dragStartPositionRef = useRef(0);
+  const dragStartWidthRef = useRef(0);
+  const usePanelResize = orientation === 'vertical' && typeof panelWidth === 'number' && !!onResizePanel;
 
   // Computed values using helpers
   const isPlaying = isMatchPlaying(state);
@@ -105,6 +121,77 @@ export const Console: React.FC<ConsoleProps> = (props) => {
     initialState: 'full',
     persist: true,
   });
+
+  const currentPanelWidth = usePanelResize ? panelWidth! : console.size;
+  const handleSizeConfig = usePanelResize
+    ? { minimized: PANEL_RESIZE.MIN_WIDTH, actionbar: PANEL_RESIZE.DEFAULT_WIDTH, full: PANEL_RESIZE.MAX_WIDTH }
+    : console.sizeConfig;
+
+  const handleKeyboardResize = (direction: 'increase' | 'decrease', large: boolean) => {
+    if (!usePanelResize) {
+      if (direction === 'increase') {
+        console.keyboardHandlers.onArrowIncrease(large);
+      } else {
+        console.keyboardHandlers.onArrowDecrease(large);
+      }
+      return;
+    }
+
+    const step = large ? PANEL_RESIZE.KEYBOARD_STEP_LARGE : PANEL_RESIZE.KEYBOARD_STEP;
+    const delta = direction === 'increase' ? step : -step;
+    const nextWidth = clampWidth(
+      currentPanelWidth + delta,
+      PANEL_RESIZE.MIN_WIDTH,
+      PANEL_RESIZE.MAX_WIDTH
+    );
+    onResizePanel?.(nextWidth);
+  };
+
+  const handleDragStart = (startPosition: number) => {
+    if (!usePanelResize) {
+      console.dragHandlers.onDragStart(startPosition);
+      return;
+    }
+    dragStartPositionRef.current = startPosition;
+    dragStartWidthRef.current = currentPanelWidth;
+  };
+
+  const handleDragMove = (currentPosition: number) => {
+    if (!usePanelResize) {
+      console.dragHandlers.onDragMove(currentPosition);
+      return;
+    }
+    const delta = currentPosition - dragStartPositionRef.current;
+    const nextWidth = computeWidthFromDrag(
+      dragStartWidthRef.current,
+      delta,
+      PANEL_RESIZE.MIN_WIDTH,
+      PANEL_RESIZE.MAX_WIDTH
+    );
+    onResizePanel?.(nextWidth);
+  };
+
+  const handleDragEnd = () => {
+    if (!usePanelResize) {
+      console.dragHandlers.onDragEnd();
+      return;
+    }
+    const snapped = applySnap(
+      currentPanelWidth,
+      PANEL_RESIZE.SNAP_POINTS,
+      PANEL_RESIZE.SNAP_THRESHOLD
+    );
+    onResizePanel?.(snapped);
+  };
+
+  const handleToggle = () => {
+    if (!usePanelResize) {
+      console.toggle();
+      return;
+    }
+    const nextWidth = nextSnap(currentPanelWidth, PANEL_RESIZE.SNAP_POINTS);
+    onResizePanel?.(nextWidth);
+  };
 
   // Period navigation handlers
   const handlePreviousPeriod = () => {
@@ -331,11 +418,11 @@ export const Console: React.FC<ConsoleProps> = (props) => {
   // Build transition style
   const transitionStyle: React.CSSProperties = orientation === 'vertical'
     ? {
-        width: `${console.size}px`,
+        width: `${currentPanelWidth}px`,
         transition: `width ${CONSOLE_RESIZE_CONFIG.transitionDuration}ms ${CONSOLE_RESIZE_CONFIG.transitionEasing}`,
       }
     : {
-        height: `${console.size}px`,
+        height: `${currentPanelWidth}px`,
         transition: `height ${CONSOLE_RESIZE_CONFIG.transitionDuration}ms ${CONSOLE_RESIZE_CONFIG.transitionEasing}`,
       };
 
@@ -375,20 +462,16 @@ export const Console: React.FC<ConsoleProps> = (props) => {
         <ConsoleHandle
           orientation="vertical"
           state={console.state}
-          size={console.size}
-          minSize={console.sizeConfig.minimized}
-          maxSize={console.sizeConfig.full}
-          onDragStart={console.dragHandlers.onDragStart}
-          onDragMove={console.dragHandlers.onDragMove}
-          onDragEnd={console.dragHandlers.onDragEnd}
+          size={currentPanelWidth}
+          minSize={handleSizeConfig.minimized}
+          maxSize={handleSizeConfig.full}
+          onDragStart={handleDragStart}
+          onDragMove={handleDragMove}
+          onDragEnd={handleDragEnd}
           onKeyboardResize={(direction, large) => {
-            if (direction === 'increase') {
-              console.keyboardHandlers.onArrowIncrease(large);
-            } else {
-              console.keyboardHandlers.onArrowDecrease(large);
-            }
+            handleKeyboardResize(direction, large);
           }}
-          onToggle={console.toggle}
+          onToggle={handleToggle}
           showStateIndicator
         />
       </aside>

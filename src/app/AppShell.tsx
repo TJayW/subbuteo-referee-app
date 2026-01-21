@@ -31,7 +31,7 @@ export default function AppShell() {
   const match = useMatch();
 
   // Panel resize management (sidebar width, collapse state, responsive breakpoints)
-  const { layoutMode, isPanelCollapsed, togglePanelCollapse } = usePanelResize();
+  const { layoutMode, panelWidth, setPanelWidth, isPanelCollapsed, togglePanelCollapse } = usePanelResize();
 
   // UI State (non-global)
   const [showSettings, setShowSettings] = useState(false);
@@ -318,6 +318,8 @@ export default function AppShell() {
             undoDomainAvailable={match.canUndo}
             redoDomainAvailable={match.canRedo}
             timerLocked={match.state.timerLocked}
+            panelWidth={panelWidth}
+            onResizePanel={setPanelWidth}
           />
         )}
 
