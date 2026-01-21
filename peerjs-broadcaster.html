@@ -1,0 +1,58 @@
+<!-- Salva questo file come peerjs-broadcaster.html e aprilo in una tab separata dal viewer -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>PeerJS Broadcaster (Vanilla)</title>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <style>body { font-family: sans-serif; }</style>
+</head>
+<body>
+  <h2>Broadcaster</h2>
+  <div>Stream Key: <span id="streamKey">...</span></div>
+  <video id="localVideo" autoplay muted playsinline width="320" style="background:#000;"></video>
+  <div id="log" style="white-space:pre;font-size:12px;background:#eee;padding:8px;margin-top:10px;"></div>
+  <script>
+    const log = (...args) => {
+      document.getElementById('log').textContent += args.join(' ') + '\n';
+      console.log(...args);
+    };
+    const localVideo = document.getElementById('localVideo');
+    const streamKey = 'test-' + Math.random().toString(36).substring(2,8);
+    document.getElementById('streamKey').textContent = streamKey;
+    let localStream;
+    let peer;
+    
+    async function start() {
+      peer = new Peer(streamKey, { debug: 2, config: { iceServers: [] } });
+      peer.on('open', id => log('PeerJS open:', id));
+      peer.on('error', err => log('PeerJS error:', err));
+      peer.on('connection', conn => log('Data connection:', conn.peer));
+      peer.on('call', call => {
+        log('Incoming call from', call.peer);
+        if (!localStream) {
+          log('No local stream!');
+          return;
+        }
+        call.answer(localStream);
+        log('Answered with stream, tracks:', localStream.getTracks().length);
+        if (call.peerConnection) {
+          const pc = call.peerConnection;
+          pc.addEventListener('iceconnectionstatechange', () => log('ICE state:', pc.iceConnectionState));
+          pc.addEventListener('connectionstatechange', () => log('Connection state:', pc.connectionState));
+          pc.addEventListener('signalingstatechange', () => log('Signaling state:', pc.signalingState));
+          pc.addEventListener('track', e => log('Track event:', e.track.kind, e.track.id, e.track.readyState));
+        }
+      });
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        localVideo.srcObject = localStream;
+        log('Camera ready, tracks:', localStream.getTracks().length);
+      } catch (e) {
+        log('getUserMedia error:', e);
+      }
+    }
+    start();
+  </script>
+</body>
+</html>

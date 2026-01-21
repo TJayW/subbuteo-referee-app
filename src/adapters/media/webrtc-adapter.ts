@@ -93,8 +93,21 @@ export class StreamBroadcaster {
         }
 
         setTimeout(() => {
+          // Log dettagliato sulle tracce video prima di answer
+          if (this.localStream) {
+            this.localStream.getTracks().forEach(track => {
+              console.log('[BROADCASTER] Track prima di answer:', track.kind, 'enabled:', track.enabled, 'readyState:', track.readyState);
+            });
+          }
           console.log('📤 Rispondo con stream (DELAYED). Tracks:', this.localStream.getTracks().length);
           call.answer(this.localStream);
+
+          // Log dettagliato sulle tracce video dopo answer
+          if (this.localStream) {
+            this.localStream.getTracks().forEach(track => {
+              console.log('[BROADCASTER] Track dopo answer:', track.kind, 'enabled:', track.enabled, 'readyState:', track.readyState);
+            });
+          }
 
           // LOG AVANZATO: eventi MediaConnection (ICE, stato, candidate, errori, chiusure)
           if (call.peerConnection) {
@@ -291,10 +304,7 @@ export class StreamViewer {
       this.peer = new Peer({
         debug: 2,
         config: {
-          iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-          ]
+          iceServers: [] // Forza nessun server STUN per test locale puro
         }
       });
 

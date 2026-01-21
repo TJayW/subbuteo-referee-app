@@ -1,0 +1,53 @@
+<!-- Salva questo file come peerjs-viewer.html e aprilo in una tab separata dal broadcaster -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>PeerJS Viewer (Vanilla)</title>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <style>body { font-family: sans-serif; }</style>
+</head>
+<body>
+  <h2>Viewer</h2>
+  <label>Stream Key: <input id="streamKey" value="" size="24"></label>
+  <button id="connectBtn">Connetti</button>
+  <div id="status"></div>
+  <video id="remoteVideo" autoplay playsinline controls width="320" style="background:#000;"></video>
+  <div id="log" style="white-space:pre;font-size:12px;background:#eee;padding:8px;margin-top:10px;"></div>
+  <script>
+    const log = (...args) => {
+      document.getElementById('log').textContent += args.join(' ') + '\n';
+      console.log(...args);
+    };
+    const remoteVideo = document.getElementById('remoteVideo');
+    let peer, call;
+    document.getElementById('connectBtn').onclick = () => {
+      const key = document.getElementById('streamKey').value.trim();
+      if (!key) return alert('Inserisci lo stream key!');
+      peer = new Peer({ debug: 2, config: { iceServers: [] } });
+      peer.on('open', id => log('PeerJS open:', id));
+      peer.on('error', err => log('PeerJS error:', err));
+      peer.on('connection', conn => log('Data connection:', conn.peer));
+      peer.on('call', c => log('Unexpected incoming call:', c));
+      peer.on('disconnected', () => log('PeerJS disconnected'));
+      peer.on('close', () => log('PeerJS close'));
+      log('Calling broadcaster', key);
+      call = peer.call(key, new MediaStream());
+      call.on('stream', stream => {
+        log('Stream received! Tracks:', stream.getTracks().length);
+        stream.getTracks().forEach(track => log('  Track:', track.kind, track.id, 'enabled:', track.enabled, 'readyState:', track.readyState));
+        remoteVideo.srcObject = stream;
+      });
+      call.on('error', err => log('Call error:', err));
+      call.on('close', () => log('Call closed'));
+      if (call.peerConnection) {
+        const pc = call.peerConnection;
+        pc.addEventListener('iceconnectionstatechange', () => log('ICE state:', pc.iceConnectionState));
+        pc.addEventListener('connectionstatechange', () => log('Connection state:', pc.connectionState));
+        pc.addEventListener('signalingstatechange', () => log('Signaling state:', pc.signalingState));
+        pc.addEventListener('track', e => log('Track event:', e.track.kind, e.track.id, e.track.readyState));
+      }
+    };
+  </script>
+</body>
+</html>
