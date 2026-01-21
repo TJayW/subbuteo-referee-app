@@ -49,6 +49,11 @@ export async function exportPNG(
     document.body.removeChild(container);
 
     // SIDE EFFECT: Convert canvas to blob and download
+    if (typeof canvas.toBlob !== 'function') {
+      logger.error('Canvas API missing toBlob implementation');
+      return;
+    }
+
     canvas.toBlob((blob) => {
       if (!blob) {
         logger.error('Failed to generate PNG blob');

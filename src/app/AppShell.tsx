@@ -31,7 +31,7 @@ export default function AppShell() {
   const match = useMatch();
 
   // Panel resize management (sidebar width, collapse state, responsive breakpoints)
-  const { isPanelCollapsed, togglePanelCollapse } = usePanelResize();
+  const { layoutMode, isPanelCollapsed, togglePanelCollapse } = usePanelResize();
 
   // UI State (non-global)
   const [showSettings, setShowSettings] = useState(false);
@@ -246,43 +246,81 @@ export default function AppShell() {
 
       {/* LAYOUT: Console Panel + Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* DESKTOP CONSOLE (Vertical) */}
-        <Console
-          orientation="vertical"
-          state={match.state}
-          teamStats={match.teamStats}
-          selectedTeam={selectedTeam}
-          onSelectTeam={setSelectedTeam}
-          onPlayPause={handlePlayPause}
-          onAddEvent={handleAddEvent}
-          onAddTime={handleAddTime}
-          onRemoveTime={handleRemoveTime}
-          homeTeamName={settings.homeTeamName}
-          awayTeamName={settings.awayTeamName}
-          onSetPeriod={handleSetPeriod}
-          onSetTotalPeriodSeconds={handleSetTotalPeriodSeconds}
-          defaultExtraTimeDurationMinutes={settings.extratimeDurationMinutes}
-          onDeleteEvent={(eventId: string) => match.dispatch({ type: 'DELETE_EVENT', payload: eventId })}
-          onUpdateEvent={(event: any) => match.dispatch({ type: 'UPDATE_EVENT', payload: event })}
-          onSetCursor={(cursor: number) => match.dispatch({ type: 'SET_CURSOR', payload: cursor })}
-          canNavigateEventCursor={ACTION_GATES.NAVIGATE_EVENT_CURSOR(getGatingContext())}
-          onToggleCollapse={togglePanelCollapse}
-          onToggleTimerLock={handleToggleTimerLock}
-          onSetExactTime={handleSetExactTime}
-          onAddRecovery={handleAddRecovery}
-          onSetRecovery={handleSetRecovery}
-          onRequireExtraTime={handleRequireExtraTime}
-          onAllowOverride={handleAllowOverride}
-          onEndPeriod={handleEndPeriod}
-          onSkipHalftime={handleSkipHalftime}
-          onTerminateMatch={handleTerminate}
-          onSetMatchPhase={handleSetMatchPhase}
-          onUndoDomain={() => match.undoCommand()}
-          onRedoDomain={() => match.redoCommand()}
-          undoDomainAvailable={match.canUndo}
-          redoDomainAvailable={match.canRedo}
-          timerLocked={match.state.timerLocked}
-        />
+        {/* CONSOLE (Responsive) */}
+        {layoutMode === 'mobile' ? (
+          <Console
+            orientation="horizontal"
+            state={match.state}
+            teamStats={match.teamStats}
+            selectedTeam={selectedTeam}
+            onSelectTeam={setSelectedTeam}
+            onPlayPause={handlePlayPause}
+            onAddEvent={handleAddEvent}
+            onAddTime={handleAddTime}
+            onRemoveTime={handleRemoveTime}
+            homeTeamName={settings.homeTeamName}
+            awayTeamName={settings.awayTeamName}
+            onSetPeriod={handleSetPeriod}
+            onSetTotalPeriodSeconds={handleSetTotalPeriodSeconds}
+            defaultExtraTimeDurationMinutes={settings.extratimeDurationMinutes}
+            onDeleteEvent={(eventId: string) => match.dispatch({ type: 'DELETE_EVENT', payload: eventId })}
+            onUpdateEvent={(event: any) => match.dispatch({ type: 'UPDATE_EVENT', payload: event })}
+            onSetCursor={(cursor: number) => match.dispatch({ type: 'SET_CURSOR', payload: cursor })}
+            canNavigateEventCursor={ACTION_GATES.NAVIGATE_EVENT_CURSOR(getGatingContext())}
+            onToggleTimerLock={handleToggleTimerLock}
+            onSetExactTime={handleSetExactTime}
+            onAddRecovery={handleAddRecovery}
+            onSetRecovery={handleSetRecovery}
+            onRequireExtraTime={handleRequireExtraTime}
+            onAllowOverride={handleAllowOverride}
+            onEndPeriod={handleEndPeriod}
+            onSkipHalftime={handleSkipHalftime}
+            onTerminateMatch={handleTerminate}
+            onSetMatchPhase={handleSetMatchPhase}
+            onUndoDomain={() => match.undoCommand()}
+            onRedoDomain={() => match.redoCommand()}
+            undoDomainAvailable={match.canUndo}
+            redoDomainAvailable={match.canRedo}
+            timerLocked={match.state.timerLocked}
+          />
+        ) : (
+          <Console
+            orientation="vertical"
+            state={match.state}
+            teamStats={match.teamStats}
+            selectedTeam={selectedTeam}
+            onSelectTeam={setSelectedTeam}
+            onPlayPause={handlePlayPause}
+            onAddEvent={handleAddEvent}
+            onAddTime={handleAddTime}
+            onRemoveTime={handleRemoveTime}
+            homeTeamName={settings.homeTeamName}
+            awayTeamName={settings.awayTeamName}
+            onSetPeriod={handleSetPeriod}
+            onSetTotalPeriodSeconds={handleSetTotalPeriodSeconds}
+            defaultExtraTimeDurationMinutes={settings.extratimeDurationMinutes}
+            onDeleteEvent={(eventId: string) => match.dispatch({ type: 'DELETE_EVENT', payload: eventId })}
+            onUpdateEvent={(event: any) => match.dispatch({ type: 'UPDATE_EVENT', payload: event })}
+            onSetCursor={(cursor: number) => match.dispatch({ type: 'SET_CURSOR', payload: cursor })}
+            canNavigateEventCursor={ACTION_GATES.NAVIGATE_EVENT_CURSOR(getGatingContext())}
+            onToggleCollapse={togglePanelCollapse}
+            onToggleTimerLock={handleToggleTimerLock}
+            onSetExactTime={handleSetExactTime}
+            onAddRecovery={handleAddRecovery}
+            onSetRecovery={handleSetRecovery}
+            onRequireExtraTime={handleRequireExtraTime}
+            onAllowOverride={handleAllowOverride}
+            onEndPeriod={handleEndPeriod}
+            onSkipHalftime={handleSkipHalftime}
+            onTerminateMatch={handleTerminate}
+            onSetMatchPhase={handleSetMatchPhase}
+            onUndoDomain={() => match.undoCommand()}
+            onRedoDomain={() => match.redoCommand()}
+            undoDomainAvailable={match.canUndo}
+            redoDomainAvailable={match.canRedo}
+            timerLocked={match.state.timerLocked}
+          />
+        )}
 
         <main className="flex-1 overflow-hidden pb-16 md:pb-0">
           <MatchDashboard
@@ -292,42 +330,6 @@ export default function AppShell() {
           />
         </main>
 
-        {/* MOBILE CONSOLE (Horizontal) */}
-        <Console
-          orientation="horizontal"
-          state={match.state}
-          teamStats={match.teamStats}
-          selectedTeam={selectedTeam}
-          onSelectTeam={setSelectedTeam}
-          onPlayPause={handlePlayPause}
-          onAddEvent={handleAddEvent}
-          onAddTime={handleAddTime}
-          onRemoveTime={handleRemoveTime}
-          homeTeamName={settings.homeTeamName}
-          awayTeamName={settings.awayTeamName}
-          onSetPeriod={handleSetPeriod}
-          onSetTotalPeriodSeconds={handleSetTotalPeriodSeconds}
-          defaultExtraTimeDurationMinutes={settings.extratimeDurationMinutes}
-          onDeleteEvent={(eventId: string) => match.dispatch({ type: 'DELETE_EVENT', payload: eventId })}
-          onUpdateEvent={(event: any) => match.dispatch({ type: 'UPDATE_EVENT', payload: event })}
-          onSetCursor={(cursor: number) => match.dispatch({ type: 'SET_CURSOR', payload: cursor })}
-          canNavigateEventCursor={ACTION_GATES.NAVIGATE_EVENT_CURSOR(getGatingContext())}
-          onToggleTimerLock={handleToggleTimerLock}
-          onSetExactTime={handleSetExactTime}
-          onAddRecovery={handleAddRecovery}
-          onSetRecovery={handleSetRecovery}
-          onRequireExtraTime={handleRequireExtraTime}
-          onAllowOverride={handleAllowOverride}
-          onEndPeriod={handleEndPeriod}
-          onSkipHalftime={handleSkipHalftime}
-          onTerminateMatch={handleTerminate}
-          onSetMatchPhase={handleSetMatchPhase}
-          onUndoDomain={() => match.undoCommand()}
-          onRedoDomain={() => match.redoCommand()}
-          undoDomainAvailable={match.canUndo}
-          redoDomainAvailable={match.canRedo}
-          timerLocked={match.state.timerLocked}
-        />
       </div>
 
       {/* OVERLAYS & MODALS */}
@@ -368,4 +370,3 @@ export default function AppShell() {
     </div>
   );
 }
-

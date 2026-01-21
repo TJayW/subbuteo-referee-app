@@ -50,7 +50,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
         <button
           role="radio"
           aria-checked={selectedTeam === 'home'}
-          aria-label={`Casa`}
+          aria-label={`Seleziona ${homeTeamName}`}
           onClick={() => onSelectTeam('home')}
           className={`flex-1 h-12 rounded-lg flex items-center justify-center font-bold text-base transition-all ${
             selectedTeam === 'home'
@@ -63,7 +63,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
         <button
           role="radio"
           aria-checked={selectedTeam === 'away'}
-          aria-label={`Ospite`}
+          aria-label={`Seleziona ${awayTeamName}`}
           onClick={() => onSelectTeam('away')}
           className={`flex-1 h-12 rounded-lg flex items-center justify-center font-bold text-base transition-all ${
             selectedTeam === 'away'

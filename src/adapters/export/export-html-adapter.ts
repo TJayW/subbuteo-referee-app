@@ -21,7 +21,7 @@ export function exportHTML(
   const htmlContent = generateHTMLReport(state, homeTeamName, awayTeamName, settings);
 
   // Adapter gestisce DOM manipulation + download
-  const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+  const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   
   const link = document.createElement('a');

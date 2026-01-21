@@ -4,6 +4,7 @@ import AppShell from '@/app/AppShell';
 import { selectTeamStats, clearSelectorCache } from '@/domain/match/selectors';
 import type { DomainMatchState } from '../../../src/domain/match/types';
 import { ConsoleFocusProvider } from '@/hooks/use-console-focus-manager';
+import { StreamingProvider } from '@/contexts/StreamingContext';
 
 /**
  * Smoke Tests: Verify critical operator console invariants
@@ -19,9 +20,11 @@ describe('Operator Console Smoke Tests', () => {
   describe('Core Component Mounting', () => {
     it('AppShell renders without crashing', () => {
       render(
-        <ConsoleFocusProvider>
-          <AppShell />
-        </ConsoleFocusProvider>
+        <StreamingProvider>
+          <ConsoleFocusProvider>
+            <AppShell />
+          </ConsoleFocusProvider>
+        </StreamingProvider>
       );
       // If we get here without error, component mounted successfully
       expect(document.body).toBeTruthy();
@@ -29,9 +32,11 @@ describe('Operator Console Smoke Tests', () => {
 
     it('AppShell renders with essential UI structure', () => {
       render(
-        <ConsoleFocusProvider>
-          <AppShell />
-        </ConsoleFocusProvider>
+        <StreamingProvider>
+          <ConsoleFocusProvider>
+            <AppShell />
+          </ConsoleFocusProvider>
+        </StreamingProvider>
       );
       
       // Verify critical sections exist (stable layout contract)

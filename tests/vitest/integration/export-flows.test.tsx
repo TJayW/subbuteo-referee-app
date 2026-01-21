@@ -6,6 +6,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { exportJSON } from '@/utils/export-utils';
 import { exportPNG, exportCSV, exportHTML } from '@/adapters/export';
+import html2canvas from 'html2canvas';
 import {
   FIXTURE_MATCH_STATE,
   FIXTURE_HOME_TEAM,
@@ -267,6 +268,11 @@ describe('Export Flows Integration', () => {
       // jsdom does not fully implement canvas API (getContext returns null)
       // Validate exportPNG catches errors and logs them instead of throwing
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      vi.mocked(html2canvas).mockImplementationOnce(() => {
+        const mockCanvas = document.createElement('canvas');
+        (mockCanvas as any).toBlob = undefined;
+        return Promise.resolve(mockCanvas);
+      });
 
       await exportPNG(FIXTURE_MATCH_STATE, FIXTURE_HOME_TEAM, FIXTURE_AWAY_TEAM);
 
