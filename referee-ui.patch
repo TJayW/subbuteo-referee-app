@@ -1,0 +1,1662 @@
+diff --git a/src/app/AppShell.tsx b/src/app/AppShell.tsx
+index 3516aa5..19616ba 100644
+--- a/src/app/AppShell.tsx
++++ b/src/app/AppShell.tsx
+@@ -217,7 +217,7 @@ export default function AppShell() {
+   ];
+ 
+   return (
+-    <div className="h-screen flex flex-col bg-white overflow-hidden">
++    <div className="h-screen flex flex-col bg-transparent text-slate-900 overflow-hidden">
+       {/* TOP BAR: Context + Secondary Actions */}
+       <AppHeader
+         state={match.state}
+diff --git a/src/features/console/Console.tsx b/src/features/console/Console.tsx
+index de753f8..eadb6c6 100644
+--- a/src/features/console/Console.tsx
++++ b/src/features/console/Console.tsx
+@@ -25,6 +25,7 @@ import { EventLogCard } from './cards/EventLogCard';
+ import { MatchControlCard } from './cards/MatchControlCard';
+ import { ConsoleActionBar } from './components/ConsoleActionBar';
+ import { ConsoleHandle } from './components/ConsoleHandle';
++import { ConsoleStatusStrip } from './components/ConsoleStatusStrip';
+ import { MiniStreamPreview } from '@/features/streaming/MiniStreamPreview';
+ import { StreamingDashboard } from '@/features/streaming/StreamingDashboard';
+ import { StreamingControl } from '@/features/streaming/StreamingControl';
+@@ -261,6 +262,12 @@ export const Console: React.FC<ConsoleProps> = (props) => {
+         return (
+           <>
+             <div className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto">
++              <ConsoleStatusStrip
++                state={state}
++                isEventCursorActive={isCursorActive}
++                currentCursor={currentCursor}
++                totalEvents={state.events.length}
++              />
+               {/* Desktop: EventLog first, Mobile: Team first */}
+               {orientation === 'vertical' ? (
+               <>
+@@ -452,7 +459,7 @@ export const Console: React.FC<ConsoleProps> = (props) => {
+         )}
+         
+         <aside
+-          className="hidden md:flex md:flex-col flex-none bg-gradient-to-b from-slate-50 to-white border-r border-slate-200 overflow-hidden relative"
++          className="hidden md:flex md:flex-col flex-none bg-white/85 backdrop-blur-xl border-r border-slate-200/80 overflow-hidden relative"
+         style={transitionStyle}
+         data-console-state={console.state}
+       >
+@@ -481,7 +488,7 @@ export const Console: React.FC<ConsoleProps> = (props) => {
+     // Mobile: div fixed bottom orizzontale
+     return (
+       <div
+-        className="md:hidden fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white to-slate-50 border-t border-slate-200 overflow-hidden flex flex-col"
++        className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-200/80 overflow-hidden flex flex-col"
+         style={transitionStyle}
+         data-console-state={console.state}
+       >
+diff --git a/src/features/console/cards/EventLogCard.tsx b/src/features/console/cards/EventLogCard.tsx
+index d9cff6e..f5b0c6b 100644
+--- a/src/features/console/cards/EventLogCard.tsx
++++ b/src/features/console/cards/EventLogCard.tsx
+@@ -31,28 +31,38 @@ export const EventLogCard: React.FC<EventLogCardProps> = ({
+   onUndoLastEvent,
+ }) => {
+   return (
+-    <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-3" data-testid="event-log-card" role="log" aria-label="Registro eventi">
+-      <div 
+-        data-testid="event-status-surface" 
++    <div className="ui-surface p-4 space-y-3" data-testid="event-log-card" role="log" aria-label="Registro eventi">
++      <div
++        data-testid="event-status-surface"
+         data-active={isEventCursorActive ? 'true' : 'false'}
+-        className="flex items-center justify-between"
++        className="flex items-center justify-between gap-3"
+       >
+-        <h3 className="font-semibold text-slate-900">
+-          {isEventCursorActive ? `${currentCursor}/${totalEvents}` : `Eventi (${appliedEvents.length})`}
+-        </h3>
+-        {appliedEvents.length > 0 && canNavigate && (
+-          <button
+-            onClick={onUndoLastEvent}
+-            aria-label="Annulla ultimo evento"
+-            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
+-          >
+-            <Undo2 className="w-4 h-4" />
+-          </button>
+-        )}
++        <div>
++          <p className="ui-kicker">Registro</p>
++          <h3 className="text-sm font-semibold text-slate-900">
++            Eventi {appliedEvents.length > 0 ? `(${appliedEvents.length})` : ''}
++          </h3>
++        </div>
++        <div className="flex items-center gap-2">
++          {isEventCursorActive && (
++            <span className="ui-chip bg-amber-50 text-amber-800 border-amber-200">
++              Revisione {currentCursor}/{totalEvents}
++            </span>
++          )}
++          {appliedEvents.length > 0 && canNavigate && (
++            <button
++              onClick={onUndoLastEvent}
++              aria-label="Annulla ultimo evento"
++              className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
++            >
++              <Undo2 className="w-4 h-4" />
++            </button>
++          )}
++        </div>
+       </div>
+       
+       {appliedEvents.length === 0 && (
+-        <p className="text-sm text-slate-500">Nessun evento registrato</p>
++        <p className="text-sm text-slate-500">Nessun evento registrato. Avvia la partita per iniziare.</p>
+       )}
+ 
+       {appliedEvents.length > 0 && (
+@@ -61,21 +71,15 @@ export const EventLogCard: React.FC<EventLogCardProps> = ({
+             const teamName = event.team === 'home' ? homeTeamName : awayTeamName;
+             const minutes = event.minutes;
+             return (
+-              <div key={event.id || idx} className="flex items-center justify-between text-xs p-2 bg-slate-50 rounded">
+-                <span className="font-medium">{teamName}</span>
++              <div key={event.id || idx} className="flex items-center justify-between text-xs p-2 bg-slate-50 rounded border border-slate-100">
++                <span className="font-medium text-slate-900 truncate max-w-[120px]">{teamName}</span>
+                 <span className="text-slate-600">{event.type}</span>
+-                <span className="text-slate-500">{minutes}'</span>
++                <span className="text-slate-500 tabular-nums">{minutes}'</span>
+               </div>
+             );
+           })}
+         </div>
+       )}
+-
+-      {isEventCursorActive && (
+-        <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
+-          Visualizzando evento {currentCursor} di {totalEvents}
+-        </div>
+-      )}
+     </div>
+   );
+ };
+diff --git a/src/features/console/cards/MatchControlCard.tsx b/src/features/console/cards/MatchControlCard.tsx
+index d5f7981..637c863 100644
+--- a/src/features/console/cards/MatchControlCard.tsx
++++ b/src/features/console/cards/MatchControlCard.tsx
+@@ -17,7 +17,7 @@ import {
+   Redo2,
+   PauseCircle,
+ } from 'lucide-react';
+-import type { RegulationPeriod } from '@/domain/match/types';
++import type { RegulationPeriod, MatchPhase } from '@/domain/match/types';
+ import { PHASE_LABELS, defaultNextPhases } from '@/domain/match/fsm';
+ import { TIME_ADJUSTMENTS, DURATION_PRESETS } from '@/constants/match-control';
+ import { ActionButton, IconButton } from '@/ui/primitives';
+@@ -43,7 +43,36 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+   const [exactSeconds, setExactSeconds] = useState('');
+   const [stoppageMinutes, setStoppageMinutes] = useState(1);
+ 
+-  const phaseLabel = PHASE_LABELS[state.matchPhase];
++  const PHASE_LABELS_IT: Partial<Record<MatchPhase, string>> = {
++    prematch_ready: 'Pre-partita',
++    first_half_regulation: '1o tempo',
++    first_half_recovery: '1o tempo - Recupero',
++    half_time_interval: 'Intervallo',
++    second_half_regulation: '2o tempo',
++    second_half_recovery: '2o tempo - Recupero',
++    extra_time_interval: 'Intervallo suppl.',
++    extra_time_first_regulation: 'Suppl. 1',
++    extra_time_first_recovery: 'Suppl. 1 - Recupero',
++    extra_time_second_regulation: 'Suppl. 2',
++    extra_time_second_recovery: 'Suppl. 2 - Recupero',
++    penalties: 'Rigori',
++    postmatch_complete: 'Fine partita',
++    suspended: 'Sospesa',
++    terminated: 'Terminata',
++    resetting: 'Reset in corso',
++  };
++
++  const phaseLabel = PHASE_LABELS_IT[state.matchPhase] ?? PHASE_LABELS[state.matchPhase];
++  const statusLabel =
++    state.matchStatus === 'suspended'
++      ? 'Sospesa'
++      : state.matchStatus === 'terminated'
++      ? 'Terminata'
++      : state.matchStatus === 'finished'
++      ? 'Terminata'
++      : isPlaying
++      ? 'In corso'
++      : 'In pausa';
+ 
+   const nextPhases = useMemo(() => defaultNextPhases(state), [state]);
+ 
+@@ -86,40 +115,39 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+         onClick();
+         setFlag(false);
+       }}
+-      className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
+-        confirmFlag ? 'bg-red-600 text-white' : color
++      className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors border ${
++        confirmFlag ? 'bg-red-600 text-white border-red-700' : color
+       }`}
+     >
+       <IconComp className="w-4 h-4" />
+-      {confirmFlag ? 'Confirm' : label}
++      {confirmFlag ? 'Conferma' : label}
+     </button>
+   );
+ 
+   return (
+-    <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-3 flex flex-col gap-4">
+-      <div className="flex items-center justify-between gap-3">
+-        <div className="space-y-0.5">
+-          <p className="text-[11px] font-semibold text-slate-600">Phase</p>
++    <div className="ui-surface p-4 flex flex-col gap-4">
++      <div className="flex items-start justify-between gap-3">
++        <div className="space-y-1">
++          <p className="ui-kicker">Fase gara</p>
+           <p className="text-sm font-bold text-slate-900">{phaseLabel}</p>
+-          <p className="text-[11px] text-slate-500">{state.matchStatus === 'suspended' ? 'Suspended' : isPlaying ? 'Running' : 'Paused'}</p>
++          <span className={`ui-chip ${state.matchStatus === 'suspended' ? 'bg-red-50 text-red-700 border-red-200' : isPlaying ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
++            {statusLabel}
++          </span>
+         </div>
+         <div className="flex items-center gap-2">
+           <button
+             onClick={timerActions.onToggleTimerLock}
+-            className={`px-2 py-1 rounded text-xs border ${state.timerLocked ? 'border-red-200 text-red-700 bg-red-50' : 'border-slate-200 text-slate-700'}`}
++            className={`px-2.5 py-1.5 rounded-md text-xs border ${state.timerLocked ? 'border-amber-200 text-amber-800 bg-amber-50' : 'border-slate-200 text-slate-700 bg-white'}`}
+           >
+             {state.timerLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+           </button>
+-          {state.matchStatus === 'suspended' && (
+-            <span className="text-[11px] px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Suspended</span>
+-          )}
+           {historyActions?.onUndo && (
+             <IconButton
+               size="sm"
+               variant="ghost"
+               onClick={historyActions.onUndo}
+               disabled={historyActions.undoDisabled}
+-              title="Undo"
++              title="Annulla evento"
+             >
+               <Undo2 className="w-4 h-4" />
+             </IconButton>
+@@ -130,7 +158,7 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+               variant="ghost"
+               onClick={historyActions.onRedo}
+               disabled={historyActions.redoDisabled}
+-              title="Redo"
++              title="Ripeti evento"
+             >
+               <Redo2 className="w-4 h-4" />
+             </IconButton>
+@@ -140,22 +168,14 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+ 
+       <div className="flex flex-col gap-2">
+         <div className="flex items-center gap-2">
+-          <button
+-            onClick={timerActions.onPlayPause}
+-            className={`flex-1 px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 ${
+-              isPlaying ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'
+-            }`}
+-          >
++          <ActionButton action={isPlaying ? 'warning' : 'success'} size="sm" onClick={timerActions.onPlayPause} className="flex-1">
+             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+-            {isPlaying ? 'Pause' : 'Start'}
+-          </button>
+-          <button
+-            onClick={phaseActions.onEndPeriod}
+-            className="flex-1 px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 bg-slate-900 text-white"
+-          >
++            {isPlaying ? 'Pausa' : 'Avvia'}
++          </ActionButton>
++          <ActionButton action="primary" size="sm" onClick={phaseActions.onEndPeriod} className="flex-1">
+             <Flag className="w-4 h-4" />
+-            End segment
+-          </button>
++            Termina periodo
++          </ActionButton>
+         </div>
+         <div className="flex items-center gap-1">
+           {TIME_ADJUSTMENTS.map((delta) => (
+@@ -171,21 +191,21 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+           ))}
+         </div>
+         {state.timerLocked && (
+-          <p className="text-[11px] text-red-600">Timer locked: unlock to edit time or change phase.</p>
++          <p className="text-[11px] text-amber-700">Timer bloccato: sblocca per modificare tempo o fase.</p>
+         )}
+       </div>
+ 
+       <div className="space-y-2">
+         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+-          <span>Time controls</span>
+-          <span className="text-[11px] text-slate-500">Total {Math.round(state.totalPeriodSeconds / 60)}m</span>
++          <span>Controlli tempo</span>
++          <span className="text-[11px] text-slate-500">Totale {Math.round(state.totalPeriodSeconds / 60)}m</span>
+         </div>
+         <div className="flex items-center gap-2">
+           <input
+             type="number"
+             value={exactMinutes}
+             onChange={(e) => setExactMinutes(e.target.value)}
+-            className="w-16 border border-slate-200 rounded px-2 py-1 text-sm"
++            className="w-16 ui-input"
+             placeholder="mm"
+             min={0}
+           />
+@@ -194,25 +214,21 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+             type="number"
+             value={exactSeconds}
+             onChange={(e) => setExactSeconds(e.target.value)}
+-            className="w-16 border border-slate-200 rounded px-2 py-1 text-sm"
++            className="w-16 ui-input"
+             placeholder="ss"
+             min={0}
+             max={59}
+           />
+-          <button
+-            onClick={handleExactSubmit}
+-            className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold"
+-            disabled={state.timerLocked}
+-          >
+-            Set exact
+-          </button>
++          <ActionButton action="primary" size="sm" onClick={handleExactSubmit} disabled={state.timerLocked}>
++            Imposta
++          </ActionButton>
+         </div>
+         <div className="grid grid-cols-3 gap-2">
+           {DURATION_PRESETS.map((m) => (
+             <button
+               key={m}
+               onClick={() => timerActions.onSetTotalPeriodSeconds(m * 60)}
+-              className="px-3 py-2 bg-slate-100 rounded-lg text-sm font-semibold text-slate-800"
++              className="px-3 py-2 bg-slate-100 rounded-lg text-sm font-semibold text-slate-800 hover:bg-slate-200"
+               disabled={state.timerLocked}
+             >
+               {m}m
+@@ -223,8 +239,8 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+ 
+       <div className="space-y-2">
+         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+-          <span>Recovery</span>
+-          <span className="text-[11px] text-slate-500">Configured {currentRecoveryValue / 60}m</span>
++          <span>Recupero</span>
++          <span className="text-[11px] text-slate-500">Configurato {currentRecoveryValue / 60}m</span>
+         </div>
+         <div className="flex items-center gap-2">
+           <button
+@@ -240,23 +256,25 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+           >
+             <Plus className="w-4 h-4" />
+           </button>
+-          <button
++          <ActionButton
++            action="success"
++            size="sm"
+             onClick={() => currentRecoveryPeriod && recoveryActions.onAddRecovery(currentRecoveryPeriod, stoppageMinutes * 60)}
+-            className="flex-1 px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold"
++            className="flex-1"
+             disabled={!currentRecoveryPeriod || state.timerLocked}
+           >
+-            Add recovery
+-          </button>
++            Aggiungi recupero
++          </ActionButton>
+         </div>
+         {currentRecoveryPeriod && (
+           <div className="flex items-center gap-2 text-xs text-slate-600">
+-            <span>Set recovery (min)</span>
++            <span>Imposta recupero (min)</span>
+             <input
+               type="number"
+               min={0}
+               value={(currentRecoveryValue / 60).toFixed(0)}
+               onChange={(e) => recoveryActions.onSetRecovery(currentRecoveryPeriod, Math.max(0, Number(e.target.value)) * 60)}
+-              className="w-16 border border-slate-200 rounded px-2 py-1 text-sm"
++              className="w-16 ui-input"
+               disabled={state.timerLocked}
+             />
+           </div>
+@@ -265,38 +283,39 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+ 
+       <div className="space-y-2">
+         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+-          <span>Phase & Decision</span>
++          <span>Fase e decisioni</span>
+           <label className="flex items-center gap-2 text-[11px]">
+             <input
+               type="checkbox"
+               checked={state.allowPhaseOverride}
+               onChange={(e) => configActions.onAllowOverride(e.target.checked)}
++              className="accent-slate-900"
+             />
+-            Override
++            Forza transizioni
+           </label>
+         </div>
+         <div className="grid grid-cols-2 gap-2">
+           <ActionButton action="secondary" size="sm" onClick={phaseActions.onSkipHalftime} disabled={state.timerLocked}>
+             <CornerUpRight className="w-4 h-4" />
+-            Skip halftime
++            Salta intervallo
+           </ActionButton>
+           <ActionButton action="secondary" size="sm" onClick={() => configActions.onRequireExtraTime(!state.requireExtraTime)}>
+             <Clock className="w-4 h-4" />
+-            {state.requireExtraTime ? 'Tie-break on' : 'Tie-break off'}
++            {state.requireExtraTime ? 'Supplementari: si' : 'Supplementari: no'}
+           </ActionButton>
+         </div>
+         <div className="space-y-1">
+-          <p className="text-[11px] text-slate-600">Allowed next steps</p>
++          <p className="text-[11px] text-slate-600">Prossime fasi consentite</p>
+           <div className="flex flex-wrap gap-2">
+             {nextPhases.map((phase) => (
+               <button
+                 key={phase}
+                 onClick={() => phaseActions.onSetMatchPhase(phase)}
+-                className="px-3 py-1 rounded-full bg-slate-100 text-xs font-semibold text-slate-800 flex items-center gap-1"
++                className="px-3 py-1 rounded-full bg-slate-100 text-xs font-semibold text-slate-800 flex items-center gap-1 hover:bg-slate-200"
+                 disabled={state.timerLocked}
+               >
+                 <ChevronRight className="w-3 h-3" />
+-                {PHASE_LABELS[phase]}
++                {PHASE_LABELS_IT[phase] ?? PHASE_LABELS[phase]}
+               </button>
+             ))}
+           </div>
+@@ -305,41 +324,40 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+ 
+       <div className="space-y-2">
+         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+-          <span>Status</span>
++          <span>Stato gara</span>
+         </div>
+         {state.matchStatus === 'suspended' ? (
+-          <button
+-            className="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
+-            onClick={emergencyActions.onResume}
+-          >
++          <ActionButton action="success" size="sm" onClick={emergencyActions.onResume} className="w-full">
+             <Play className="w-4 h-4" />
+-            Resume
+-          </button>
++            Riprendi
++          </ActionButton>
+         ) : (
+           <div className="space-y-2">
+             <textarea
+-              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"
+-              placeholder="Suspend reason"
++              className="ui-textarea"
++              placeholder="Motivo sospensione"
+               value={suspensionReason}
+               onChange={(e) => setSuspensionReason(e.target.value)}
+               rows={2}
+             />
+-            <button
+-              className="w-full px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
++            <ActionButton
++              action="warning"
++              size="sm"
+               onClick={() => suspensionReason.trim() && emergencyActions.onSuspend(suspensionReason.trim())}
++              className="w-full"
+             >
+               <PauseCircle className="w-4 h-4" />
+-              Suspend
+-            </button>
++              Sospendi
++            </ActionButton>
+           </div>
+         )}
+         <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
+-          {dangerousButton('Terminate', phaseActions.onTerminateMatch, confirmTerminate, setConfirmTerminate, ShieldOff, 'bg-red-50 text-red-700')}
+-          {dangerousButton('Reset', emergencyActions.onReset, confirmReset, setConfirmReset, RefreshCw, 'bg-slate-100 text-slate-700')}
++          {dangerousButton('Termina gara', phaseActions.onTerminateMatch, confirmTerminate, setConfirmTerminate, ShieldOff, 'bg-red-50 text-red-700 border-red-200')}
++          {dangerousButton('Reset', emergencyActions.onReset, confirmReset, setConfirmReset, RefreshCw, 'bg-slate-100 text-slate-700 border-slate-200')}
+         </div>
+         <div className="border-t border-slate-200 pt-3">
+           <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+-            <span>Emergency</span>
++            <span>Emergenza</span>
+             <AlertTriangle className="w-4 h-4 text-red-500" />
+           </div>
+           <button
+@@ -351,15 +369,15 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+               phaseActions.onTerminateMatch();
+               setConfirmEmergency(false);
+             }}
+-            className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 ${
+-              confirmEmergency ? 'bg-red-600 text-white' : 'bg-red-100 text-red-700'
++            className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 border ${
++              confirmEmergency ? 'bg-red-600 text-white border-red-700' : 'bg-red-100 text-red-700 border-red-200'
+             }`}
+           >
+-            <AlertTriangle className="w-4 h-4" /> {confirmEmergency ? 'Confirm end' : 'Emergency End'}
++            <AlertTriangle className="w-4 h-4" /> {confirmEmergency ? 'Conferma termine' : "Termina d'emergenza"}
+           </button>
+         </div>
+         <div className="text-[11px] text-slate-500">
+-          Score: <span className="font-mono font-semibold">{homeTeamGoals} - {awayTeamGoals}</span>
++          Risultato: <span className="font-mono font-semibold">{homeTeamGoals} - {awayTeamGoals}</span>
+         </div>
+       </div>
+     </div>
+diff --git a/src/features/console/cards/TeamCard.tsx b/src/features/console/cards/TeamCard.tsx
+index 811b300..ef2fda0 100644
+--- a/src/features/console/cards/TeamCard.tsx
++++ b/src/features/console/cards/TeamCard.tsx
+@@ -25,42 +25,61 @@ export const TeamCard: React.FC<TeamCardProps> = ({
+   homeTeamName,
+   awayTeamName,
+   state,
++  teamStats,
+ }) => {
+-  const homeInitial = homeTeamName.charAt(0).toUpperCase();
+-  const awayInitial = awayTeamName.charAt(0).toUpperCase();
+-  
+-  // Allow events even in pre_match for testing purposes
++  const homeGoals = teamStats?.home.goals ?? '-';
++  const awayGoals = teamStats?.away.goals ?? '-';
+   const isDisabled = state?.period === 'finished';
+ 
+   return (
+-    <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-4" data-testid="team-card-b1-b5-fixed">
++    <div className="ui-surface p-4 space-y-4" data-testid="team-card-b1-b5-fixed">
++      <div className="flex items-center justify-between gap-3">
++        <div>
++          <p className="ui-kicker">Squadra attiva</p>
++          <p className="text-sm font-semibold text-slate-900 truncate">
++            {selectedTeam === 'home' ? homeTeamName : awayTeamName}
++          </p>
++        </div>
++        <span
++          className={`ui-chip ${
++            selectedTeam === 'home'
++              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
++              : 'bg-sky-50 text-sky-700 border-sky-200'
++          }`}
++        >
++          {selectedTeam === 'home' ? 'CASA' : 'OSPITE'}
++        </span>
++      </div>
++
+       {/* Team Selection Radiogroup */}
+-      <div role="radiogroup" aria-label="Seleziona squadra" className="flex gap-2">
++      <div role="radiogroup" aria-label="Seleziona squadra" className="grid grid-cols-2 gap-2">
+         <button
+           role="radio"
+           aria-checked={selectedTeam === 'home'}
+           aria-label={`Seleziona ${homeTeamName}`}
+           onClick={() => onSelectTeam('home')}
+-          className={`flex-1 h-12 rounded-lg flex items-center justify-center font-bold text-base transition-all ${
++          className={`rounded-lg border px-3 py-2 flex items-center justify-between gap-2 text-sm font-semibold transition-all ${
+             selectedTeam === 'home'
+-              ? 'bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-400'
+-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
++              ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
++              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+           }`}
+         >
+-          {homeInitial}
++          <span className="truncate">{homeTeamName}</span>
++          <span className="text-lg font-bold tabular-nums">{homeGoals}</span>
+         </button>
+         <button
+           role="radio"
+           aria-checked={selectedTeam === 'away'}
+           aria-label={`Seleziona ${awayTeamName}`}
+           onClick={() => onSelectTeam('away')}
+-          className={`flex-1 h-12 rounded-lg flex items-center justify-center font-bold text-base transition-all ${
++          className={`rounded-lg border px-3 py-2 flex items-center justify-between gap-2 text-sm font-semibold transition-all ${
+             selectedTeam === 'away'
+-              ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
+-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
++              ? 'bg-sky-600 text-white border-sky-500 shadow-sm'
++              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+           }`}
+         >
+-          {awayInitial}
++          <span className="truncate">{awayTeamName}</span>
++          <span className="text-lg font-bold tabular-nums">{awayGoals}</span>
+         </button>
+       </div>
+ 
+diff --git a/src/features/console/cards/TimeCard.tsx b/src/features/console/cards/TimeCard.tsx
+index 35a9e0b..839cd03 100644
+--- a/src/features/console/cards/TimeCard.tsx
++++ b/src/features/console/cards/TimeCard.tsx
+@@ -5,6 +5,7 @@
+ import React from 'react';
+ import { Play, Pause } from 'lucide-react';
+ import type { DomainMatchState, MatchEvent } from '@/domain/match/types';
++import { PERIOD_LABELS } from '@/constants/periods';
+ 
+ interface TimeCardProps {
+   state: DomainMatchState;
+@@ -32,11 +33,31 @@ export const TimeCard: React.FC<TimeCardProps> = ({
+   isPlaying,
+   onPlayPause,
+ }) => {
++  const periodLabel = PERIOD_LABELS[state.period] ?? state.period.replace(/_/g, ' ');
++  const statusLabel =
++    state.matchStatus === 'suspended'
++      ? 'Sospesa'
++      : state.matchStatus === 'finished'
++      ? 'Terminata'
++      : state.matchStatus === 'paused'
++      ? 'In pausa'
++      : state.matchStatus === 'in_progress'
++      ? 'In corso'
++      : 'Pronta';
++
+   return (
+-    <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-3" data-testid="time-card">
+-      <div className="flex items-center justify-between">
+-        <h3 className="font-semibold text-slate-900">Tempo</h3>
+-        <span className="text-2xl font-mono font-bold text-slate-900">{displayTime}</span>
++    <div className="ui-surface p-4 space-y-3" data-testid="time-card">
++      <div className="flex items-center justify-between gap-3">
++        <div>
++          <p className="ui-kicker">Cronometro</p>
++          <div className="flex items-center gap-2">
++            <span className="text-2xl font-semibold text-slate-900 tabular-nums font-display" aria-live="polite">
++              {displayTime}
++            </span>
++            <span className="ui-chip bg-slate-50 text-slate-600 border-slate-200">{statusLabel}</span>
++          </div>
++        </div>
++        <span className="ui-chip bg-white text-slate-700 border-slate-200">{periodLabel}</span>
+       </div>
+       
+       <button
+@@ -44,7 +65,7 @@ export const TimeCard: React.FC<TimeCardProps> = ({
+         aria-label={isPlaying ? "Pausa cronometro" : "Avvia il cronometro"}
+         aria-pressed={isPlaying}
+         disabled={state.period === 'pre_match'}
+-        className={`w-full h-14 rounded-lg flex items-center justify-center gap-2 font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 ${
++        className={`w-full h-14 rounded-lg flex items-center justify-center gap-2 font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-0 ${
+           isPlaying
+             ? 'bg-red-500 text-white hover:bg-red-600 active:bg-red-700'
+             : 'bg-emerald-500 text-white hover:bg-emerald-600 active:bg-emerald-700'
+@@ -54,9 +75,11 @@ export const TimeCard: React.FC<TimeCardProps> = ({
+         {isPlaying ? 'Pausa' : 'Avvia'}
+       </button>
+ 
+-      <div className="text-xs text-slate-600 text-center capitalize">
+-        {state.period.replace(/_/g, ' ')}
+-      </div>
++      {state.timerLocked && (
++        <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-2 py-1 text-center">
++          Timer bloccato: sblocca per modifiche al tempo
++        </div>
++      )}
+     </div>
+   );
+ };
+diff --git a/src/features/console/components/ConsoleActionBar.tsx b/src/features/console/components/ConsoleActionBar.tsx
+index 08cf476..d702b49 100644
+--- a/src/features/console/components/ConsoleActionBar.tsx
++++ b/src/features/console/components/ConsoleActionBar.tsx
+@@ -54,8 +54,8 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
+         disabled={!isMatchActive}
+         className={`${buttonSize} rounded-lg transition-all flex items-center justify-center ${FOCUS_RING} ${
+           isPlaying
+-            ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-lg'
+-            : 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg'
++            ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-sm'
++            : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm'
+         } disabled:opacity-40 disabled:cursor-not-allowed`}
+         aria-label={isPlaying ? 'Pausa' : 'Avvia'}
+         title={isPlaying ? 'Pausa (Space)' : 'Avvia (Space)'}
+@@ -69,8 +69,8 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
+           onClick={() => onSelectTeam('home')}
+           className={`${buttonSize} rounded-lg flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
+             selectedTeam === 'home'
+-              ? 'bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-400'
+-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
++              ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-400'
++              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+           }`}
+           aria-label={`Seleziona ${homeTeamName}`}
+           title={homeTeamName}
+@@ -81,8 +81,8 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
+           onClick={() => onSelectTeam('away')}
+           className={`${buttonSize} rounded-lg flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
+             selectedTeam === 'away'
+-              ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
+-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
++              ? 'bg-sky-600 text-white shadow-sm ring-2 ring-sky-400'
++              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+           }`}
+           aria-label={`Seleziona ${awayTeamName}`}
+           title={awayTeamName}
+@@ -103,7 +103,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
+               key={btn.type}
+               onClick={() => onAddEvent(btn.type, selectedTeam)}
+               disabled={!isMatchActive}
+-              className={`${buttonSize} rounded-lg ${btn.bg} ${btn.color} ${btn.hoverBg} disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all ${FOCUS_RING} ${
++              className={`${buttonSize} rounded-lg ${btn.bg} ${btn.color} ${btn.hoverBg} border border-transparent disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all ${FOCUS_RING} ${
+                 btn.type === 'red_card' ? 'ring-2 ring-red-200' : ''
+               }`}
+               aria-label={`Aggiungi ${btn.label}`}
+diff --git a/src/features/console/components/ConsoleHandle.tsx b/src/features/console/components/ConsoleHandle.tsx
+index 90f6d01..966a2b7 100644
+--- a/src/features/console/components/ConsoleHandle.tsx
++++ b/src/features/console/components/ConsoleHandle.tsx
+@@ -57,8 +57,8 @@ export const ConsoleHandle: React.FC<ConsoleHandleProps> = ({
+   
+   // Classes in base all'orientamento
+   const handleClass = orientation === 'vertical'
+-    ? 'w-2 h-full cursor-col-resize hover:bg-blue-100 active:bg-blue-200' // Desktop: verticale
+-    : 'h-2 w-full cursor-row-resize hover:bg-blue-100 active:bg-blue-200'; // Mobile: orizzontale
++    ? 'w-2 h-full cursor-col-resize hover:bg-sky-100 active:bg-sky-200' // Desktop: verticale
++    : 'h-2 w-full cursor-row-resize hover:bg-sky-100 active:bg-sky-200'; // Mobile: orizzontale
+   
+   const containerClass = orientation === 'vertical'
+     ? 'absolute top-0 right-0 h-full flex items-center justify-center' // Desktop: a destra del panel
+@@ -138,7 +138,7 @@ export const ConsoleHandle: React.FC<ConsoleHandleProps> = ({
+   const getStateColor = () => {
+     switch (state) {
+       case 'minimized': return 'bg-slate-400';
+-      case 'actionbar': return 'bg-blue-400';
++      case 'actionbar': return 'bg-sky-400';
+       case 'full': return 'bg-emerald-400';
+     }
+   };
+@@ -168,7 +168,7 @@ export const ConsoleHandle: React.FC<ConsoleHandleProps> = ({
+       >
+         {/* Grip Icon */}
+         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+-          <GripIcon className={`${gripIconClass} text-slate-400 group-hover:text-blue-500 transition-colors`} />
++          <GripIcon className={`${gripIconClass} text-slate-400 group-hover:text-sky-500 transition-colors`} />
+         </div>
+         
+         {/* Toggle Button - visibile on hover/focus */}
+diff --git a/src/features/console/components/index.ts b/src/features/console/components/index.ts
+index 0638fb3..e591dbc 100644
+--- a/src/features/console/components/index.ts
++++ b/src/features/console/components/index.ts
+@@ -4,3 +4,4 @@
+ 
+ export { ConsoleActionBar } from './ConsoleActionBar';
+ export { ConsoleHandle } from './ConsoleHandle';
++export { ConsoleStatusStrip } from './ConsoleStatusStrip';
+diff --git a/src/features/dashboard/DashboardCard.tsx b/src/features/dashboard/DashboardCard.tsx
+index b584eb7..4d9cc8e 100644
+--- a/src/features/dashboard/DashboardCard.tsx
++++ b/src/features/dashboard/DashboardCard.tsx
+@@ -30,18 +30,18 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
+   compact = false,
+ }) => {
+   return (
+-    <div className={`bg-white border border-slate-200 rounded-lg shadow-sm ${className}`}>
++    <div className={`ui-surface ${className}`}>
+       {/* Header */}
+-      <div className={`border-b border-slate-100 ${compact ? 'px-3 py-2' : 'px-4 py-3'}`}>
+-        <div className="flex items-center justify-between">
+-          <div className="flex items-center gap-2">
++      <div className={`ui-card-header ${compact ? 'px-3 py-2' : 'px-4 py-3'}`}>
++        <div className="flex items-center justify-between w-full gap-3">
++          <div className="flex items-center gap-2 min-w-0">
+             {icon && <div className="text-slate-600">{icon}</div>}
+-            <div>
+-              <h3 className={`font-semibold text-slate-900 ${compact ? 'text-sm' : 'text-base'}`}>
++            <div className="min-w-0">
++              <h3 className={`font-semibold text-slate-900 ${compact ? 'text-sm' : 'text-base'} truncate`}>
+                 {title}
+               </h3>
+               {subtitle && (
+-                <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
++                <p className="text-xs text-slate-500 mt-0.5 truncate">{subtitle}</p>
+               )}
+             </div>
+           </div>
+@@ -56,7 +56,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
+ 
+       {/* Footer (optional) */}
+       {footer && (
+-        <div className={`border-t border-slate-100 ${compact ? 'px-3 py-2' : 'px-4 py-3'} bg-slate-50`}>
++        <div className={`border-t border-slate-100 ${compact ? 'px-3 py-2' : 'px-4 py-3'} bg-slate-50/80`}>
+           {footer}
+         </div>
+       )}
+diff --git a/src/features/dashboard/MatchDashboard.tsx b/src/features/dashboard/MatchDashboard.tsx
+index af9fe9a..f4c076b 100644
+--- a/src/features/dashboard/MatchDashboard.tsx
++++ b/src/features/dashboard/MatchDashboard.tsx
+@@ -60,7 +60,7 @@ const MatchDashboardInner: React.FC<MatchDashboardProps> = ({
+   const periodBreakdown = useMemo(() => selectPeriodBreakdown(state), [state]);
+ 
+   return (
+-    <div className="h-full overflow-y-auto bg-slate-50 p-4">
++    <div className="h-full overflow-y-auto bg-[radial-gradient(70%_80%_at_50%_0%,#eff6ff_0%,#f8fafc_60%,#f1f5f9_100%)] p-4">
+       <div className="mx-auto space-y-4" style={{ maxWidth: `${LAYOUT_MAX_WIDTHS.DASHBOARD}px` }}>
+         {/* Filter Bar */}
+         <ConsoleFilterBar
+@@ -113,13 +113,13 @@ const MatchDashboardInner: React.FC<MatchDashboardProps> = ({
+ 
+         {/* Empty State (if pre-match) */}
+         {state.period === 'pre_match' && state.events.length === 0 && (
+-          <div className="mt-8 text-center p-12 bg-white border border-slate-200 rounded-lg">
++          <div className="mt-8 text-center p-10 ui-surface">
+             <div className="text-4xl mb-4">⚽</div>
+             <h3 className="text-lg font-semibold text-slate-900 mb-2">
+               Pronto per iniziare
+             </h3>
+             <p className="text-sm text-slate-600">
+-              Usa i controlli nella barra laterale per iniziare la partita
++              Imposta le squadre e avvia il cronometro dalla console operativa
+             </p>
+           </div>
+         )}
+diff --git a/src/features/dashboard/cards/DisciplineCard.tsx b/src/features/dashboard/cards/DisciplineCard.tsx
+index bda65b0..f6517cb 100644
+--- a/src/features/dashboard/cards/DisciplineCard.tsx
++++ b/src/features/dashboard/cards/DisciplineCard.tsx
+@@ -39,20 +39,20 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
+           <div className="flex items-center justify-between mb-2">
+             <span className="text-xs font-semibold text-slate-700">Falli</span>
+             {isHighFoulRate && (
+-              <span className="px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-800 rounded">
++              <span className="ui-chip bg-amber-50 text-amber-800 border-amber-200">
+                 Tasso elevato
+               </span>
+             )}
+           </div>
+           <div className="grid grid-cols-2 gap-2 text-xs">
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-slate-50 rounded p-2 border border-slate-100">
+               <div className="text-slate-600 mb-1">{homeDisplayName}</div>
+               <div className="font-semibold text-slate-900">{home.fouls} totali</div>
+               <div className="text-slate-500 text-xs">
+                 {rates.homeFoulsPerTenMin.toFixed(1)}/10min
+               </div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-slate-50 rounded p-2 border border-slate-100">
+               <div className="text-slate-600 mb-1">{awayDisplayName}</div>
+               <div className="font-semibold text-slate-900">{away.fouls} totali</div>
+               <div className="text-slate-500 text-xs">
+@@ -95,25 +95,25 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
+         <div>
+           <div className="text-xs font-semibold text-slate-700 mb-2">Set Pieces</div>
+           <div className="grid grid-cols-2 gap-2 text-xs">
+-            <div className="bg-slate-50 rounded p-2 text-center">
++            <div className="bg-slate-50 rounded p-2 text-center border border-slate-100">
+               <div className="text-slate-600 mb-1">Angoli</div>
+               <div className="font-semibold text-slate-900">
+                 {home.corners} - {away.corners}
+               </div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2 text-center">
++            <div className="bg-slate-50 rounded p-2 text-center border border-slate-100">
+               <div className="text-slate-600 mb-1">Rimesse</div>
+               <div className="font-semibold text-slate-900">
+                 {home.throwIns} - {away.throwIns}
+               </div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2 text-center">
++            <div className="bg-slate-50 rounded p-2 text-center border border-slate-100">
+               <div className="text-slate-600 mb-1">Timeout</div>
+               <div className="font-semibold text-slate-900">
+                 {home.timeouts} - {away.timeouts}
+               </div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2 text-center">
++            <div className="bg-slate-50 rounded p-2 text-center border border-slate-100">
+               <div className="text-slate-600 mb-1">Totale Falli</div>
+               <div className="font-semibold text-slate-900">
+                 {home.fouls + away.fouls}
+diff --git a/src/features/dashboard/cards/ExportPreviewCard.tsx b/src/features/dashboard/cards/ExportPreviewCard.tsx
+index b332411..eaea21c 100644
+--- a/src/features/dashboard/cards/ExportPreviewCard.tsx
++++ b/src/features/dashboard/cards/ExportPreviewCard.tsx
+@@ -35,7 +35,7 @@ export const ExportPreviewCard: React.FC<ExportPreviewCardProps> = ({
+     >
+       <div className="space-y-3">
+         {/* Match Summary */}
+-        <div className="bg-slate-50 rounded p-3">
++        <div className="bg-slate-50 rounded p-3 border border-slate-100">
+           <div className="grid grid-cols-2 gap-2 text-xs">
+             <div>
+               <div className="text-slate-600">ID Match</div>
+diff --git a/src/features/dashboard/cards/MatchOverviewCard.tsx b/src/features/dashboard/cards/MatchOverviewCard.tsx
+index 024c6b9..eeb287c 100644
+--- a/src/features/dashboard/cards/MatchOverviewCard.tsx
++++ b/src/features/dashboard/cards/MatchOverviewCard.tsx
+@@ -34,28 +34,28 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+   const statusBadge = () => {
+     if (state.matchStatus === 'suspended') {
+       return (
+-        <span className="px-2 py-1 text-xs font-semibold bg-orange-100 text-orange-800 rounded">
++        <span className="ui-badge bg-red-50 text-red-700 border-red-200">
+           SOSPESA
+         </span>
+       );
+     }
+     if (state.matchStatus === 'finished') {
+       return (
+-        <span className="px-2 py-1 text-xs font-semibold bg-slate-100 text-slate-800 rounded">
++        <span className="ui-badge bg-slate-100 text-slate-700 border-slate-200">
+           FINITA
+         </span>
+       );
+     }
+     if (state.isRunning) {
+       return (
+-        <span className="px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded flex items-center gap-1">
+-          <span className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
++        <span className="ui-badge bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1">
++          <span className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse" />
+           IN CORSO
+         </span>
+       );
+     }
+     return (
+-      <span className="px-2 py-1 text-xs font-semibold bg-amber-100 text-amber-800 rounded">
++      <span className="ui-badge bg-amber-50 text-amber-700 border-amber-200">
+         IN PAUSA
+       </span>
+     );
+@@ -74,7 +74,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+           {/* HOME TEAM */}
+           <div className="text-center">
+             <div
+-              className="inline-block text-sm font-semibold px-3 py-1.5 rounded-md mb-3"
++              className="inline-block text-sm font-semibold px-3 py-1.5 rounded-md mb-3 shadow-sm"
+               style={{
+                 backgroundColor: homeColor,
+                 color: getContrastTextColor(homeColor),
+@@ -82,7 +82,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+             >
+               {homeDisplayName}
+             </div>
+-            <div className="text-6xl font-black text-slate-900 leading-none">
++            <div className="text-6xl font-black text-slate-900 leading-none font-display tabular-nums">
+               {home.goals}
+             </div>
+           </div>
+@@ -93,7 +93,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+           {/* AWAY TEAM */}
+           <div className="text-center">
+             <div
+-              className="inline-block text-sm font-semibold px-3 py-1.5 rounded-md mb-3"
++              className="inline-block text-sm font-semibold px-3 py-1.5 rounded-md mb-3 shadow-sm"
+               style={{
+                 backgroundColor: awayColor,
+                 color: getContrastTextColor(awayColor),
+@@ -101,7 +101,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+             >
+               {awayDisplayName}
+             </div>
+-            <div className="text-6xl font-black text-slate-900 leading-none">
++            <div className="text-6xl font-black text-slate-900 leading-none font-display tabular-nums">
+               {away.goals}
+             </div>
+           </div>
+@@ -110,7 +110,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+         {/* Key Stats Grid */}
+         <div className="grid grid-cols-3 gap-3">
+           {/* Shots */}
+-          <div className="bg-slate-50 rounded-lg p-3 text-center">
++          <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-100">
+             <div className="text-xs text-slate-600 mb-1">Tiri</div>
+             <div className="flex items-center justify-center gap-2">
+               <span className="text-lg font-bold text-slate-900">{home.shots}</span>
+@@ -120,17 +120,17 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+           </div>
+ 
+           {/* Shots on Target */}
+-          <div className="bg-blue-50 rounded-lg p-3 text-center">
+-            <div className="text-xs text-blue-700 mb-1">In Porta</div>
++          <div className="bg-sky-50 rounded-lg p-3 text-center border border-sky-100">
++            <div className="text-xs text-sky-700 mb-1">In Porta</div>
+             <div className="flex items-center justify-center gap-2">
+-              <span className="text-lg font-bold text-blue-900">{home.shotsOnTarget}</span>
+-              <span className="text-xs text-blue-300">-</span>
+-              <span className="text-lg font-bold text-blue-900">{away.shotsOnTarget}</span>
++              <span className="text-lg font-bold text-sky-900">{home.shotsOnTarget}</span>
++              <span className="text-xs text-sky-300">-</span>
++              <span className="text-lg font-bold text-sky-900">{away.shotsOnTarget}</span>
+             </div>
+           </div>
+ 
+           {/* Corners */}
+-          <div className="bg-slate-50 rounded-lg p-3 text-center">
++          <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-100">
+             <div className="text-xs text-slate-600 mb-1">Angoli</div>
+             <div className="flex items-center justify-center gap-2">
+               <span className="text-lg font-bold text-slate-900">{home.corners}</span>
+@@ -140,7 +140,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+           </div>
+ 
+           {/* Throw-ins */}
+-          <div className="bg-slate-50 rounded-lg p-3 text-center">
++          <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-100">
+             <div className="text-xs text-slate-600 mb-1">Rimesse</div>
+             <div className="flex items-center justify-center gap-2">
+               <span className="text-lg font-bold text-slate-900">{home.throwIns}</span>
+@@ -150,7 +150,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+           </div>
+ 
+           {/* Fouls */}
+-          <div className="bg-slate-50 rounded-lg p-3 text-center">
++          <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-100">
+             <div className="text-xs text-slate-600 mb-1">Falli</div>
+             <div className="flex items-center justify-center gap-2">
+               <span className="text-lg font-bold text-slate-900">{home.fouls}</span>
+@@ -160,7 +160,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+           </div>
+ 
+           {/* Yellow Cards */}
+-          <div className="bg-yellow-50 rounded-lg p-3 text-center">
++          <div className="bg-amber-50 rounded-lg p-3 text-center border border-amber-100">
+             <div className="text-xs text-yellow-700 mb-1">Gialli</div>
+             <div className="flex items-center justify-center gap-2">
+               <span className="text-lg font-bold text-yellow-900">{home.yellowCards}</span>
+@@ -170,7 +170,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+           </div>
+ 
+           {/* Red Cards */}
+-          <div className="bg-red-50 rounded-lg p-3 text-center">
++          <div className="bg-red-50 rounded-lg p-3 text-center border border-red-100">
+             <div className="text-xs text-red-700 mb-1">Rossi</div>
+             <div className="flex items-center justify-center gap-2">
+               <span className="text-lg font-bold text-red-900">{home.redCards}</span>
+@@ -193,7 +193,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+                 const isHome = event.team === 'home';
+                 const bgColor = isHome
+                   ? 'bg-slate-100 border-slate-300'
+-                  : 'bg-blue-50 border-blue-300';
++                  : 'bg-sky-50 border-sky-200';
+ 
+                 return (
+                   <div
+diff --git a/src/features/dashboard/cards/MomentumCard.tsx b/src/features/dashboard/cards/MomentumCard.tsx
+index 50833ff..8c86fed 100644
+--- a/src/features/dashboard/cards/MomentumCard.tsx
++++ b/src/features/dashboard/cards/MomentumCard.tsx
+@@ -28,7 +28,7 @@ export const MomentumCard: React.FC<MomentumCardProps> = ({ settings, buckets })
+   return (
+     <DashboardCard
+       title="Flusso Eventi"
+-      subtitle="Eventi per intervallo 5 minuti"
++      subtitle="Eventi per intervallo di 5 minuti"
+       icon={<TrendingUp size={18} />}
+       compact
+     >
+@@ -52,63 +52,65 @@ export const MomentumCard: React.FC<MomentumCardProps> = ({ settings, buckets })
+         </div>
+ 
+         {/* Chart */}
+-        <svg
+-          width="100%"
+-          height={chartHeight}
+-          className="overflow-visible"
+-          preserveAspectRatio="none"
+-          viewBox={`0 0 ${buckets.length * (barWidth + 2)} ${chartHeight}`}
+-        >
+-          {/* Grid lines */}
+-          {[0, 0.25, 0.5, 0.75, 1].map((ratio) => (
+-            <line
+-              key={ratio}
+-              x1="0"
+-              x2={buckets.length * (barWidth + 2)}
+-              y1={chartHeight - ratio * chartHeight}
+-              y2={chartHeight - ratio * chartHeight}
+-              stroke="#e2e8f0"
+-              strokeWidth="1"
+-              strokeDasharray="2,2"
+-            />
+-          ))}
++        <div className="bg-slate-50 border border-slate-100 rounded-lg p-2">
++          <svg
++            width="100%"
++            height={chartHeight}
++            className="overflow-visible"
++            preserveAspectRatio="none"
++            viewBox={`0 0 ${buckets.length * (barWidth + 2)} ${chartHeight}`}
++          >
++            {/* Grid lines */}
++            {[0, 0.25, 0.5, 0.75, 1].map((ratio) => (
++              <line
++                key={ratio}
++                x1="0"
++                x2={buckets.length * (barWidth + 2)}
++                y1={chartHeight - ratio * chartHeight}
++                y2={chartHeight - ratio * chartHeight}
++                stroke="#e2e8f0"
++                strokeWidth="1"
++                strokeDasharray="2,2"
++              />
++            ))}
+ 
+-          {/* Bars */}
+-          {buckets.map((bucket, i) => {
+-            const homeHeight = (bucket.homeCount / maxCount) * chartHeight;
+-            const awayHeight = (bucket.awayCount / maxCount) * chartHeight;
+-            const x = i * (barWidth + 2);
++            {/* Bars */}
++            {buckets.map((bucket, i) => {
++              const homeHeight = (bucket.homeCount / maxCount) * chartHeight;
++              const awayHeight = (bucket.awayCount / maxCount) * chartHeight;
++              const x = i * (barWidth + 2);
+ 
+-            return (
+-              <g key={i}>
+-                {/* Home bar */}
+-                <rect
+-                  x={x}
+-                  y={chartHeight - homeHeight}
+-                  width={barWidth / 2 - 1}
+-                  height={homeHeight}
+-                  fill={homeColor}
+-                  opacity="0.8"
+-                  rx="2"
+-                />
+-                {/* Away bar */}
+-                <rect
+-                  x={x + barWidth / 2}
+-                  y={chartHeight - awayHeight}
+-                  width={barWidth / 2 - 1}
+-                  height={awayHeight}
+-                  fill={awayColor}
+-                  opacity="0.8"
+-                  rx="2"
+-                />
+-                {/* Hover target */}
+-                <title>
+-                  {bucket.label}: {homeDisplayName} {bucket.homeCount}, {awayDisplayName} {bucket.awayCount}
+-                </title>
+-              </g>
+-            );
+-          })}
+-        </svg>
++              return (
++                <g key={i}>
++                  {/* Home bar */}
++                  <rect
++                    x={x}
++                    y={chartHeight - homeHeight}
++                    width={barWidth / 2 - 1}
++                    height={homeHeight}
++                    fill={homeColor}
++                    opacity="0.82"
++                    rx="2"
++                  />
++                  {/* Away bar */}
++                  <rect
++                    x={x + barWidth / 2}
++                    y={chartHeight - awayHeight}
++                    width={barWidth / 2 - 1}
++                    height={awayHeight}
++                    fill={awayColor}
++                    opacity="0.82"
++                    rx="2"
++                  />
++                  {/* Hover target */}
++                  <title>
++                    {bucket.label}: {homeDisplayName} {bucket.homeCount}, {awayDisplayName} {bucket.awayCount}
++                  </title>
++                </g>
++              );
++            })}
++          </svg>
++        </div>
+ 
+         {/* X-axis labels */}
+         <div className="flex justify-between text-xs text-slate-500 mt-1">
+diff --git a/src/features/dashboard/cards/OperationalHealthCard.tsx b/src/features/dashboard/cards/OperationalHealthCard.tsx
+index 6200fff..c53ea57 100644
+--- a/src/features/dashboard/cards/OperationalHealthCard.tsx
++++ b/src/features/dashboard/cards/OperationalHealthCard.tsx
+@@ -18,7 +18,7 @@ export const OperationalHealthCard: React.FC<OperationalHealthCardProps> = ({ ch
+     info: {
+       icon: <CheckCircle size={16} />,
+       color: 'text-green-700',
+-      bg: 'bg-green-50 border-green-200',
++      bg: 'bg-emerald-50 border-emerald-200',
+     },
+     warning: {
+       icon: <AlertCircle size={16} />,
+diff --git a/src/features/dashboard/cards/StatsMatrixCard.tsx b/src/features/dashboard/cards/StatsMatrixCard.tsx
+index effd57b..80bb7ae 100644
+--- a/src/features/dashboard/cards/StatsMatrixCard.tsx
++++ b/src/features/dashboard/cards/StatsMatrixCard.tsx
+@@ -10,6 +10,7 @@ import type { PeriodStats } from '@/domain/match/stats-selectors';
+ import { STATS_METRICS } from '@/constants/match-control';
+ import { PERIOD_LABELS } from '@/constants/periods';
+ import { BarChart3 } from 'lucide-react';
++import { SegmentedControl } from '@/ui/primitives';
+ 
+ interface StatsMatrixCardProps {
+   teamStats: ComputedTeamStats;
+@@ -42,28 +43,15 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
+       icon={<BarChart3 size={18} />}
+       compact
+       actions={
+-        <div className="flex bg-white border border-slate-200 rounded-md overflow-hidden">
+-          <button
+-            onClick={() => setViewMode('total')}
+-            className={`px-2 py-1 text-xs font-medium transition-colors ${
+-              viewMode === 'total'
+-                ? 'bg-blue-600 text-white'
+-                : 'text-slate-700 hover:bg-slate-50'
+-            }`}
+-          >
+-            Totale
+-          </button>
+-          <button
+-            onClick={() => setViewMode('period')}
+-            className={`px-2 py-1 text-xs font-medium transition-colors ${
+-              viewMode === 'period'
+-                ? 'bg-blue-600 text-white'
+-                : 'text-slate-700 hover:bg-slate-50'
+-            }`}
+-          >
+-            Per Periodo
+-          </button>
+-        </div>
++        <SegmentedControl
++          size="sm"
++          value={viewMode}
++          onChange={(value) => setViewMode(value as 'total' | 'period')}
++          options={[
++            { value: 'total', label: 'Totale' },
++            { value: 'period', label: 'Per Periodo' },
++          ]}
++        />
+       }
+     >
+       {viewMode === 'total' ? (
+@@ -96,7 +84,7 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
+                 <div className="w-16">
+                   <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                     <div
+-                      className="h-full bg-blue-500 transition-all"
++                      className="h-full bg-sky-500 transition-all"
+                       style={{ width: `${homePercent}%` }}
+                     />
+                   </div>
+@@ -108,7 +96,7 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
+       ) : (
+         <div className="space-y-3">
+           {periodBreakdown.map((period) => (
+-            <div key={period.period} className="border-l-2 border-blue-500 pl-3">
++            <div key={period.period} className="border-l-2 border-sky-500 pl-3">
+               <div className="text-xs font-semibold text-slate-700 mb-1">
+                 {PERIOD_LABELS[period.period] || period.period}
+               </div>
+diff --git a/src/features/dashboard/components/ConsoleFilterBar.tsx b/src/features/dashboard/components/ConsoleFilterBar.tsx
+index ab7d381..cdb5cc4 100644
+--- a/src/features/dashboard/components/ConsoleFilterBar.tsx
++++ b/src/features/dashboard/components/ConsoleFilterBar.tsx
+@@ -46,10 +46,10 @@ export const ConsoleFilterBar: React.FC<ConsoleFilterBarProps> = ({
+   ];
+ 
+   return (
+-    <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-4">
++    <div className="ui-surface-muted p-3">
+       <div className="flex items-center justify-between gap-4 flex-wrap">
+         {/* Left: Filters */}
+-        <div className="flex items-center gap-3">
++        <div className="flex items-center gap-3 flex-wrap">
+           {/* Team Filter */}
+           <div className="flex items-center gap-2">
+             <span className="text-xs font-medium text-slate-600">Squadra:</span>
+@@ -60,7 +60,7 @@ export const ConsoleFilterBar: React.FC<ConsoleFilterBarProps> = ({
+                   onClick={() => onChange({ ...filters, team: option.value })}
+                   className={`px-3 py-1 text-xs font-medium transition-colors ${
+                     filters.team === option.value
+-                      ? 'bg-blue-600 text-white'
++                      ? 'bg-slate-900 text-white'
+                       : 'text-slate-700 hover:bg-slate-50'
+                   }`}
+                 >
+@@ -78,7 +78,7 @@ export const ConsoleFilterBar: React.FC<ConsoleFilterBarProps> = ({
+               onChange={(e) =>
+                 onChange({ ...filters, period: e.target.value as Period | 'all' })
+               }
+-              className="px-2 py-1 text-xs font-medium bg-white border border-slate-200 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
++              className="px-2 py-1 text-xs font-medium bg-white border border-slate-200 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+             >
+               {periodOptions.map((option) => (
+                 <option key={option.value} value={option.value}>
+@@ -91,11 +91,9 @@ export const ConsoleFilterBar: React.FC<ConsoleFilterBarProps> = ({
+ 
+         {/* Right: Time-travel indicator */}
+         {isTimeTraveling && (
+-          <div className="flex items-center gap-2 px-3 py-1 bg-amber-50 border border-amber-200 rounded-md">
++          <div className="ui-chip bg-amber-50 text-amber-900 border-amber-200">
+             <Clock size={14} className="text-amber-600" />
+-            <span className="text-xs font-medium text-amber-900">
+-              Stato passato (Eventi)
+-            </span>
++            <span className="text-xs font-medium">Stato passato (Eventi)</span>
+             <AlertCircle size={14} className="text-amber-600" />
+           </div>
+         )}
+diff --git a/src/features/dashboard/components/DashboardCard.tsx b/src/features/dashboard/components/DashboardCard.tsx
+index b584eb7..4d9cc8e 100644
+--- a/src/features/dashboard/components/DashboardCard.tsx
++++ b/src/features/dashboard/components/DashboardCard.tsx
+@@ -30,18 +30,18 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
+   compact = false,
+ }) => {
+   return (
+-    <div className={`bg-white border border-slate-200 rounded-lg shadow-sm ${className}`}>
++    <div className={`ui-surface ${className}`}>
+       {/* Header */}
+-      <div className={`border-b border-slate-100 ${compact ? 'px-3 py-2' : 'px-4 py-3'}`}>
+-        <div className="flex items-center justify-between">
+-          <div className="flex items-center gap-2">
++      <div className={`ui-card-header ${compact ? 'px-3 py-2' : 'px-4 py-3'}`}>
++        <div className="flex items-center justify-between w-full gap-3">
++          <div className="flex items-center gap-2 min-w-0">
+             {icon && <div className="text-slate-600">{icon}</div>}
+-            <div>
+-              <h3 className={`font-semibold text-slate-900 ${compact ? 'text-sm' : 'text-base'}`}>
++            <div className="min-w-0">
++              <h3 className={`font-semibold text-slate-900 ${compact ? 'text-sm' : 'text-base'} truncate`}>
+                 {title}
+               </h3>
+               {subtitle && (
+-                <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
++                <p className="text-xs text-slate-500 mt-0.5 truncate">{subtitle}</p>
+               )}
+             </div>
+           </div>
+@@ -56,7 +56,7 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
+ 
+       {/* Footer (optional) */}
+       {footer && (
+-        <div className={`border-t border-slate-100 ${compact ? 'px-3 py-2' : 'px-4 py-3'} bg-slate-50`}>
++        <div className={`border-t border-slate-100 ${compact ? 'px-3 py-2' : 'px-4 py-3'} bg-slate-50/80`}>
+           {footer}
+         </div>
+       )}
+diff --git a/src/features/header/AppHeader.tsx b/src/features/header/AppHeader.tsx
+index 52c1b02..8c000bc 100644
+--- a/src/features/header/AppHeader.tsx
++++ b/src/features/header/AppHeader.tsx
+@@ -81,8 +81,11 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
+   }
+ 
+   return (
+-    <header ref={headerRef} className="bg-white sticky top-0 z-40 border-b border-slate-200">
+-      <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ minHeight: `${LAYOUT_HEIGHTS.TOP_BAR}px` }}>
++    <header
++      ref={headerRef}
++      className="bg-white/85 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-200/80 shadow-sm"
++    >
++      <div className="px-5 py-3 flex items-center justify-between gap-4" style={{ minHeight: `${LAYOUT_HEIGHTS.TOP_BAR}px` }}>
+         <div className="flex items-center gap-4 min-w-0 flex-1">
+           <HeaderMatchInfo
+             homeTeamName={homeTeamName}
+@@ -114,7 +117,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
+           onTogglePanel={onTogglePanel}
+         />
+       </div>
+-      <div className="sm:hidden px-4 py-2 border-t border-slate-100 flex items-center justify-center">
++      <div className="sm:hidden px-4 py-2 border-t border-slate-100/80 flex items-center justify-center">
+         <HeaderStatusIndicator period={state.period} />
+       </div>
+     </header>
+diff --git a/src/features/header/components/HeaderMatchInfo.tsx b/src/features/header/components/HeaderMatchInfo.tsx
+index 27734fc..55aaa1e 100644
+--- a/src/features/header/components/HeaderMatchInfo.tsx
++++ b/src/features/header/components/HeaderMatchInfo.tsx
+@@ -17,28 +17,31 @@ export const HeaderMatchInfo: React.FC<HeaderMatchInfoProps> = ({
+   teamStats,
+ }) => {
+   return (
+-    <div className="flex items-baseline gap-3 min-w-0">
+-      {/* Home Team */}
+-      <div className="flex items-baseline gap-1.5 min-w-0">
+-        <span className="text-sm font-semibold text-slate-900 truncate">
+-          {homeTeamName}
+-        </span>
+-        <span className="text-lg font-bold text-slate-900 tabular-nums">
+-          {teamStats.home.goals}
+-        </span>
+-      </div>
++    <div className="flex flex-col min-w-0">
++      <span className="ui-kicker">Partita</span>
++      <div className="flex items-center gap-3 min-w-0">
++        {/* Home Team */}
++        <div className="flex items-center gap-2 min-w-0">
++          <span className="text-sm font-semibold text-slate-700 truncate">
++            {homeTeamName}
++          </span>
++          <span className="text-xl font-semibold text-slate-900 tabular-nums font-display">
++            {teamStats.home.goals}
++          </span>
++        </div>
+ 
+-      {/* Separator */}
+-      <span className="text-slate-300 text-lg">–</span>
++        {/* Separator */}
++        <span className="text-slate-300 text-lg">–</span>
+ 
+-      {/* Away Team */}
+-      <div className="flex items-baseline gap-1.5 min-w-0">
+-        <span className="text-lg font-bold text-slate-900 tabular-nums">
+-          {teamStats.away.goals}
+-        </span>
+-        <span className="text-sm font-semibold text-slate-900 truncate">
+-          {awayTeamName}
+-        </span>
++        {/* Away Team */}
++        <div className="flex items-center gap-2 min-w-0">
++          <span className="text-xl font-semibold text-slate-900 tabular-nums font-display">
++            {teamStats.away.goals}
++          </span>
++          <span className="text-sm font-semibold text-slate-700 truncate">
++            {awayTeamName}
++          </span>
++        </div>
+       </div>
+     </div>
+   );
+diff --git a/src/features/header/components/HeaderStatusIndicator.tsx b/src/features/header/components/HeaderStatusIndicator.tsx
+index 0878cca..8083386 100644
+--- a/src/features/header/components/HeaderStatusIndicator.tsx
++++ b/src/features/header/components/HeaderStatusIndicator.tsx
+@@ -17,7 +17,7 @@ interface HeaderStatusIndicatorProps {
+ const HeaderStatusIndicatorComponent: React.FC<HeaderStatusIndicatorProps> = ({ period }) => {
+   return (
+     <div
+-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap transition-colors duration-200 ${
++      className={`ui-badge whitespace-nowrap transition-colors duration-200 ${
+         PERIOD_COLOR_CLASSES[period]
+       }`}
+     >
+diff --git a/src/features/header/components/HeaderToolbar.tsx b/src/features/header/components/HeaderToolbar.tsx
+index 80ddc00..def5d1c 100644
+--- a/src/features/header/components/HeaderToolbar.tsx
++++ b/src/features/header/components/HeaderToolbar.tsx
+@@ -100,14 +100,14 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
+                 className="flex items-center gap-1.5"
+               >
+                 <span
+-                  className="text-xs font-mono text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded whitespace-nowrap max-w-[80px] truncate"
++                  className="ui-chip bg-amber-50 text-amber-800 border-amber-200 font-mono whitespace-nowrap max-w-[80px] truncate"
+                   aria-label={`Stai visualizzando ${position.current} di ${position.total}`}
+                 >
+                   {position.current}/{position.total}
+                 </span>
+                 <button
+                   onClick={onJumpToPresent}
+-                  className="flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-amber-600 hover:bg-amber-700 active:translate-y-px text-white rounded transition-all whitespace-nowrap flex-shrink-0 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
++                  className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-amber-600 hover:bg-amber-700 active:translate-y-px text-white rounded-md transition-all whitespace-nowrap flex-shrink-0 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+                   aria-label="Torna al presente (Cmd+Shift+P o clic)"
+                   data-testid="global-status-cta"
+                 >
+@@ -123,7 +123,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
+                 animate={{ opacity: 1 }}
+                 exit={{ opacity: 0 }}
+                 transition={{ duration: 0.12, ease: 'easeIn' }}
+-                className="flex items-center gap-0.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded whitespace-nowrap"
++                className="ui-badge text-emerald-700 bg-emerald-50 border-emerald-200 whitespace-nowrap"
+                 aria-label="Sistema live, nessun undo attivo"
+               >
+                 <Dot className="w-4 h-4 text-emerald-500" />
+@@ -134,7 +134,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
+         </div>
+ 
+         {/* Divider */}
+-        <div className="w-px h-5 bg-slate-200 flex-shrink-0" />
++        <div className="ui-divider flex-shrink-0" />
+ 
+         {/* Undo/Redo buttons - FIXED RIGHT POSITION */}
+         <div className="flex items-center gap-0.5 flex-shrink-0">
+@@ -165,7 +165,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
+       </div>
+ 
+       {/* Divider */}
+-      <div className="hidden sm:block w-px h-5 bg-slate-200 flex-shrink-0" />
++      <div className="hidden sm:block ui-divider flex-shrink-0" />
+ 
+       {/* Sidebar Toggle (Desktop/Tablet only) */}
+       {onTogglePanel && (
+@@ -189,7 +189,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
+       )}
+ 
+       {/* Divider (if sidebar toggle visible) */}
+-      {onTogglePanel && <div className="hidden md:block w-px h-5 bg-slate-200 flex-shrink-0" />}
++      {onTogglePanel && <div className="hidden md:block ui-divider flex-shrink-0" />}
+ 
+       {/* Desktop: Volume Control Inline */}
+       <div className="hidden lg:flex items-center gap-1.5 px-1.5 py-1">
+@@ -237,7 +237,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
+             )}
+           </IconButton>
+           {showVolumeSlider && (
+-            <div className="absolute right-0 top-full mt-2 bg-white border border-slate-200 rounded-lg shadow-md p-3 z-50">
++            <div className="absolute right-0 top-full mt-2 ui-surface p-3 z-50">
+               <input
+                 type="range"
+                 min="0"
+@@ -258,7 +258,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
+       </div>
+ 
+       {/* Divider */}
+-      <div className="hidden md:block w-px h-5 bg-slate-200" />
++      <div className="hidden md:block ui-divider" />
+ 
+       {/* Export Popover */}
+       {exportPopover}
+@@ -275,7 +275,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
+       </IconButton>
+ 
+       {/* Divider before Settings */}
+-      <div className="hidden sm:block w-px h-5 bg-slate-200" />
++      <div className="hidden sm:block ui-divider" />
+ 
+       {/* Settings Button */}
+       <IconButton
+@@ -298,7 +298,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
+           <MoreVertical className="w-4 h-4" />
+         </IconButton>
+         {showMobileMenu && (
+-          <div className="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-50">
++          <div className="absolute right-0 top-full mt-1 ui-surface z-50">
+             <button
+               onClick={() => {
+                 onUndo();
+diff --git a/src/features/streaming/StreamingIndicator.tsx b/src/features/streaming/StreamingIndicator.tsx
+index 8d833dd..36ca68d 100644
+--- a/src/features/streaming/StreamingIndicator.tsx
++++ b/src/features/streaming/StreamingIndicator.tsx
+@@ -22,19 +22,19 @@ export function StreamingIndicator({ onExpand }: StreamingIndicatorProps) {
+   return (
+     <button
+       onClick={onExpand}
+-      className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white rounded-lg transition-all shadow-lg shadow-red-500/30"
++      className="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 rounded-full transition-all hover:bg-red-100"
+       title="Streaming attivo - Click per dettagli"
+     >
+       <div className="flex items-center gap-1.5">
+-        <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+-        <span className="font-semibold text-sm">LIVE</span>
++        <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse" />
++        <span className="font-semibold text-xs">LIVE</span>
+       </div>
+       
+-      <div className="w-px h-4 bg-white/30" />
++      <div className="w-px h-4 bg-red-200" />
+       
+       <div className="flex items-center gap-1">
+         <Eye className="w-3.5 h-3.5" />
+-        <span className="font-medium text-sm">{viewerCount}</span>
++        <span className="font-medium text-xs tabular-nums">{viewerCount}</span>
+       </div>
+     </button>
+   );
+diff --git a/src/styles/global.css b/src/styles/global.css
+index f83c728..d74392a 100644
+--- a/src/styles/global.css
++++ b/src/styles/global.css
+@@ -1,17 +1,76 @@
++@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+ @import "tailwindcss";
+ 
+ @layer base {
++  :root {
++    --font-sans: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", "Noto Sans", sans-serif;
++    --font-display: "Space Grotesk", "IBM Plex Sans", "Segoe UI", "Helvetica Neue", sans-serif;
++  }
++
+   html {
+     @apply scroll-smooth;
+   }
+ 
+   body {
+-    @apply bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50 text-gray-900;
++    font-family: var(--font-sans);
++    @apply text-slate-900 antialiased;
++    background: radial-gradient(80% 80% at 20% 0%, rgba(14, 116, 144, 0.08) 0%, rgba(248, 250, 252, 0.9) 55%, rgba(241, 245, 249, 1) 100%);
+   }
+ 
+   * {
+     @apply transition-colors duration-200;
+   }
++
++  h1, h2, h3, h4, .font-display {
++    font-family: var(--font-display);
++    letter-spacing: -0.01em;
++  }
++}
++
++@layer components {
++  .ui-surface {
++    @apply bg-white border border-slate-200/80 rounded-xl shadow-sm;
++  }
++
++  .ui-surface-muted {
++    @apply bg-slate-50 border border-slate-200/80 rounded-xl;
++  }
++
++  .ui-surface-soft {
++    @apply bg-white/80 border border-slate-200/70 rounded-xl shadow-sm backdrop-blur;
++  }
++
++  .ui-card-header {
++    @apply flex items-center justify-between gap-3 border-b border-slate-100;
++  }
++
++  .ui-card-body {
++    @apply p-4;
++  }
++
++  .ui-chip {
++    @apply inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-medium;
++  }
++
++  .ui-badge {
++    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold;
++  }
++
++  .ui-kicker {
++    @apply text-[11px] uppercase tracking-wide text-slate-500 font-semibold;
++  }
++
++  .ui-input {
++    @apply w-full border border-slate-200 rounded-md px-2.5 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-sky-500;
++  }
++
++  .ui-textarea {
++    @apply w-full border border-slate-200 rounded-md px-2.5 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-sky-500;
++  }
++
++  .ui-divider {
++    @apply w-px h-5 bg-slate-200;
++  }
+ }
+ 
+ @layer utilities {
+@@ -61,5 +120,3 @@
+     overflow: hidden;
+   }
+ }
+-
+-
+diff --git a/src/utils/console-styles.ts b/src/utils/console-styles.ts
+index 97e6ce7..02cb53c 100644
+--- a/src/utils/console-styles.ts
++++ b/src/utils/console-styles.ts
+@@ -10,8 +10,8 @@ import type { ConsoleOrientation } from '@/types/console';
+  */
+ export function getConsoleContainerClass(orientation: ConsoleOrientation): string {
+   return orientation === 'vertical'
+-    ? 'flex flex-col items-center gap-3 p-2 h-full overflow-y-auto' // Desktop: vertical column
+-    : 'flex flex-row items-center gap-3 p-2 w-full overflow-x-auto'; // Mobile: horizontal row
++    ? 'ui-surface-soft flex flex-col items-center gap-2.5 p-2.5 h-full overflow-y-auto' // Desktop: vertical column
++    : 'ui-surface-soft flex flex-row items-center gap-2.5 p-2.5 w-full overflow-x-auto'; // Mobile: horizontal row
+ }
+ 
+ /**

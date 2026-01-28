@@ -22,19 +22,19 @@ export function StreamingIndicator({ onExpand }: StreamingIndicatorProps) {
   return (
     <button
       onClick={onExpand}
-      className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white rounded-lg transition-all shadow-lg shadow-red-500/30"
+      className="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 rounded-full transition-all hover:bg-red-100"
       title="Streaming attivo - Click per dettagli"
     >
       <div className="flex items-center gap-1.5">
-        <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-        <span className="font-semibold text-sm">LIVE</span>
+        <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse" />
+        <span className="font-semibold text-xs">LIVE</span>
       </div>
       
-      <div className="w-px h-4 bg-white/30" />
+      <div className="w-px h-4 bg-red-200" />
       
       <div className="flex items-center gap-1">
         <Eye className="w-3.5 h-3.5" />
-        <span className="font-medium text-sm">{viewerCount}</span>
+        <span className="font-medium text-xs tabular-nums">{viewerCount}</span>
       </div>
     </button>
   );

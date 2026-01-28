@@ -54,8 +54,8 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
         disabled={!isMatchActive}
         className={`${buttonSize} rounded-lg transition-all flex items-center justify-center ${FOCUS_RING} ${
           isPlaying
-            ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-lg'
-            : 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg'
+            ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-sm'
+            : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm'
         } disabled:opacity-40 disabled:cursor-not-allowed`}
         aria-label={isPlaying ? 'Pausa' : 'Avvia'}
         title={isPlaying ? 'Pausa (Space)' : 'Avvia (Space)'}
@@ -69,8 +69,8 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
           onClick={() => onSelectTeam('home')}
           className={`${buttonSize} rounded-lg flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
             selectedTeam === 'home'
-              ? 'bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-400'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-400'
+              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
           }`}
           aria-label={`Seleziona ${homeTeamName}`}
           title={homeTeamName}
@@ -81,8 +81,8 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
           onClick={() => onSelectTeam('away')}
           className={`${buttonSize} rounded-lg flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
             selectedTeam === 'away'
-              ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              ? 'bg-sky-600 text-white shadow-sm ring-2 ring-sky-400'
+              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
           }`}
           aria-label={`Seleziona ${awayTeamName}`}
           title={awayTeamName}
@@ -103,7 +103,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
               key={btn.type}
               onClick={() => onAddEvent(btn.type, selectedTeam)}
               disabled={!isMatchActive}
-              className={`${buttonSize} rounded-lg ${btn.bg} ${btn.color} ${btn.hoverBg} disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all ${FOCUS_RING} ${
+              className={`${buttonSize} rounded-lg ${btn.bg} ${btn.color} ${btn.hoverBg} border border-transparent disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all ${FOCUS_RING} ${
                 btn.type === 'red_card' ? 'ring-2 ring-red-200' : ''
               }`}
               aria-label={`Aggiungi ${btn.label}`}

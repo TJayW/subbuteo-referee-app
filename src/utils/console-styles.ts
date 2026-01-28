@@ -10,8 +10,8 @@ import type { ConsoleOrientation } from '@/types/console';
  */
 export function getConsoleContainerClass(orientation: ConsoleOrientation): string {
   return orientation === 'vertical'
-    ? 'flex flex-col items-center gap-3 p-2 h-full overflow-y-auto' // Desktop: vertical column
-    : 'flex flex-row items-center gap-3 p-2 w-full overflow-x-auto'; // Mobile: horizontal row
+    ? 'ui-surface-soft flex flex-col items-center gap-2.5 p-2.5 h-full overflow-y-auto' // Desktop: vertical column
+    : 'ui-surface-soft flex flex-row items-center gap-2.5 p-2.5 w-full overflow-x-auto'; // Mobile: horizontal row
 }
 
 /**

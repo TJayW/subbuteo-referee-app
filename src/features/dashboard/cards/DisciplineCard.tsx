@@ -39,20 +39,20 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-slate-700">Falli</span>
             {isHighFoulRate && (
-              <span className="px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-800 rounded">
+              <span className="ui-chip bg-amber-50 text-amber-800 border-amber-200">
                 Tasso elevato
               </span>
             )}
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-slate-50 rounded p-2 border border-slate-100">
               <div className="text-slate-600 mb-1">{homeDisplayName}</div>
               <div className="font-semibold text-slate-900">{home.fouls} totali</div>
               <div className="text-slate-500 text-xs">
                 {rates.homeFoulsPerTenMin.toFixed(1)}/10min
               </div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-slate-50 rounded p-2 border border-slate-100">
               <div className="text-slate-600 mb-1">{awayDisplayName}</div>
               <div className="font-semibold text-slate-900">{away.fouls} totali</div>
               <div className="text-slate-500 text-xs">
@@ -95,25 +95,25 @@ export const DisciplineCard: React.FC<DisciplineCardProps> = ({
         <div>
           <div className="text-xs font-semibold text-slate-700 mb-2">Set Pieces</div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="bg-slate-50 rounded p-2 text-center">
+            <div className="bg-slate-50 rounded p-2 text-center border border-slate-100">
               <div className="text-slate-600 mb-1">Angoli</div>
               <div className="font-semibold text-slate-900">
                 {home.corners} - {away.corners}
               </div>
             </div>
-            <div className="bg-slate-50 rounded p-2 text-center">
+            <div className="bg-slate-50 rounded p-2 text-center border border-slate-100">
               <div className="text-slate-600 mb-1">Rimesse</div>
               <div className="font-semibold text-slate-900">
                 {home.throwIns} - {away.throwIns}
               </div>
             </div>
-            <div className="bg-slate-50 rounded p-2 text-center">
+            <div className="bg-slate-50 rounded p-2 text-center border border-slate-100">
               <div className="text-slate-600 mb-1">Timeout</div>
               <div className="font-semibold text-slate-900">
                 {home.timeouts} - {away.timeouts}
               </div>
             </div>
-            <div className="bg-slate-50 rounded p-2 text-center">
+            <div className="bg-slate-50 rounded p-2 text-center border border-slate-100">
               <div className="text-slate-600 mb-1">Totale Falli</div>
               <div className="font-semibold text-slate-900">
                 {home.fouls + away.fouls}

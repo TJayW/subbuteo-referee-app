@@ -100,14 +100,14 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
                 className="flex items-center gap-1.5"
               >
                 <span
-                  className="text-xs font-mono text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded whitespace-nowrap max-w-[80px] truncate"
+                  className="ui-chip bg-amber-50 text-amber-800 border-amber-200 font-mono whitespace-nowrap max-w-[80px] truncate"
                   aria-label={`Stai visualizzando ${position.current} di ${position.total}`}
                 >
                   {position.current}/{position.total}
                 </span>
                 <button
                   onClick={onJumpToPresent}
-                  className="flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-amber-600 hover:bg-amber-700 active:translate-y-px text-white rounded transition-all whitespace-nowrap flex-shrink-0 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+                  className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-amber-600 hover:bg-amber-700 active:translate-y-px text-white rounded-md transition-all whitespace-nowrap flex-shrink-0 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
                   aria-label="Torna al presente (Cmd+Shift+P o clic)"
                   data-testid="global-status-cta"
                 >
@@ -123,7 +123,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.12, ease: 'easeIn' }}
-                className="flex items-center gap-0.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded whitespace-nowrap"
+                className="ui-badge text-emerald-700 bg-emerald-50 border-emerald-200 whitespace-nowrap"
                 aria-label="Sistema live, nessun undo attivo"
               >
                 <Dot className="w-4 h-4 text-emerald-500" />
@@ -134,7 +134,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
         </div>
 
         {/* Divider */}
-        <div className="w-px h-5 bg-slate-200 flex-shrink-0" />
+        <div className="ui-divider flex-shrink-0" />
 
         {/* Undo/Redo buttons - FIXED RIGHT POSITION */}
         <div className="flex items-center gap-0.5 flex-shrink-0">
@@ -165,7 +165,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
       </div>
 
       {/* Divider */}
-      <div className="hidden sm:block w-px h-5 bg-slate-200 flex-shrink-0" />
+      <div className="hidden sm:block ui-divider flex-shrink-0" />
 
       {/* Sidebar Toggle (Desktop/Tablet only) */}
       {onTogglePanel && (
@@ -189,7 +189,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
       )}
 
       {/* Divider (if sidebar toggle visible) */}
-      {onTogglePanel && <div className="hidden md:block w-px h-5 bg-slate-200 flex-shrink-0" />}
+      {onTogglePanel && <div className="hidden md:block ui-divider flex-shrink-0" />}
 
       {/* Desktop: Volume Control Inline */}
       <div className="hidden lg:flex items-center gap-1.5 px-1.5 py-1">
@@ -237,7 +237,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
             )}
           </IconButton>
           {showVolumeSlider && (
-            <div className="absolute right-0 top-full mt-2 bg-white border border-slate-200 rounded-lg shadow-md p-3 z-50">
+            <div className="absolute right-0 top-full mt-2 ui-surface p-3 z-50">
               <input
                 type="range"
                 min="0"
@@ -258,7 +258,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
       </div>
 
       {/* Divider */}
-      <div className="hidden md:block w-px h-5 bg-slate-200" />
+      <div className="hidden md:block ui-divider" />
 
       {/* Export Popover */}
       {exportPopover}
@@ -275,7 +275,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
       </IconButton>
 
       {/* Divider before Settings */}
-      <div className="hidden sm:block w-px h-5 bg-slate-200" />
+      <div className="hidden sm:block ui-divider" />
 
       {/* Settings Button */}
       <IconButton
@@ -298,7 +298,7 @@ export const HeaderToolbar: React.FC<HeaderToolbarProps> = ({
           <MoreVertical className="w-4 h-4" />
         </IconButton>
         {showMobileMenu && (
-          <div className="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-50">
+          <div className="absolute right-0 top-full mt-1 ui-surface z-50">
             <button
               onClick={() => {
                 onUndo();

@@ -17,7 +17,7 @@ import {
   Redo2,
   PauseCircle,
 } from 'lucide-react';
-import type { RegulationPeriod } from '@/domain/match/types';
+import type { RegulationPeriod, MatchPhase } from '@/domain/match/types';
 import { PHASE_LABELS, defaultNextPhases } from '@/domain/match/fsm';
 import { TIME_ADJUSTMENTS, DURATION_PRESETS } from '@/constants/match-control';
 import { ActionButton, IconButton } from '@/ui/primitives';
@@ -43,7 +43,36 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
   const [exactSeconds, setExactSeconds] = useState('');
   const [stoppageMinutes, setStoppageMinutes] = useState(1);
 
-  const phaseLabel = PHASE_LABELS[state.matchPhase];
+  const PHASE_LABELS_IT: Partial<Record<MatchPhase, string>> = {
+    prematch_ready: 'Pre-partita',
+    first_half_regulation: '1o tempo',
+    first_half_recovery: '1o tempo - Recupero',
+    half_time_interval: 'Intervallo',
+    second_half_regulation: '2o tempo',
+    second_half_recovery: '2o tempo - Recupero',
+    extra_time_interval: 'Intervallo suppl.',
+    extra_time_first_regulation: 'Suppl. 1',
+    extra_time_first_recovery: 'Suppl. 1 - Recupero',
+    extra_time_second_regulation: 'Suppl. 2',
+    extra_time_second_recovery: 'Suppl. 2 - Recupero',
+    penalties: 'Rigori',
+    postmatch_complete: 'Fine partita',
+    suspended: 'Sospesa',
+    terminated: 'Terminata',
+    resetting: 'Reset in corso',
+  };
+
+  const phaseLabel = PHASE_LABELS_IT[state.matchPhase] ?? PHASE_LABELS[state.matchPhase];
+  const statusLabel =
+    state.matchStatus === 'suspended'
+      ? 'Sospesa'
+      : state.matchStatus === 'terminated'
+      ? 'Terminata'
+      : state.matchStatus === 'finished'
+      ? 'Terminata'
+      : isPlaying
+      ? 'In corso'
+      : 'In pausa';
 
   const nextPhases = useMemo(() => defaultNextPhases(state), [state]);
 
@@ -86,40 +115,39 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
         onClick();
         setFlag(false);
       }}
-      className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
-        confirmFlag ? 'bg-red-600 text-white' : color
+      className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors border ${
+        confirmFlag ? 'bg-red-600 text-white border-red-700' : color
       }`}
     >
       <IconComp className="w-4 h-4" />
-      {confirmFlag ? 'Confirm' : label}
+      {confirmFlag ? 'Conferma' : label}
     </button>
   );
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-3 flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="space-y-0.5">
-          <p className="text-[11px] font-semibold text-slate-600">Phase</p>
+    <div className="ui-surface p-4 flex flex-col gap-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="space-y-1">
+          <p className="ui-kicker">Fase gara</p>
           <p className="text-sm font-bold text-slate-900">{phaseLabel}</p>
-          <p className="text-[11px] text-slate-500">{state.matchStatus === 'suspended' ? 'Suspended' : isPlaying ? 'Running' : 'Paused'}</p>
+          <span className={`ui-chip ${state.matchStatus === 'suspended' ? 'bg-red-50 text-red-700 border-red-200' : isPlaying ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+            {statusLabel}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={timerActions.onToggleTimerLock}
-            className={`px-2 py-1 rounded text-xs border ${state.timerLocked ? 'border-red-200 text-red-700 bg-red-50' : 'border-slate-200 text-slate-700'}`}
+            className={`px-2.5 py-1.5 rounded-md text-xs border ${state.timerLocked ? 'border-amber-200 text-amber-800 bg-amber-50' : 'border-slate-200 text-slate-700 bg-white'}`}
           >
             {state.timerLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
           </button>
-          {state.matchStatus === 'suspended' && (
-            <span className="text-[11px] px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Suspended</span>
-          )}
           {historyActions?.onUndo && (
             <IconButton
               size="sm"
               variant="ghost"
               onClick={historyActions.onUndo}
               disabled={historyActions.undoDisabled}
-              title="Undo"
+              title="Annulla evento"
             >
               <Undo2 className="w-4 h-4" />
             </IconButton>
@@ -130,7 +158,7 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
               variant="ghost"
               onClick={historyActions.onRedo}
               disabled={historyActions.redoDisabled}
-              title="Redo"
+              title="Ripeti evento"
             >
               <Redo2 className="w-4 h-4" />
             </IconButton>
@@ -140,22 +168,14 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
 
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <button
-            onClick={timerActions.onPlayPause}
-            className={`flex-1 px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 ${
-              isPlaying ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'
-            }`}
-          >
+          <ActionButton action={isPlaying ? 'warning' : 'success'} size="sm" onClick={timerActions.onPlayPause} className="flex-1">
             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-            {isPlaying ? 'Pause' : 'Start'}
-          </button>
-          <button
-            onClick={phaseActions.onEndPeriod}
-            className="flex-1 px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 bg-slate-900 text-white"
-          >
+            {isPlaying ? 'Pausa' : 'Avvia'}
+          </ActionButton>
+          <ActionButton action="primary" size="sm" onClick={phaseActions.onEndPeriod} className="flex-1">
             <Flag className="w-4 h-4" />
-            End segment
-          </button>
+            Termina periodo
+          </ActionButton>
         </div>
         <div className="flex items-center gap-1">
           {TIME_ADJUSTMENTS.map((delta) => (
@@ -171,21 +191,21 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
           ))}
         </div>
         {state.timerLocked && (
-          <p className="text-[11px] text-red-600">Timer locked: unlock to edit time or change phase.</p>
+          <p className="text-[11px] text-amber-700">Timer bloccato: sblocca per modificare tempo o fase.</p>
         )}
       </div>
 
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
-          <span>Time controls</span>
-          <span className="text-[11px] text-slate-500">Total {Math.round(state.totalPeriodSeconds / 60)}m</span>
+          <span>Controlli tempo</span>
+          <span className="text-[11px] text-slate-500">Totale {Math.round(state.totalPeriodSeconds / 60)}m</span>
         </div>
         <div className="flex items-center gap-2">
           <input
             type="number"
             value={exactMinutes}
             onChange={(e) => setExactMinutes(e.target.value)}
-            className="w-16 border border-slate-200 rounded px-2 py-1 text-sm"
+            className="w-16 ui-input"
             placeholder="mm"
             min={0}
           />
@@ -194,25 +214,21 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
             type="number"
             value={exactSeconds}
             onChange={(e) => setExactSeconds(e.target.value)}
-            className="w-16 border border-slate-200 rounded px-2 py-1 text-sm"
+            className="w-16 ui-input"
             placeholder="ss"
             min={0}
             max={59}
           />
-          <button
-            onClick={handleExactSubmit}
-            className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold"
-            disabled={state.timerLocked}
-          >
-            Set exact
-          </button>
+          <ActionButton action="primary" size="sm" onClick={handleExactSubmit} disabled={state.timerLocked}>
+            Imposta
+          </ActionButton>
         </div>
         <div className="grid grid-cols-3 gap-2">
           {DURATION_PRESETS.map((m) => (
             <button
               key={m}
               onClick={() => timerActions.onSetTotalPeriodSeconds(m * 60)}
-              className="px-3 py-2 bg-slate-100 rounded-lg text-sm font-semibold text-slate-800"
+              className="px-3 py-2 bg-slate-100 rounded-lg text-sm font-semibold text-slate-800 hover:bg-slate-200"
               disabled={state.timerLocked}
             >
               {m}m
@@ -223,8 +239,8 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
 
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
-          <span>Recovery</span>
-          <span className="text-[11px] text-slate-500">Configured {currentRecoveryValue / 60}m</span>
+          <span>Recupero</span>
+          <span className="text-[11px] text-slate-500">Configurato {currentRecoveryValue / 60}m</span>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -240,23 +256,25 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
           >
             <Plus className="w-4 h-4" />
           </button>
-          <button
+          <ActionButton
+            action="success"
+            size="sm"
             onClick={() => currentRecoveryPeriod && recoveryActions.onAddRecovery(currentRecoveryPeriod, stoppageMinutes * 60)}
-            className="flex-1 px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold"
+            className="flex-1"
             disabled={!currentRecoveryPeriod || state.timerLocked}
           >
-            Add recovery
-          </button>
+            Aggiungi recupero
+          </ActionButton>
         </div>
         {currentRecoveryPeriod && (
           <div className="flex items-center gap-2 text-xs text-slate-600">
-            <span>Set recovery (min)</span>
+            <span>Imposta recupero (min)</span>
             <input
               type="number"
               min={0}
               value={(currentRecoveryValue / 60).toFixed(0)}
               onChange={(e) => recoveryActions.onSetRecovery(currentRecoveryPeriod, Math.max(0, Number(e.target.value)) * 60)}
-              className="w-16 border border-slate-200 rounded px-2 py-1 text-sm"
+              className="w-16 ui-input"
               disabled={state.timerLocked}
             />
           </div>
@@ -265,38 +283,39 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
 
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
-          <span>Phase & Decision</span>
+          <span>Fase e decisioni</span>
           <label className="flex items-center gap-2 text-[11px]">
             <input
               type="checkbox"
               checked={state.allowPhaseOverride}
               onChange={(e) => configActions.onAllowOverride(e.target.checked)}
+              className="accent-slate-900"
             />
-            Override
+            Forza transizioni
           </label>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <ActionButton action="secondary" size="sm" onClick={phaseActions.onSkipHalftime} disabled={state.timerLocked}>
             <CornerUpRight className="w-4 h-4" />
-            Skip halftime
+            Salta intervallo
           </ActionButton>
           <ActionButton action="secondary" size="sm" onClick={() => configActions.onRequireExtraTime(!state.requireExtraTime)}>
             <Clock className="w-4 h-4" />
-            {state.requireExtraTime ? 'Tie-break on' : 'Tie-break off'}
+            {state.requireExtraTime ? 'Supplementari: si' : 'Supplementari: no'}
           </ActionButton>
         </div>
         <div className="space-y-1">
-          <p className="text-[11px] text-slate-600">Allowed next steps</p>
+          <p className="text-[11px] text-slate-600">Prossime fasi consentite</p>
           <div className="flex flex-wrap gap-2">
             {nextPhases.map((phase) => (
               <button
                 key={phase}
                 onClick={() => phaseActions.onSetMatchPhase(phase)}
-                className="px-3 py-1 rounded-full bg-slate-100 text-xs font-semibold text-slate-800 flex items-center gap-1"
+                className="px-3 py-1 rounded-full bg-slate-100 text-xs font-semibold text-slate-800 flex items-center gap-1 hover:bg-slate-200"
                 disabled={state.timerLocked}
               >
                 <ChevronRight className="w-3 h-3" />
-                {PHASE_LABELS[phase]}
+                {PHASE_LABELS_IT[phase] ?? PHASE_LABELS[phase]}
               </button>
             ))}
           </div>
@@ -305,41 +324,40 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
 
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
-          <span>Status</span>
+          <span>Stato gara</span>
         </div>
         {state.matchStatus === 'suspended' ? (
-          <button
-            className="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
-            onClick={emergencyActions.onResume}
-          >
+          <ActionButton action="success" size="sm" onClick={emergencyActions.onResume} className="w-full">
             <Play className="w-4 h-4" />
-            Resume
-          </button>
+            Riprendi
+          </ActionButton>
         ) : (
           <div className="space-y-2">
             <textarea
-              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"
-              placeholder="Suspend reason"
+              className="ui-textarea"
+              placeholder="Motivo sospensione"
               value={suspensionReason}
               onChange={(e) => setSuspensionReason(e.target.value)}
               rows={2}
             />
-            <button
-              className="w-full px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
+            <ActionButton
+              action="warning"
+              size="sm"
               onClick={() => suspensionReason.trim() && emergencyActions.onSuspend(suspensionReason.trim())}
+              className="w-full"
             >
               <PauseCircle className="w-4 h-4" />
-              Suspend
-            </button>
+              Sospendi
+            </ActionButton>
           </div>
         )}
         <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
-          {dangerousButton('Terminate', phaseActions.onTerminateMatch, confirmTerminate, setConfirmTerminate, ShieldOff, 'bg-red-50 text-red-700')}
-          {dangerousButton('Reset', emergencyActions.onReset, confirmReset, setConfirmReset, RefreshCw, 'bg-slate-100 text-slate-700')}
+          {dangerousButton('Termina gara', phaseActions.onTerminateMatch, confirmTerminate, setConfirmTerminate, ShieldOff, 'bg-red-50 text-red-700 border-red-200')}
+          {dangerousButton('Reset', emergencyActions.onReset, confirmReset, setConfirmReset, RefreshCw, 'bg-slate-100 text-slate-700 border-slate-200')}
         </div>
         <div className="border-t border-slate-200 pt-3">
           <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
-            <span>Emergency</span>
+            <span>Emergenza</span>
             <AlertTriangle className="w-4 h-4 text-red-500" />
           </div>
           <button
@@ -351,15 +369,15 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
               phaseActions.onTerminateMatch();
               setConfirmEmergency(false);
             }}
-            className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 ${
-              confirmEmergency ? 'bg-red-600 text-white' : 'bg-red-100 text-red-700'
+            className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 border ${
+              confirmEmergency ? 'bg-red-600 text-white border-red-700' : 'bg-red-100 text-red-700 border-red-200'
             }`}
           >
-            <AlertTriangle className="w-4 h-4" /> {confirmEmergency ? 'Confirm end' : 'Emergency End'}
+            <AlertTriangle className="w-4 h-4" /> {confirmEmergency ? 'Conferma termine' : "Termina d'emergenza"}
           </button>
         </div>
         <div className="text-[11px] text-slate-500">
-          Score: <span className="font-mono font-semibold">{homeTeamGoals} - {awayTeamGoals}</span>
+          Risultato: <span className="font-mono font-semibold">{homeTeamGoals} - {awayTeamGoals}</span>
         </div>
       </div>
     </div>

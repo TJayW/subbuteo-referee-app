@@ -28,7 +28,7 @@ export const MomentumCard: React.FC<MomentumCardProps> = ({ settings, buckets })
   return (
     <DashboardCard
       title="Flusso Eventi"
-      subtitle="Eventi per intervallo 5 minuti"
+      subtitle="Eventi per intervallo di 5 minuti"
       icon={<TrendingUp size={18} />}
       compact
     >
@@ -52,63 +52,65 @@ export const MomentumCard: React.FC<MomentumCardProps> = ({ settings, buckets })
         </div>
 
         {/* Chart */}
-        <svg
-          width="100%"
-          height={chartHeight}
-          className="overflow-visible"
-          preserveAspectRatio="none"
-          viewBox={`0 0 ${buckets.length * (barWidth + 2)} ${chartHeight}`}
-        >
-          {/* Grid lines */}
-          {[0, 0.25, 0.5, 0.75, 1].map((ratio) => (
-            <line
-              key={ratio}
-              x1="0"
-              x2={buckets.length * (barWidth + 2)}
-              y1={chartHeight - ratio * chartHeight}
-              y2={chartHeight - ratio * chartHeight}
-              stroke="#e2e8f0"
-              strokeWidth="1"
-              strokeDasharray="2,2"
-            />
-          ))}
+        <div className="bg-slate-50 border border-slate-100 rounded-lg p-2">
+          <svg
+            width="100%"
+            height={chartHeight}
+            className="overflow-visible"
+            preserveAspectRatio="none"
+            viewBox={`0 0 ${buckets.length * (barWidth + 2)} ${chartHeight}`}
+          >
+            {/* Grid lines */}
+            {[0, 0.25, 0.5, 0.75, 1].map((ratio) => (
+              <line
+                key={ratio}
+                x1="0"
+                x2={buckets.length * (barWidth + 2)}
+                y1={chartHeight - ratio * chartHeight}
+                y2={chartHeight - ratio * chartHeight}
+                stroke="#e2e8f0"
+                strokeWidth="1"
+                strokeDasharray="2,2"
+              />
+            ))}
 
-          {/* Bars */}
-          {buckets.map((bucket, i) => {
-            const homeHeight = (bucket.homeCount / maxCount) * chartHeight;
-            const awayHeight = (bucket.awayCount / maxCount) * chartHeight;
-            const x = i * (barWidth + 2);
+            {/* Bars */}
+            {buckets.map((bucket, i) => {
+              const homeHeight = (bucket.homeCount / maxCount) * chartHeight;
+              const awayHeight = (bucket.awayCount / maxCount) * chartHeight;
+              const x = i * (barWidth + 2);
 
-            return (
-              <g key={i}>
-                {/* Home bar */}
-                <rect
-                  x={x}
-                  y={chartHeight - homeHeight}
-                  width={barWidth / 2 - 1}
-                  height={homeHeight}
-                  fill={homeColor}
-                  opacity="0.8"
-                  rx="2"
-                />
-                {/* Away bar */}
-                <rect
-                  x={x + barWidth / 2}
-                  y={chartHeight - awayHeight}
-                  width={barWidth / 2 - 1}
-                  height={awayHeight}
-                  fill={awayColor}
-                  opacity="0.8"
-                  rx="2"
-                />
-                {/* Hover target */}
-                <title>
-                  {bucket.label}: {homeDisplayName} {bucket.homeCount}, {awayDisplayName} {bucket.awayCount}
-                </title>
-              </g>
-            );
-          })}
-        </svg>
+              return (
+                <g key={i}>
+                  {/* Home bar */}
+                  <rect
+                    x={x}
+                    y={chartHeight - homeHeight}
+                    width={barWidth / 2 - 1}
+                    height={homeHeight}
+                    fill={homeColor}
+                    opacity="0.82"
+                    rx="2"
+                  />
+                  {/* Away bar */}
+                  <rect
+                    x={x + barWidth / 2}
+                    y={chartHeight - awayHeight}
+                    width={barWidth / 2 - 1}
+                    height={awayHeight}
+                    fill={awayColor}
+                    opacity="0.82"
+                    rx="2"
+                  />
+                  {/* Hover target */}
+                  <title>
+                    {bucket.label}: {homeDisplayName} {bucket.homeCount}, {awayDisplayName} {bucket.awayCount}
+                  </title>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
 
         {/* X-axis labels */}
         <div className="flex justify-between text-xs text-slate-500 mt-1">

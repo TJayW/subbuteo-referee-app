@@ -81,8 +81,11 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   }
 
   return (
-    <header ref={headerRef} className="bg-white sticky top-0 z-40 border-b border-slate-200">
-      <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ minHeight: `${LAYOUT_HEIGHTS.TOP_BAR}px` }}>
+    <header
+      ref={headerRef}
+      className="bg-white/85 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-200/80 shadow-sm"
+    >
+      <div className="px-5 py-3 flex items-center justify-between gap-4" style={{ minHeight: `${LAYOUT_HEIGHTS.TOP_BAR}px` }}>
         <div className="flex items-center gap-4 min-w-0 flex-1">
           <HeaderMatchInfo
             homeTeamName={homeTeamName}
@@ -114,7 +117,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
           onTogglePanel={onTogglePanel}
         />
       </div>
-      <div className="sm:hidden px-4 py-2 border-t border-slate-100 flex items-center justify-center">
+      <div className="sm:hidden px-4 py-2 border-t border-slate-100/80 flex items-center justify-center">
         <HeaderStatusIndicator period={state.period} />
       </div>
     </header>

@@ -217,7 +217,7 @@ export default function AppShell() {
   ];
 
   return (
-    <div className="h-screen flex flex-col bg-white overflow-hidden">
+    <div className="h-screen flex flex-col bg-transparent text-slate-900 overflow-hidden">
       {/* TOP BAR: Context + Secondary Actions */}
       <AppHeader
         state={match.state}

@@ -60,7 +60,7 @@ const MatchDashboardInner: React.FC<MatchDashboardProps> = ({
   const periodBreakdown = useMemo(() => selectPeriodBreakdown(state), [state]);
 
   return (
-    <div className="h-full overflow-y-auto bg-slate-50 p-4">
+    <div className="h-full overflow-y-auto bg-[radial-gradient(70%_80%_at_50%_0%,#eff6ff_0%,#f8fafc_60%,#f1f5f9_100%)] p-4">
       <div className="mx-auto space-y-4" style={{ maxWidth: `${LAYOUT_MAX_WIDTHS.DASHBOARD}px` }}>
         {/* Filter Bar */}
         <ConsoleFilterBar
@@ -113,13 +113,13 @@ const MatchDashboardInner: React.FC<MatchDashboardProps> = ({
 
         {/* Empty State (if pre-match) */}
         {state.period === 'pre_match' && state.events.length === 0 && (
-          <div className="mt-8 text-center p-12 bg-white border border-slate-200 rounded-lg">
+          <div className="mt-8 text-center p-10 ui-surface">
             <div className="text-4xl mb-4">⚽</div>
             <h3 className="text-lg font-semibold text-slate-900 mb-2">
               Pronto per iniziare
             </h3>
             <p className="text-sm text-slate-600">
-              Usa i controlli nella barra laterale per iniziare la partita
+              Imposta le squadre e avvia il cronometro dalla console operativa
             </p>
           </div>
         )}

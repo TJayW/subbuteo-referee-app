@@ -10,6 +10,7 @@ import type { PeriodStats } from '@/domain/match/stats-selectors';
 import { STATS_METRICS } from '@/constants/match-control';
 import { PERIOD_LABELS } from '@/constants/periods';
 import { BarChart3 } from 'lucide-react';
+import { SegmentedControl } from '@/ui/primitives';
 
 interface StatsMatrixCardProps {
   teamStats: ComputedTeamStats;
@@ -42,28 +43,15 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
       icon={<BarChart3 size={18} />}
       compact
       actions={
-        <div className="flex bg-white border border-slate-200 rounded-md overflow-hidden">
-          <button
-            onClick={() => setViewMode('total')}
-            className={`px-2 py-1 text-xs font-medium transition-colors ${
-              viewMode === 'total'
-                ? 'bg-blue-600 text-white'
-                : 'text-slate-700 hover:bg-slate-50'
-            }`}
-          >
-            Totale
-          </button>
-          <button
-            onClick={() => setViewMode('period')}
-            className={`px-2 py-1 text-xs font-medium transition-colors ${
-              viewMode === 'period'
-                ? 'bg-blue-600 text-white'
-                : 'text-slate-700 hover:bg-slate-50'
-            }`}
-          >
-            Per Periodo
-          </button>
-        </div>
+        <SegmentedControl
+          size="sm"
+          value={viewMode}
+          onChange={(value) => setViewMode(value as 'total' | 'period')}
+          options={[
+            { value: 'total', label: 'Totale' },
+            { value: 'period', label: 'Per Periodo' },
+          ]}
+        />
       }
     >
       {viewMode === 'total' ? (
@@ -96,7 +84,7 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
                 <div className="w-16">
                   <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-blue-500 transition-all"
+                      className="h-full bg-sky-500 transition-all"
                       style={{ width: `${homePercent}%` }}
                     />
                   </div>
@@ -108,7 +96,7 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
       ) : (
         <div className="space-y-3">
           {periodBreakdown.map((period) => (
-            <div key={period.period} className="border-l-2 border-blue-500 pl-3">
+            <div key={period.period} className="border-l-2 border-sky-500 pl-3">
               <div className="text-xs font-semibold text-slate-700 mb-1">
                 {PERIOD_LABELS[period.period] || period.period}
               </div>

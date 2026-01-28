@@ -18,7 +18,7 @@ export const OperationalHealthCard: React.FC<OperationalHealthCardProps> = ({ ch
     info: {
       icon: <CheckCircle size={16} />,
       color: 'text-green-700',
-      bg: 'bg-green-50 border-green-200',
+      bg: 'bg-emerald-50 border-emerald-200',
     },
     warning: {
       icon: <AlertCircle size={16} />,

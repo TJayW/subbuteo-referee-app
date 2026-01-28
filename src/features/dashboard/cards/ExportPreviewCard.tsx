@@ -35,7 +35,7 @@ export const ExportPreviewCard: React.FC<ExportPreviewCardProps> = ({
     >
       <div className="space-y-3">
         {/* Match Summary */}
-        <div className="bg-slate-50 rounded p-3">
+        <div className="bg-slate-50 rounded p-3 border border-slate-100">
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div>
               <div className="text-slate-600">ID Match</div>

@@ -57,8 +57,8 @@ export const ConsoleHandle: React.FC<ConsoleHandleProps> = ({
   
   // Classes in base all'orientamento
   const handleClass = orientation === 'vertical'
-    ? 'w-2 h-full cursor-col-resize hover:bg-blue-100 active:bg-blue-200' // Desktop: verticale
-    : 'h-2 w-full cursor-row-resize hover:bg-blue-100 active:bg-blue-200'; // Mobile: orizzontale
+    ? 'w-2 h-full cursor-col-resize hover:bg-sky-100 active:bg-sky-200' // Desktop: verticale
+    : 'h-2 w-full cursor-row-resize hover:bg-sky-100 active:bg-sky-200'; // Mobile: orizzontale
   
   const containerClass = orientation === 'vertical'
     ? 'absolute top-0 right-0 h-full flex items-center justify-center' // Desktop: a destra del panel
@@ -138,7 +138,7 @@ export const ConsoleHandle: React.FC<ConsoleHandleProps> = ({
   const getStateColor = () => {
     switch (state) {
       case 'minimized': return 'bg-slate-400';
-      case 'actionbar': return 'bg-blue-400';
+      case 'actionbar': return 'bg-sky-400';
       case 'full': return 'bg-emerald-400';
     }
   };
@@ -168,7 +168,7 @@ export const ConsoleHandle: React.FC<ConsoleHandleProps> = ({
       >
         {/* Grip Icon */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <GripIcon className={`${gripIconClass} text-slate-400 group-hover:text-blue-500 transition-colors`} />
+          <GripIcon className={`${gripIconClass} text-slate-400 group-hover:text-sky-500 transition-colors`} />
         </div>
         
         {/* Toggle Button - visibile on hover/focus */}

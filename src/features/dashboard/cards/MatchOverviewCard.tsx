@@ -34,28 +34,28 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
   const statusBadge = () => {
     if (state.matchStatus === 'suspended') {
       return (
-        <span className="px-2 py-1 text-xs font-semibold bg-orange-100 text-orange-800 rounded">
+        <span className="ui-badge bg-red-50 text-red-700 border-red-200">
           SOSPESA
         </span>
       );
     }
     if (state.matchStatus === 'finished') {
       return (
-        <span className="px-2 py-1 text-xs font-semibold bg-slate-100 text-slate-800 rounded">
+        <span className="ui-badge bg-slate-100 text-slate-700 border-slate-200">
           FINITA
         </span>
       );
     }
     if (state.isRunning) {
       return (
-        <span className="px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded flex items-center gap-1">
-          <span className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
+        <span className="ui-badge bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1">
+          <span className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse" />
           IN CORSO
         </span>
       );
     }
     return (
-      <span className="px-2 py-1 text-xs font-semibold bg-amber-100 text-amber-800 rounded">
+      <span className="ui-badge bg-amber-50 text-amber-700 border-amber-200">
         IN PAUSA
       </span>
     );
@@ -74,7 +74,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
           {/* HOME TEAM */}
           <div className="text-center">
             <div
-              className="inline-block text-sm font-semibold px-3 py-1.5 rounded-md mb-3"
+              className="inline-block text-sm font-semibold px-3 py-1.5 rounded-md mb-3 shadow-sm"
               style={{
                 backgroundColor: homeColor,
                 color: getContrastTextColor(homeColor),
@@ -82,7 +82,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
             >
               {homeDisplayName}
             </div>
-            <div className="text-6xl font-black text-slate-900 leading-none">
+            <div className="text-6xl font-black text-slate-900 leading-none font-display tabular-nums">
               {home.goals}
             </div>
           </div>
@@ -93,7 +93,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
           {/* AWAY TEAM */}
           <div className="text-center">
             <div
-              className="inline-block text-sm font-semibold px-3 py-1.5 rounded-md mb-3"
+              className="inline-block text-sm font-semibold px-3 py-1.5 rounded-md mb-3 shadow-sm"
               style={{
                 backgroundColor: awayColor,
                 color: getContrastTextColor(awayColor),
@@ -101,7 +101,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
             >
               {awayDisplayName}
             </div>
-            <div className="text-6xl font-black text-slate-900 leading-none">
+            <div className="text-6xl font-black text-slate-900 leading-none font-display tabular-nums">
               {away.goals}
             </div>
           </div>
@@ -110,7 +110,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
         {/* Key Stats Grid */}
         <div className="grid grid-cols-3 gap-3">
           {/* Shots */}
-          <div className="bg-slate-50 rounded-lg p-3 text-center">
+          <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-100">
             <div className="text-xs text-slate-600 mb-1">Tiri</div>
             <div className="flex items-center justify-center gap-2">
               <span className="text-lg font-bold text-slate-900">{home.shots}</span>
@@ -120,17 +120,17 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
           </div>
 
           {/* Shots on Target */}
-          <div className="bg-blue-50 rounded-lg p-3 text-center">
-            <div className="text-xs text-blue-700 mb-1">In Porta</div>
+          <div className="bg-sky-50 rounded-lg p-3 text-center border border-sky-100">
+            <div className="text-xs text-sky-700 mb-1">In Porta</div>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-lg font-bold text-blue-900">{home.shotsOnTarget}</span>
-              <span className="text-xs text-blue-300">-</span>
-              <span className="text-lg font-bold text-blue-900">{away.shotsOnTarget}</span>
+              <span className="text-lg font-bold text-sky-900">{home.shotsOnTarget}</span>
+              <span className="text-xs text-sky-300">-</span>
+              <span className="text-lg font-bold text-sky-900">{away.shotsOnTarget}</span>
             </div>
           </div>
 
           {/* Corners */}
-          <div className="bg-slate-50 rounded-lg p-3 text-center">
+          <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-100">
             <div className="text-xs text-slate-600 mb-1">Angoli</div>
             <div className="flex items-center justify-center gap-2">
               <span className="text-lg font-bold text-slate-900">{home.corners}</span>
@@ -140,7 +140,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
           </div>
 
           {/* Throw-ins */}
-          <div className="bg-slate-50 rounded-lg p-3 text-center">
+          <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-100">
             <div className="text-xs text-slate-600 mb-1">Rimesse</div>
             <div className="flex items-center justify-center gap-2">
               <span className="text-lg font-bold text-slate-900">{home.throwIns}</span>
@@ -150,7 +150,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
           </div>
 
           {/* Fouls */}
-          <div className="bg-slate-50 rounded-lg p-3 text-center">
+          <div className="bg-slate-50 rounded-lg p-3 text-center border border-slate-100">
             <div className="text-xs text-slate-600 mb-1">Falli</div>
             <div className="flex items-center justify-center gap-2">
               <span className="text-lg font-bold text-slate-900">{home.fouls}</span>
@@ -160,7 +160,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
           </div>
 
           {/* Yellow Cards */}
-          <div className="bg-yellow-50 rounded-lg p-3 text-center">
+          <div className="bg-amber-50 rounded-lg p-3 text-center border border-amber-100">
             <div className="text-xs text-yellow-700 mb-1">Gialli</div>
             <div className="flex items-center justify-center gap-2">
               <span className="text-lg font-bold text-yellow-900">{home.yellowCards}</span>
@@ -170,7 +170,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
           </div>
 
           {/* Red Cards */}
-          <div className="bg-red-50 rounded-lg p-3 text-center">
+          <div className="bg-red-50 rounded-lg p-3 text-center border border-red-100">
             <div className="text-xs text-red-700 mb-1">Rossi</div>
             <div className="flex items-center justify-center gap-2">
               <span className="text-lg font-bold text-red-900">{home.redCards}</span>
@@ -193,7 +193,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
                 const isHome = event.team === 'home';
                 const bgColor = isHome
                   ? 'bg-slate-100 border-slate-300'
-                  : 'bg-blue-50 border-blue-300';
+                  : 'bg-sky-50 border-sky-200';
 
                 return (
                   <div

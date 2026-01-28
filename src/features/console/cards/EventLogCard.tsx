@@ -31,28 +31,38 @@ export const EventLogCard: React.FC<EventLogCardProps> = ({
   onUndoLastEvent,
 }) => {
   return (
-    <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-3" data-testid="event-log-card" role="log" aria-label="Registro eventi">
-      <div 
-        data-testid="event-status-surface" 
+    <div className="ui-surface p-4 space-y-3" data-testid="event-log-card" role="log" aria-label="Registro eventi">
+      <div
+        data-testid="event-status-surface"
         data-active={isEventCursorActive ? 'true' : 'false'}
-        className="flex items-center justify-between"
+        className="flex items-center justify-between gap-3"
       >
-        <h3 className="font-semibold text-slate-900">
-          {isEventCursorActive ? `${currentCursor}/${totalEvents}` : `Eventi (${appliedEvents.length})`}
-        </h3>
-        {appliedEvents.length > 0 && canNavigate && (
-          <button
-            onClick={onUndoLastEvent}
-            aria-label="Annulla ultimo evento"
-            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
-          >
-            <Undo2 className="w-4 h-4" />
-          </button>
-        )}
+        <div>
+          <p className="ui-kicker">Registro</p>
+          <h3 className="text-sm font-semibold text-slate-900">
+            Eventi {appliedEvents.length > 0 ? `(${appliedEvents.length})` : ''}
+          </h3>
+        </div>
+        <div className="flex items-center gap-2">
+          {isEventCursorActive && (
+            <span className="ui-chip bg-amber-50 text-amber-800 border-amber-200">
+              Revisione {currentCursor}/{totalEvents}
+            </span>
+          )}
+          {appliedEvents.length > 0 && canNavigate && (
+            <button
+              onClick={onUndoLastEvent}
+              aria-label="Annulla ultimo evento"
+              className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
+            >
+              <Undo2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
       
       {appliedEvents.length === 0 && (
-        <p className="text-sm text-slate-500">Nessun evento registrato</p>
+        <p className="text-sm text-slate-500">Nessun evento registrato. Avvia la partita per iniziare.</p>
       )}
 
       {appliedEvents.length > 0 && (
@@ -61,19 +71,13 @@ export const EventLogCard: React.FC<EventLogCardProps> = ({
             const teamName = event.team === 'home' ? homeTeamName : awayTeamName;
             const minutes = event.minutes;
             return (
-              <div key={event.id || idx} className="flex items-center justify-between text-xs p-2 bg-slate-50 rounded">
-                <span className="font-medium">{teamName}</span>
+              <div key={event.id || idx} className="flex items-center justify-between text-xs p-2 bg-slate-50 rounded border border-slate-100">
+                <span className="font-medium text-slate-900 truncate max-w-[120px]">{teamName}</span>
                 <span className="text-slate-600">{event.type}</span>
-                <span className="text-slate-500">{minutes}'</span>
+                <span className="text-slate-500 tabular-nums">{minutes}'</span>
               </div>
             );
           })}
-        </div>
-      )}
-
-      {isEventCursorActive && (
-        <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
-          Visualizzando evento {currentCursor} di {totalEvents}
         </div>
       )}
     </div>

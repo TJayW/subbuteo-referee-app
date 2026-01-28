@@ -17,28 +17,31 @@ export const HeaderMatchInfo: React.FC<HeaderMatchInfoProps> = ({
   teamStats,
 }) => {
   return (
-    <div className="flex items-baseline gap-3 min-w-0">
-      {/* Home Team */}
-      <div className="flex items-baseline gap-1.5 min-w-0">
-        <span className="text-sm font-semibold text-slate-900 truncate">
-          {homeTeamName}
-        </span>
-        <span className="text-lg font-bold text-slate-900 tabular-nums">
-          {teamStats.home.goals}
-        </span>
-      </div>
+    <div className="flex flex-col min-w-0">
+      <span className="ui-kicker">Partita</span>
+      <div className="flex items-center gap-3 min-w-0">
+        {/* Home Team */}
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-sm font-semibold text-slate-700 truncate">
+            {homeTeamName}
+          </span>
+          <span className="text-xl font-semibold text-slate-900 tabular-nums font-display">
+            {teamStats.home.goals}
+          </span>
+        </div>
 
-      {/* Separator */}
-      <span className="text-slate-300 text-lg">–</span>
+        {/* Separator */}
+        <span className="text-slate-300 text-lg">–</span>
 
-      {/* Away Team */}
-      <div className="flex items-baseline gap-1.5 min-w-0">
-        <span className="text-lg font-bold text-slate-900 tabular-nums">
-          {teamStats.away.goals}
-        </span>
-        <span className="text-sm font-semibold text-slate-900 truncate">
-          {awayTeamName}
-        </span>
+        {/* Away Team */}
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-xl font-semibold text-slate-900 tabular-nums font-display">
+            {teamStats.away.goals}
+          </span>
+          <span className="text-sm font-semibold text-slate-700 truncate">
+            {awayTeamName}
+          </span>
+        </div>
       </div>
     </div>
   );

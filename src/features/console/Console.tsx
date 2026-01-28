@@ -25,6 +25,7 @@ import { EventLogCard } from './cards/EventLogCard';
 import { MatchControlCard } from './cards/MatchControlCard';
 import { ConsoleActionBar } from './components/ConsoleActionBar';
 import { ConsoleHandle } from './components/ConsoleHandle';
+import { ConsoleStatusStrip } from './components/ConsoleStatusStrip';
 import { MiniStreamPreview } from '@/features/streaming/MiniStreamPreview';
 import { StreamingDashboard } from '@/features/streaming/StreamingDashboard';
 import { StreamingControl } from '@/features/streaming/StreamingControl';
@@ -261,6 +262,12 @@ export const Console: React.FC<ConsoleProps> = (props) => {
         return (
           <>
             <div className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto">
+              <ConsoleStatusStrip
+                state={state}
+                isEventCursorActive={isCursorActive}
+                currentCursor={currentCursor}
+                totalEvents={state.events.length}
+              />
               {/* Desktop: EventLog first, Mobile: Team first */}
               {orientation === 'vertical' ? (
               <>
@@ -452,7 +459,7 @@ export const Console: React.FC<ConsoleProps> = (props) => {
         )}
         
         <aside
-          className="hidden md:flex md:flex-col flex-none bg-gradient-to-b from-slate-50 to-white border-r border-slate-200 overflow-hidden relative"
+          className="hidden md:flex md:flex-col flex-none bg-white/85 backdrop-blur-xl border-r border-slate-200/80 overflow-hidden relative"
         style={transitionStyle}
         data-console-state={console.state}
       >
@@ -481,7 +488,7 @@ export const Console: React.FC<ConsoleProps> = (props) => {
     // Mobile: div fixed bottom orizzontale
     return (
       <div
-        className="md:hidden fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white to-slate-50 border-t border-slate-200 overflow-hidden flex flex-col"
+        className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-200/80 overflow-hidden flex flex-col"
         style={transitionStyle}
         data-console-state={console.state}
       >
