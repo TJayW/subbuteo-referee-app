@@ -423,7 +423,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
 
               {/* Full Controls (shown when height is expanded) */}
               {contentHeight >= 400 && (
-                <div className="space-y-4" role="region" aria-label="Controlli completi operatore">
+                <div className="space-y-3" role="region" aria-label="Controlli completi operatore">
                   {/* Event Log - Scrollable, takes most space */}
                   <div className="ui-surface" style={{ maxHeight: 'calc(100vh - 480px)', minHeight: '200px' }} role="log" aria-label="Registro eventi partita">
                     <EventLogCard
@@ -436,6 +436,10 @@ export const BottomDock: React.FC<BottomDockProps> = ({
                       onUpdateEvent={onUpdateEvent || (() => {})}
                       onSetCursor={onSetCursor || (() => {})}
                       canNavigateEventCursor={canNavigateEventCursor}
+                      onUndoDomain={onUndoDomain}
+                      onRedoDomain={onRedoDomain}
+                      undoDisabled={undoDomainAvailable === false}
+                      redoDisabled={redoDomainAvailable === false}
                       layout="mobile"
                     />
                   </div>
@@ -469,9 +473,12 @@ export const BottomDock: React.FC<BottomDockProps> = ({
                       onSetTotalPeriodSeconds={onSetTotalPeriodSeconds}
                       onSetExactTime={onSetExactTime}
                       onToggleTimerLock={onToggleTimerLock}
+                      onEndPeriod={onEndPeriod}
                       timerLocked={timerLocked}
                       defaultExtraTimeDurationMinutes={defaultExtraTimeDurationMinutes}
                       lastEvent={lastEvent}
+                      onAddRecovery={onAddRecovery}
+                      onSetRecovery={onSetRecovery}
                       layout="mobile"
                     />
                   </div>

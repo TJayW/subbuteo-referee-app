@@ -215,7 +215,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           /* EXPANDED MODE: 5-card layout with scroll */
           <>
             {/* Card container: scrollable area with all 5 cards always visible */}
-            <div className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto relative">
+            <div className="flex-1 flex flex-col gap-2 p-3 overflow-y-auto relative">
               <ConsoleStatusStrip
                 state={state}
                 isEventCursorActive={isEventCursorActive}
@@ -223,7 +223,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 totalEvents={state.events.length}
               />
               {/* CARD 1: Event Log - Flexible height */}
-              <div className="flex-none" style={{ minHeight: '300px' }}>
+              <div className="flex-1 min-h-[240px]">
                 <EventLogCard
                   state={state}
                   teamStats={teamStats}
@@ -234,6 +234,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onUpdateEvent={onUpdateEvent || (() => {})}
                   onSetCursor={onSetCursor || (() => {})}
                   canNavigateEventCursor={canNavigateEventCursor}
+                  onUndoDomain={onUndoDomain}
+                  onRedoDomain={onRedoDomain}
+                  undoDisabled={undoDomainAvailable === false}
+                  redoDisabled={redoDomainAvailable === false}
                   layout="sidebar"
                 />
               </div>
@@ -267,9 +271,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onSetTotalPeriodSeconds={onSetTotalPeriodSeconds}
                   onSetExactTime={onSetExactTime}
                   onToggleTimerLock={onToggleTimerLock}
+                  onEndPeriod={onEndPeriod}
                   timerLocked={timerLocked}
                   defaultExtraTimeDurationMinutes={defaultExtraTimeDurationMinutes}
                   lastEvent={lastEvent}
+                  onAddRecovery={onAddRecovery}
+                  onSetRecovery={onSetRecovery}
                   layout="sidebar"
                 />
               </div>
