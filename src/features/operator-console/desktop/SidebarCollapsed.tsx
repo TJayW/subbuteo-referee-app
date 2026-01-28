@@ -54,8 +54,8 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
           onClick={() => onSelectTeam('home')}
           className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-sm transition-all ${
             selectedTeam === 'home'
-              ? 'bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-400'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-400'
+              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
           }`}
           aria-label={`Seleziona ${homeTeamName}`}
           title={homeTeamName}
@@ -66,8 +66,8 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
           onClick={() => onSelectTeam('away')}
           className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-sm transition-all ${
             selectedTeam === 'away'
-              ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              ? 'bg-sky-600 text-white shadow-sm ring-2 ring-sky-400'
+              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
           }`}
           aria-label={`Seleziona ${awayTeamName}`}
           title={awayTeamName}
@@ -95,7 +95,7 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
         <button
           onClick={() => onAddEvent('shot_on_target', selectedTeam)}
           disabled={state.period === 'pre_match' || state.period === 'finished'}
-          className="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all"
+          className="w-12 h-12 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all"
           aria-label="Aggiungi Tiro in porta"
           title="Tiro in Porta (O)"
         >
@@ -161,7 +161,7 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
         <button
           onClick={() => onAddEvent('timeout', selectedTeam)}
           disabled={state.period === 'pre_match' || state.period === 'finished'}
-          className="w-12 h-12 rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all"
+          className="w-12 h-12 rounded-lg bg-cyan-50 text-cyan-600 hover:bg-cyan-100 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all"
           aria-label="Aggiungi Timeout"
           title="Timeout (T)"
         >
@@ -178,7 +178,7 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
         className={`w-12 h-12 rounded-lg flex items-center justify-center transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
           isPlaying
             ? 'bg-amber-500 text-white hover:bg-amber-600'
-            : 'bg-emerald-500 text-white hover:bg-emerald-600'
+            : 'bg-emerald-600 text-white hover:bg-emerald-700'
         }`}
         aria-label={isPlaying ? 'Pausa' : 'Avvia'}
         title={isPlaying ? 'Pausa (Spazio)' : 'Avvia (Spazio)'}
@@ -192,13 +192,13 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
       {/* Event Log Access - Expands sidebar with event count badge */}
       <button
         onClick={onToggleExpand}
-        className="w-12 h-12 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all relative"
+        className="w-12 h-12 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all relative border border-slate-200"
         aria-label="Espandi registro eventi"
         title="Registro Eventi (Ctrl+\)"
       >
         <History className="w-5 h-5" />
         {totalEvents > 0 && (
-          <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-sky-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
             {totalEvents}
           </span>
         )}

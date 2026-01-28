@@ -34,9 +34,9 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
     <>
       <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40" onClick={onClose} />
       <div className="fixed inset-0 flex items-end lg:items-center justify-center z-50">
-        <div className="w-full lg:w-96 bg-white rounded-t-2xl lg:rounded-lg shadow-2xl max-h-[90vh] lg:max-h-none overflow-y-auto">
+        <div className="w-full lg:w-96 ui-surface rounded-t-2xl lg:rounded-xl shadow-2xl max-h-[90vh] lg:max-h-none overflow-y-auto">
           {/* Header */}
-          <div className="sticky top-0 bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+          <div className="sticky top-0 bg-white/95 backdrop-blur-xl border-b border-slate-200 px-4 py-3 flex items-center justify-between">
             <h2 className="font-semibold text-slate-900">Informazioni Partita</h2>
             <button
               onClick={onClose}
@@ -48,12 +48,12 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
           </div>
 
           {/* Tabs */}
-          <div className="flex border-b border-slate-200 bg-slate-50 overflow-x-auto">
+          <div className="flex border-b border-slate-200 bg-slate-50/80 overflow-x-auto">
             <button
               onClick={() => setActiveTab('config')}
               className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === 'config'
-                  ? 'border-b-2 border-emerald-500 text-emerald-600 bg-white'
+                  ? 'border-b-2 border-slate-900 text-slate-900 bg-white'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -63,7 +63,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
               onClick={() => setActiveTab('teams')}
               className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === 'teams'
-                  ? 'border-b-2 border-emerald-500 text-emerald-600 bg-white'
+                  ? 'border-b-2 border-slate-900 text-slate-900 bg-white'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -73,7 +73,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
               onClick={() => setActiveTab('officiating')}
               className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === 'officiating'
-                  ? 'border-b-2 border-emerald-500 text-emerald-600 bg-white'
+                  ? 'border-b-2 border-slate-900 text-slate-900 bg-white'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -83,7 +83,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
               onClick={() => setActiveTab('settings')}
               className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === 'settings'
-                  ? 'border-b-2 border-emerald-500 text-emerald-600 bg-white'
+                  ? 'border-b-2 border-slate-900 text-slate-900 bg-white'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -102,7 +102,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
             {activeTab === 'teams' && (
               <div className="space-y-4">
                 {/* Home Team */}
-                <div className="border border-slate-200 rounded-lg overflow-hidden">
+                <div className="ui-surface overflow-hidden">
                   <button
                     onClick={() => setExpandedTeam(expandedTeam === 'home' ? null : 'home')}
                     className="w-full flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 transition-colors"
@@ -145,7 +145,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
                               },
                             });
                           }}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                          className="ui-input"
                         />
                       </div>
 
@@ -179,7 +179,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
                 </div>
 
                 {/* Away Team */}
-                <div className="border border-slate-200 rounded-lg overflow-hidden">
+                <div className="ui-surface overflow-hidden">
                   <button
                     onClick={() => setExpandedTeam(expandedTeam === 'away' ? null : 'away')}
                     className="w-full flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 transition-colors"
@@ -222,7 +222,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
                               },
                             });
                           }}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                          className="ui-input"
                         />
                       </div>
 
@@ -269,7 +269,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
             {activeTab === 'settings' && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-900 mb-2">
+                  <label className="block ui-label mb-2">
                     Durata tempo (minuti)
                   </label>
                   <input
@@ -282,12 +282,12 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
                         periodDurationMinutes: parseInt(e.target.value) || 45,
                       })
                     }
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="ui-input"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-900 mb-2">
+                  <label className="block ui-label mb-2">
                     Timeout per squadra
                   </label>
                   <input
@@ -300,7 +300,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
                         timeoutsPerTeam: parseInt(e.target.value) || 1,
                       })
                     }
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="ui-input"
                   />
                 </div>
 
@@ -309,7 +309,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
                     type="checkbox"
                     checked={settings.audioEnabled}
                     onChange={(e) => handleSettingsChange({ audioEnabled: e.target.checked })}
-                    className="w-4 h-4 text-emerald-500 border-slate-300 rounded"
+                    className="w-4 h-4 text-slate-900 border-slate-300 rounded"
                   />
                   <span className="text-sm font-medium text-slate-900">Suoni abilitati</span>
                 </label>
@@ -321,7 +321,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
                     onChange={(e) =>
                       handleSettingsChange({ vibrationEnabled: e.target.checked })
                     }
-                    className="w-4 h-4 text-emerald-500 border-slate-300 rounded"
+                    className="w-4 h-4 text-slate-900 border-slate-300 rounded"
                   />
                   <span className="text-sm font-medium text-slate-900">Vibrazione abilitata</span>
                 </label>

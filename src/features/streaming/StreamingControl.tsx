@@ -56,22 +56,22 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
 
   if (!isSupported) {
     return (
-      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-        <p className="text-xs text-yellow-800">Browser non supporta streaming</p>
+      <div className="p-3 ui-surface-muted">
+        <p className="text-xs text-amber-800">Browser non supporta streaming</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-3 p-4 bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+    <div className="space-y-3 p-4 ui-surface">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Video className="w-4 h-4 text-blue-600" />
+          <Video className="w-4 h-4 text-slate-700" />
           <h4 className="font-semibold text-sm">Streaming</h4>
         </div>
         {isStreaming && (
-          <div className="flex items-center gap-1 px-2 py-0.5 bg-red-600 text-white rounded-full text-xs">
-            <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+          <div className="ui-chip bg-red-50 text-red-700 border-red-200">
+            <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
             LIVE
           </div>
         )}
@@ -81,7 +81,7 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
         <button
           onClick={handleStartStream}
           disabled={isConnecting}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isConnecting ? (
             <>
@@ -98,7 +98,7 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
       ) : (
         <div className="space-y-3">
           {localStream && (
-            <div className="relative aspect-video bg-black rounded-lg overflow-hidden border-2 border-red-500">
+            <div className="relative aspect-video bg-black rounded-lg overflow-hidden border border-red-500/70">
               <video
                 autoPlay
                 muted
@@ -114,7 +114,7 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
               {onExpandDashboard && (
                 <button
                   onClick={onExpandDashboard}
-                  className="absolute top-2 right-2 p-2 bg-black/70 text-white rounded"
+                  className="absolute top-2 right-2 p-2 bg-black/70 text-white rounded hover:bg-black/80"
                 >
                   <Maximize2 className="w-4 h-4" />
                 </button>
@@ -131,22 +131,22 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
               type="text"
               value={getStreamURL() || ''}
               readOnly
-              className="flex-1 px-2 py-1.5 text-xs bg-white border rounded font-mono"
+              className="flex-1 px-2 py-1.5 text-xs bg-white border border-slate-200 rounded font-mono"
               onClick={(e) => e.currentTarget.select()}
             />
-            <button onClick={handleCopyLink} className="px-2 bg-blue-600 text-white rounded" title="Copia link">
+            <button onClick={handleCopyLink} className="px-2 bg-sky-600 text-white rounded hover:bg-sky-700" title="Copia link">
               {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
 
           {/* How to test instructions */}
-          <div className="p-2 bg-blue-50 border border-blue-200 rounded">
-            <p className="text-xs text-blue-800 mb-2">
+          <div className="p-2 ui-surface-muted">
+            <p className="text-xs text-slate-700 mb-2">
               <strong>Come testare:</strong> Apri il link in un altro tab/browser per vedere il viewer count aumentare
             </p>
             <button
               onClick={handleOpenViewer}
-              className="w-full flex items-center justify-center gap-2 px-2 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
+              className="w-full flex items-center justify-center gap-2 px-2 py-1.5 bg-sky-600 text-white rounded hover:bg-sky-700 text-xs"
             >
               <Eye className="w-3 h-3" />
               Apri viewer in nuovo tab (test)
@@ -157,7 +157,7 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
             {onExpandDashboard && (
               <button
                 onClick={onExpandDashboard}
-                className="flex-1 px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm"
+                className="flex-1 px-3 py-2 bg-slate-900 text-white rounded hover:bg-slate-800 text-sm"
               >
                 <ExternalLink className="w-4 h-4 inline mr-1" />
                 Dashboard

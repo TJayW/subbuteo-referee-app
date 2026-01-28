@@ -81,13 +81,13 @@ const STORAGE_KEY_PANEL_HEIGHT = 'subbuteo_mobile_panel_height_v3';
  */
 const MOBILE_EVENT_BUTTONS = [
   { type: 'goal' as const, icon: Goal, color: 'text-emerald-600', bg: 'bg-emerald-50', hoverBg: 'hover:bg-emerald-100', label: 'Goal', shortcut: 'G' },
-  { type: 'shot_on_target' as const, icon: Target, color: 'text-blue-600', bg: 'bg-blue-50', hoverBg: 'hover:bg-blue-100', label: 'Tiro Porta', shortcut: 'O' },
+  { type: 'shot_on_target' as const, icon: Target, color: 'text-sky-600', bg: 'bg-sky-50', hoverBg: 'hover:bg-sky-100', label: 'Tiro Porta', shortcut: 'O' },
   { type: 'shot' as const, icon: AlertCircle, color: 'text-slate-600', bg: 'bg-slate-50', hoverBg: 'hover:bg-slate-100', label: 'Tiro', shortcut: 'S' },
   { type: 'corner' as const, icon: Zap, color: 'text-orange-600', bg: 'bg-orange-50', hoverBg: 'hover:bg-orange-100', label: 'Angolo', shortcut: 'C' },
   { type: 'foul' as const, icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50', hoverBg: 'hover:bg-amber-100', label: 'Fallo', shortcut: 'F' },
   { type: 'yellow_card' as const, icon: AlertCircle, color: 'text-yellow-600', bg: 'bg-yellow-50', hoverBg: 'hover:bg-yellow-100', label: 'Giallo', shortcut: 'Y' },
   { type: 'red_card' as const, icon: Zap, color: 'text-red-600', bg: 'bg-red-50', hoverBg: 'hover:bg-red-100', label: 'Rosso', shortcut: 'R', border: 'border-2 border-red-200' },
-  { type: 'timeout' as const, icon: Clock, color: 'text-purple-600', bg: 'bg-purple-50', hoverBg: 'hover:bg-purple-100', label: 'Timeout', shortcut: 'T' },
+  { type: 'timeout' as const, icon: Clock, color: 'text-cyan-600', bg: 'bg-cyan-50', hoverBg: 'hover:bg-cyan-100', label: 'Timeout', shortcut: 'T' },
 ] as const;
 
 export const BottomDock: React.FC<BottomDockProps> = ({
@@ -357,7 +357,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
                     onClick={() => onSelectTeam('away')}
                     className={`flex-1 h-12 rounded-lg flex items-center justify-center font-bold text-base transition-all ${FOCUS_RING} ${
                       selectedTeam === 'away'
-                        ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
+                        ? 'bg-sky-600 text-white shadow-lg ring-2 ring-sky-400'
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200 active:bg-slate-300'
                     }`}
                     aria-label={`Seleziona ${awayTeamName}`}
@@ -395,7 +395,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
                     className={`flex-1 h-14 rounded-lg flex items-center justify-center gap-2 font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm ${FOCUS_RING} ${
                       isPlaying
                         ? 'bg-amber-500 text-white hover:bg-amber-600 active:bg-amber-700'
-                        : 'bg-emerald-500 text-white hover:bg-emerald-600 active:bg-emerald-700'
+                        : 'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800'
                     }`}
                     aria-label={isPlaying ? 'Metti in pausa il cronometro' : 'Avvia il cronometro'}
                     aria-pressed={isPlaying}
@@ -412,7 +412,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
                   >
                     <History className="w-5 h-5" />
                     {totalEvents > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                      <span className="absolute -top-1 -right-1 bg-sky-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                         {totalEvents > 9 ? '9+' : totalEvents}
                       </span>
                     )}
@@ -425,7 +425,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
               {contentHeight >= 400 && (
                 <div className="space-y-4" role="region" aria-label="Controlli completi operatore">
                   {/* Event Log - Scrollable, takes most space */}
-                  <div className="bg-white rounded-xl border border-slate-200 shadow-sm" style={{ maxHeight: 'calc(100vh - 480px)', minHeight: '200px' }} role="log" aria-label="Registro eventi partita">
+                  <div className="ui-surface" style={{ maxHeight: 'calc(100vh - 480px)', minHeight: '200px' }} role="log" aria-label="Registro eventi partita">
                     <EventLogCard
                       state={state}
                       teamStats={teamStats}
@@ -441,7 +441,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
                   </div>
 
                   {/* Team Card - Full with all events */}
-                  <div className="bg-white rounded-xl border border-slate-200 shadow-sm" role="group" aria-label="Eventi squadra">
+                  <div className="ui-surface" role="group" aria-label="Eventi squadra">
                     <TeamCard
                       state={state}
                       teamStats={teamStats}
@@ -456,7 +456,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
                   </div>
 
                   {/* Time Card - Period and stoppage time */}
-                  <div className="bg-white rounded-xl border border-slate-200 shadow-sm" role="group" aria-label="Controlli tempo e periodo">
+                  <div className="ui-surface" role="group" aria-label="Controlli tempo e periodo">
                     <TimeCard
                       state={state}
                       isPlaying={isPlaying}

@@ -27,7 +27,7 @@ export const HeaderScoreboard: React.FC<HeaderScoreboardProps> = ({
   const isMatchStarted = currentPeriod !== 'pre_match';
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+    <div className="ui-surface p-4">
       {/* Two Column Layout */}
       <div className="grid grid-cols-2 gap-6">
         {/* HOME TEAM */}
@@ -54,35 +54,35 @@ export const HeaderScoreboard: React.FC<HeaderScoreboardProps> = ({
               )}
             </div>
           </button>
-          <div className="text-5xl font-black text-slate-900 mb-4 leading-none">
+          <div className="text-5xl font-black text-slate-900 mb-4 leading-none font-display tabular-nums">
             {home.goals}
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-slate-50 rounded p-2 border border-slate-100">
               <div className="text-slate-600">Tiri</div>
               <div className="font-semibold text-slate-900">{home.shots}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-sky-50 rounded p-2 border border-sky-100">
               <div className="text-slate-600">In Porta</div>
-              <div className="font-semibold text-blue-600">{home.shotsOnTarget}</div>
+              <div className="font-semibold text-sky-700">{home.shotsOnTarget}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-slate-50 rounded p-2 border border-slate-100">
               <div className="text-slate-600">Angoli</div>
               <div className="font-semibold text-slate-900">{home.corners}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-slate-50 rounded p-2 border border-slate-100">
               <div className="text-slate-600">Rimesse</div>
               <div className="font-semibold text-slate-900">{home.throwIns}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-slate-50 rounded p-2 border border-slate-100">
               <div className="text-slate-600">Falli</div>
               <div className="font-semibold text-slate-900">{home.fouls}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-amber-50 rounded p-2 border border-amber-100">
               <div className="text-slate-600">Gialli</div>
-              <div className="font-semibold text-yellow-600">{home.yellowCards}</div>
+              <div className="font-semibold text-amber-700">{home.yellowCards}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-red-50 rounded p-2 border border-red-100">
               <div className="text-slate-600">Rossi</div>
               <div className="font-semibold text-red-600">{home.redCards}</div>
             </div>
@@ -113,35 +113,35 @@ export const HeaderScoreboard: React.FC<HeaderScoreboardProps> = ({
               )}
             </div>
           </button>
-          <div className="text-5xl font-black text-slate-900 mb-4 leading-none">
+          <div className="text-5xl font-black text-slate-900 mb-4 leading-none font-display tabular-nums">
             {away.goals}
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-slate-50 rounded p-2 border border-slate-100">
               <div className="text-slate-600">Tiri</div>
               <div className="font-semibold text-slate-900">{away.shots}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-sky-50 rounded p-2 border border-sky-100">
               <div className="text-slate-600">In Porta</div>
-              <div className="font-semibold text-blue-600">{away.shotsOnTarget}</div>
+              <div className="font-semibold text-sky-700">{away.shotsOnTarget}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-slate-50 rounded p-2 border border-slate-100">
               <div className="text-slate-600">Angoli</div>
               <div className="font-semibold text-slate-900">{away.corners}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-slate-50 rounded p-2 border border-slate-100">
               <div className="text-slate-600">Rimesse</div>
               <div className="font-semibold text-slate-900">{away.throwIns}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-slate-50 rounded p-2 border border-slate-100">
               <div className="text-slate-600">Falli</div>
               <div className="font-semibold text-slate-900">{away.fouls}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-amber-50 rounded p-2 border border-amber-100">
               <div className="text-slate-600">Gialli</div>
-              <div className="font-semibold text-yellow-600">{away.yellowCards}</div>
+              <div className="font-semibold text-amber-700">{away.yellowCards}</div>
             </div>
-            <div className="bg-slate-50 rounded p-2">
+            <div className="bg-red-50 rounded p-2 border border-red-100">
               <div className="text-slate-600">Rossi</div>
               <div className="font-semibold text-red-600">{away.redCards}</div>
             </div>

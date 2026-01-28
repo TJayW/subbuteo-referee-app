@@ -122,14 +122,14 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
   }
 
   return (
-    <div className="space-y-4 p-4 bg-white border border-gray-200 rounded-lg">
+    <div className="space-y-4 p-4 ui-surface">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Streaming Live</h3>
         {isStreaming && (
-          <div className="flex items-center gap-2 text-sm text-green-600">
-            <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
-            IN DIRETTA
+          <div className="ui-chip bg-emerald-50 text-emerald-700 border-emerald-200">
+            <div className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse" />
+            <span className="font-semibold">IN DIRETTA</span>
           </div>
         )}
       </div>
@@ -137,13 +137,13 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
       {/* Camera Selection */}
       {!isStreaming && cameras.length > 1 && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="ui-label mb-1">
             Seleziona fotocamera
           </label>
           <select
             value={selectedCamera}
             onChange={(e) => setSelectedCamera(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            className="ui-input"
           >
             <option value="">Fotocamera predefinita</option>
             {cameras.map((camera) => (
@@ -176,7 +176,7 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
         {!isStreaming ? (
           <button
             onClick={handleStartStream}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
           >
             <Video className="w-4 h-4" />
             Avvia Streaming
@@ -194,9 +194,9 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
 
       {/* Viewer Count */}
       {isStreaming && (
-        <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
-          <Users className="w-4 h-4 text-blue-600" />
-          <span className="text-sm font-medium text-blue-900">
+        <div className="flex items-center gap-2 p-3 ui-surface-muted">
+          <Users className="w-4 h-4 text-sky-600" />
+          <span className="text-sm font-medium text-slate-900">
             {viewerCount} {viewerCount === 1 ? 'spettatore' : 'spettatori'}
           </span>
         </div>
@@ -205,7 +205,7 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
       {/* Shareable Link */}
       {isStreaming && (
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="ui-label">
             Link per spettatori
           </label>
           <div className="flex gap-2">
@@ -213,17 +213,17 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
               type="text"
               value={generateStreamURL(streamKey)}
               readOnly
-              className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm"
+              className="ui-input font-mono text-sm"
             />
             <button
               onClick={handleCopyLink}
-              className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-3 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700"
               title="Copia link"
             >
               {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
-          <p className="text-xs text-gray-500">
+          <p className="ui-help">
             Condividi questo link per permettere agli spettatori di vedere la partita in diretta
           </p>
         </div>
@@ -238,8 +238,8 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
 
       {/* Info */}
       {!isStreaming && (
-        <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">
-          <p className="text-xs text-gray-600">
+        <div className="p-3 ui-surface-muted">
+          <p className="text-xs text-slate-600">
             💡 Lo streaming è completamente gratuito e peer-to-peer. Nessun server richiesto!
           </p>
         </div>

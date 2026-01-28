@@ -25,6 +25,7 @@ import { MatchControlCard } from '../cards/MatchControlCard';
 import { LAYOUT_WIDTHS, ANIMATION_TIMINGS } from '@/constants/layout';
 import { getLayoutMode, getLayoutConfig, type LayoutMode } from '@/utils/responsive-layout';
 import { StreamingControl } from '@/features/streaming/StreamingControl';
+import { ConsoleStatusStrip } from '@/features/console/components/ConsoleStatusStrip';
 
 interface SidebarProps {
   state: DomainMatchState;
@@ -121,6 +122,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const isPlaying = state.isRunning && state.period !== 'pre_match';
   const appliedEvents = state.events.slice(0, state.cursor);
   const lastEvent = appliedEvents.length > 0 ? appliedEvents[appliedEvents.length - 1] : null;
+  const currentCursor = state.cursor ?? state.events.length;
+  const isEventCursorActive = currentCursor < state.events.length;
 
   // Detect layout mode for responsive constraints
   const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => getLayoutMode());
@@ -194,7 +197,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* In-flow sidebar: no scroll; only event list scrolls (§P0) */}
       {/* Dynamic width based on collapse state with smooth transition */}
       <aside 
-        className="hidden md:flex md:flex-col flex-none bg-gradient-to-b from-slate-50 to-white border-r border-slate-200 overflow-hidden relative"
+        className="hidden md:flex md:flex-col flex-none bg-white/85 backdrop-blur-xl border-r border-slate-200/80 overflow-hidden relative"
         style={transitionStyle}
       >        {isCollapsed ? (
           /* COLLAPSED MODE: Icon-only compact rail */
@@ -213,12 +216,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <>
             {/* Card container: scrollable area with all 5 cards always visible */}
             <div className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto relative">
-              {/* Scroll Indicator: mostra quando Card 5 non è visibile */}
-              <div className="sticky top-0 z-10 flex justify-center py-1 bg-gradient-to-b from-gray-900 via-gray-900/90 to-transparent pointer-events-none">
-                <div className="px-3 py-1 bg-purple-600/20 border border-purple-500/30 rounded-full text-purple-300 text-xs font-medium animate-pulse">
-                  ↓ Scroll per Streaming
-                </div>
-              </div>
+              <ConsoleStatusStrip
+                state={state}
+                isEventCursorActive={isEventCursorActive}
+                currentCursor={currentCursor}
+                totalEvents={state.events.length}
+              />
               {/* CARD 1: Event Log - Flexible height */}
               <div className="flex-none" style={{ minHeight: '300px' }}>
                 <EventLogCard
@@ -303,7 +306,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             {/* CARD 5: Streaming Control - STICKY BOTTOM (sempre visibile) */}
-            <div className="flex-none border-t border-gray-700/50 bg-gray-900/95 backdrop-blur-sm">
+            <div className="flex-none border-t border-slate-200 bg-white/90 backdrop-blur-sm">
               <div className="p-3">
                 <StreamingControl
                   matchState={state}

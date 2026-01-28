@@ -22,9 +22,9 @@ export function MiniStreamPreview({ onExpand, onClose }: MiniStreamPreviewProps)
   if (!isStreaming || !localStream) return null;
 
   return (
-    <div className="fixed bottom-20 right-6 z-50 w-64 bg-gray-900 rounded-lg shadow-2xl border border-gray-700 overflow-hidden">
+    <div className="fixed bottom-20 right-6 z-50 w-64 ui-surface-dark overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-red-600 to-red-500 cursor-move">
+      <div className="flex items-center justify-between px-3 py-2 bg-red-600 cursor-move">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
           <span className="text-white text-xs font-semibold">STREAMING</span>
@@ -69,10 +69,10 @@ export function MiniStreamPreview({ onExpand, onClose }: MiniStreamPreviewProps)
       </div>
 
       {/* Footer */}
-      <div className="px-3 py-2 bg-gray-800 text-center">
+      <div className="px-3 py-2 bg-slate-900/70 text-center">
         <button
           onClick={onExpand}
-          className="text-xs text-gray-300 hover:text-white transition-colors"
+          className="text-xs text-slate-200 hover:text-white transition-colors"
         >
           Click per aprire dashboard →
         </button>

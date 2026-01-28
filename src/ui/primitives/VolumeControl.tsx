@@ -53,7 +53,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
         value={displayVolume}
         onChange={(e) => onChange(Number(e.target.value))}
         disabled={!enabled}
-        className="w-24 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900 disabled:opacity-50"
+        className="w-24 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-500 disabled:opacity-50"
         aria-label="Controllo volume"
         aria-valuemin={0}
         aria-valuemax={100}

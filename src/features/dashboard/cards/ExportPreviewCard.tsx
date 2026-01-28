@@ -20,7 +20,7 @@ export const ExportPreviewCard: React.FC<ExportPreviewCardProps> = ({
     <div className="flex items-center justify-between text-xs py-1">
       <span className="text-slate-700">{label}</span>
       {checked ? (
-        <Check size={14} className="text-green-600" />
+        <Check size={14} className="text-emerald-600" />
       ) : (
         <X size={14} className="text-slate-300" />
       )}

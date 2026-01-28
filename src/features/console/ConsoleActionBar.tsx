@@ -61,7 +61,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
         className={`${buttonSize} rounded-lg transition-all flex items-center justify-center ${FOCUS_RING} ${
           isPlaying
             ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-lg'
-            : 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg'
+            : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg'
         } disabled:opacity-40 disabled:cursor-not-allowed`}
         aria-label={isPlaying ? 'Pausa' : 'Avvia'}
         title={isPlaying ? 'Pausa (Space)' : 'Avvia (Space)'}
@@ -75,7 +75,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
           onClick={() => onSelectTeam('home')}
           className={`${buttonSize} rounded-lg flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
             selectedTeam === 'home'
-              ? 'bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-400'
+              ? 'bg-emerald-600 text-white shadow-lg ring-2 ring-emerald-400'
               : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
           }`}
           aria-label={`Seleziona ${homeTeamName}`}
@@ -87,7 +87,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
           onClick={() => onSelectTeam('away')}
           className={`${buttonSize} rounded-lg flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
             selectedTeam === 'away'
-              ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
+              ? 'bg-sky-600 text-white shadow-lg ring-2 ring-sky-400'
               : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
           }`}
           aria-label={`Seleziona ${awayTeamName}`}

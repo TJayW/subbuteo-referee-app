@@ -34,7 +34,7 @@ export const Sheet: React.FC<SheetProps> = ({
         onClick={onClose}
       />
       <div
-        className={`fixed z-50 bg-white shadow-2xl overflow-hidden flex flex-col ${
+        className={`fixed z-50 ui-surface overflow-hidden flex flex-col ${
           position === 'bottom'
             ? `inset-x-0 bottom-0 rounded-t-2xl slide-in-from-bottom ${sizeClasses[size]}`
             : `inset-y-0 right-0 rounded-l-2xl slide-in-from-right ${sizeClasses[size]}`
@@ -42,7 +42,7 @@ export const Sheet: React.FC<SheetProps> = ({
       >
         {/* Header */}
         {title && (
-          <div className="border-b border-slate-200 px-4 py-3 flex items-center justify-between bg-slate-50">
+          <div className="border-b border-slate-200 px-4 py-3 flex items-center justify-between bg-slate-50/80">
             <h2 className="font-semibold text-slate-900">{title}</h2>
             <IconButton size="sm" variant="ghost" onClick={onClose}>
               <X className="w-5 h-5" />

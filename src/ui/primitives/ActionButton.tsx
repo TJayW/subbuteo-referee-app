@@ -28,12 +28,12 @@ interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
 const actionStyles: Record<ActionType, string> = {
   // PRIMARY: Azione principale positiva
   primary: `
-    bg-gradient-to-br from-blue-500 to-blue-600
+    bg-gradient-to-br from-sky-500 to-sky-600
     text-white font-semibold
-    hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:shadow-blue-500/30
-    active:from-blue-700 active:to-blue-800 active:scale-95
+    hover:from-sky-600 hover:to-sky-700 hover:shadow-lg hover:shadow-sky-500/30
+    active:from-sky-700 active:to-sky-800 active:scale-95
     transition-all duration-250 ease-snappy
-    focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2
+    focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2
     disabled:opacity-50 disabled:cursor-not-allowed
   `,
 
@@ -117,10 +117,10 @@ const actionStyles: Record<ActionType, string> = {
   edit: `
     bg-slate-50 text-slate-900
     border-2 border-dashed border-slate-300
-    hover:bg-slate-100 hover:border-blue-400 hover:text-blue-600
+    hover:bg-slate-100 hover:border-sky-400 hover:text-sky-600
     active:bg-slate-200 active:scale-95
     transition-all duration-250 ease-smooth
-    focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1
+    focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-1
     disabled:opacity-50 disabled:cursor-not-allowed
   `,
 
@@ -137,12 +137,12 @@ const actionStyles: Record<ActionType, string> = {
 
   // TEST: Esegui test (suoni, etc)
   test: `
-    bg-gradient-to-br from-violet-500 to-violet-600
+    bg-gradient-to-br from-slate-700 to-slate-800
     text-white font-semibold
-    hover:from-violet-600 hover:to-violet-700 hover:shadow-lg hover:shadow-violet-500/30
-    active:from-violet-700 active:to-violet-800 active:scale-95
+    hover:from-slate-800 hover:to-slate-900 hover:shadow-lg hover:shadow-slate-500/30
+    active:from-slate-900 active:to-black active:scale-95
     transition-all duration-250 ease-snappy
-    focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2
+    focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2
     disabled:opacity-50 disabled:cursor-not-allowed
   `,
 };

@@ -1,0 +1,3258 @@
+diff --git a/src/app/AppShell.tsx b/src/app/AppShell.tsx
+index 19616ba..7de0321 100644
+--- a/src/app/AppShell.tsx
++++ b/src/app/AppShell.tsx
+@@ -202,7 +202,7 @@ export default function AppShell() {
+       action: async () => {
+         exportPNG(match.state, settings.homeTeamName, settings.awayTeamName);
+       },
+-      color: 'border-purple-200 bg-purple-50 hover:bg-purple-100 hover:border-purple-300',
++      color: 'border-sky-200 bg-sky-50 hover:bg-sky-100 hover:border-sky-300',
+     },
+     {
+       id: 'html',
+diff --git a/src/constants/console.ts b/src/constants/console.ts
+index 4a7db42..0272e8d 100644
+--- a/src/constants/console.ts
++++ b/src/constants/console.ts
+@@ -13,13 +13,13 @@ import type { EventType } from '@/domain/match/types';
+  */
+ export const EVENT_BUTTONS = [
+   { type: 'goal' as EventType, icon: Goal, color: 'text-emerald-600', bg: 'bg-emerald-50', hoverBg: 'hover:bg-emerald-100', label: 'Goal', shortcut: 'G' },
+-  { type: 'shot_on_target' as EventType, icon: Target, color: 'text-blue-600', bg: 'bg-blue-50', hoverBg: 'hover:bg-blue-100', label: 'Tiro Porta', shortcut: 'O' },
++  { type: 'shot_on_target' as EventType, icon: Target, color: 'text-sky-600', bg: 'bg-sky-50', hoverBg: 'hover:bg-sky-100', label: 'Tiro Porta', shortcut: 'O' },
+   { type: 'shot' as EventType, icon: AlertCircle, color: 'text-slate-600', bg: 'bg-slate-50', hoverBg: 'hover:bg-slate-100', label: 'Tiro', shortcut: 'S' },
+   { type: 'corner' as EventType, icon: Zap, color: 'text-orange-600', bg: 'bg-orange-50', hoverBg: 'hover:bg-orange-100', label: 'Angolo', shortcut: 'C' },
+   { type: 'foul' as EventType, icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50', hoverBg: 'hover:bg-amber-100', label: 'Fallo', shortcut: 'F' },
+   { type: 'yellow_card' as EventType, icon: AlertCircle, color: 'text-yellow-600', bg: 'bg-yellow-50', hoverBg: 'hover:bg-yellow-100', label: 'Giallo', shortcut: 'Y' },
+   { type: 'red_card' as EventType, icon: Zap, color: 'text-red-600', bg: 'bg-red-50', hoverBg: 'hover:bg-red-100', label: 'Rosso', shortcut: 'R' },
+-  { type: 'timeout' as EventType, icon: Clock, color: 'text-purple-600', bg: 'bg-purple-50', hoverBg: 'hover:bg-purple-100', label: 'Timeout', shortcut: 'T' },
++  { type: 'timeout' as EventType, icon: Clock, color: 'text-cyan-600', bg: 'bg-cyan-50', hoverBg: 'hover:bg-cyan-100', label: 'Timeout', shortcut: 'T' },
+ ] as const;
+ 
+ /**
+diff --git a/src/constants/styles.ts b/src/constants/styles.ts
+index 881b487..e7ecee5 100644
+--- a/src/constants/styles.ts
++++ b/src/constants/styles.ts
+@@ -15,8 +15,8 @@ export const PERIOD_COLOR_CLASSES: Partial<Record<Period, string>> = {
+   first_half: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+   half_time: 'bg-amber-50 text-amber-700 border border-amber-200',
+   second_half: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+-  extra_time_1: 'bg-violet-50 text-violet-700 border border-violet-200',
+-  extra_time_2: 'bg-violet-50 text-violet-700 border border-violet-200',
++  extra_time_1: 'bg-sky-50 text-sky-700 border border-sky-200',
++  extra_time_2: 'bg-sky-50 text-sky-700 border border-sky-200',
+   shootout: 'bg-rose-50 text-rose-700 border border-rose-200',
+   finished: 'bg-slate-200 text-slate-700 border border-slate-300',
+   suspended: 'bg-red-100 text-red-700 border border-red-300',
+diff --git a/src/features/console/ConsoleActionBar.tsx b/src/features/console/ConsoleActionBar.tsx
+index 82e9bae..d8f90fa 100644
+--- a/src/features/console/ConsoleActionBar.tsx
++++ b/src/features/console/ConsoleActionBar.tsx
+@@ -61,7 +61,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
+         className={`${buttonSize} rounded-lg transition-all flex items-center justify-center ${FOCUS_RING} ${
+           isPlaying
+             ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-lg'
+-            : 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg'
++            : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg'
+         } disabled:opacity-40 disabled:cursor-not-allowed`}
+         aria-label={isPlaying ? 'Pausa' : 'Avvia'}
+         title={isPlaying ? 'Pausa (Space)' : 'Avvia (Space)'}
+@@ -75,7 +75,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
+           onClick={() => onSelectTeam('home')}
+           className={`${buttonSize} rounded-lg flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
+             selectedTeam === 'home'
+-              ? 'bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-400'
++              ? 'bg-emerald-600 text-white shadow-lg ring-2 ring-emerald-400'
+               : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+           }`}
+           aria-label={`Seleziona ${homeTeamName}`}
+@@ -87,7 +87,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
+           onClick={() => onSelectTeam('away')}
+           className={`${buttonSize} rounded-lg flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
+             selectedTeam === 'away'
+-              ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
++              ? 'bg-sky-600 text-white shadow-lg ring-2 ring-sky-400'
+               : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+           }`}
+           aria-label={`Seleziona ${awayTeamName}`}
+diff --git a/src/features/dashboard/ConsoleFilterBar.tsx b/src/features/dashboard/ConsoleFilterBar.tsx
+index ab7d381..551127a 100644
+--- a/src/features/dashboard/ConsoleFilterBar.tsx
++++ b/src/features/dashboard/ConsoleFilterBar.tsx
+@@ -46,7 +46,7 @@ export const ConsoleFilterBar: React.FC<ConsoleFilterBarProps> = ({
+   ];
+ 
+   return (
+-    <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-4">
++    <div className="ui-surface-muted p-3 mb-4">
+       <div className="flex items-center justify-between gap-4 flex-wrap">
+         {/* Left: Filters */}
+         <div className="flex items-center gap-3">
+@@ -60,7 +60,7 @@ export const ConsoleFilterBar: React.FC<ConsoleFilterBarProps> = ({
+                   onClick={() => onChange({ ...filters, team: option.value })}
+                   className={`px-3 py-1 text-xs font-medium transition-colors ${
+                     filters.team === option.value
+-                      ? 'bg-blue-600 text-white'
++                      ? 'bg-slate-900 text-white'
+                       : 'text-slate-700 hover:bg-slate-50'
+                   }`}
+                 >
+@@ -78,7 +78,7 @@ export const ConsoleFilterBar: React.FC<ConsoleFilterBarProps> = ({
+               onChange={(e) =>
+                 onChange({ ...filters, period: e.target.value as Period | 'all' })
+               }
+-              className="px-2 py-1 text-xs font-medium bg-white border border-slate-200 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
++              className="px-2 py-1 text-xs font-medium bg-white border border-slate-200 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+             >
+               {periodOptions.map((option) => (
+                 <option key={option.value} value={option.value}>
+diff --git a/src/features/dashboard/DashboardCard.tsx b/src/features/dashboard/DashboardCard.tsx
+index 4d9cc8e..5c23e37 100644
+--- a/src/features/dashboard/DashboardCard.tsx
++++ b/src/features/dashboard/DashboardCard.tsx
+@@ -83,7 +83,7 @@ export const CardAction: React.FC<CardActionProps> = ({
+   const baseClasses = 'p-1.5 rounded-md transition-colors';
+   const variantClasses = {
+     default: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+-    primary: 'text-blue-600 hover:bg-blue-50 hover:text-blue-700',
++    primary: 'text-sky-600 hover:bg-sky-50 hover:text-sky-700',
+     danger: 'text-red-600 hover:bg-red-50 hover:text-red-700',
+   };
+ 
+diff --git a/src/features/dashboard/ExportPopover.tsx b/src/features/dashboard/ExportPopover.tsx
+index b15516d..55596ba 100644
+--- a/src/features/dashboard/ExportPopover.tsx
++++ b/src/features/dashboard/ExportPopover.tsx
+@@ -56,7 +56,7 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
+         ref={buttonRef}
+         onClick={() => setIsOpen(!isOpen)}
+         onMouseEnter={() => setIsOpen(true)}
+-        className="p-2 text-white bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:shadow-blue-500/50 rounded-lg transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 group"
++        className="p-2 text-white bg-gradient-to-br from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 hover:shadow-lg hover:shadow-sky-500/50 rounded-lg transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 group"
+         aria-label="📥 Esporta partita"
+         aria-expanded={isOpen}
+       >
+@@ -72,9 +72,9 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
+           style={{ width: `${LAYOUT_WIDTHS.EXPORT_POPOVER}px` }}
+         >
+           {/* Header */}
+-          <div className="px-4 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 via-slate-50 to-blue-50">
++          <div className="px-4 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 via-slate-50 to-sky-50">
+             <div className="flex items-center gap-2 mb-1">
+-              <Zap className="w-5 h-5 text-blue-600" />
++              <Zap className="w-5 h-5 text-sky-600" />
+               <h3 className="font-semibold text-slate-900">Esporta Rapporto</h3>
+             </div>
+             <p className="text-xs text-slate-600 mt-2">Scegli il formato più adatto alle tue esigenze</p>
+@@ -102,7 +102,7 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
+                     {option.icon}
+                   </div>
+                   <div className="flex-1 min-w-0">
+-                    <div className="font-semibold text-sm text-slate-900 group-hover:text-blue-600 transition-colors duration-250">
++                    <div className="font-semibold text-sm text-slate-900 group-hover:text-sky-600 transition-colors duration-250">
+                       {option.label}
+                     </div>
+                     <div className="text-xs text-slate-600 mt-0.5 truncate">
+@@ -111,7 +111,7 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
+                   </div>
+                   {isLoading && (
+                     <div className="animate-spin">
+-                      <Zap className="w-4 h-4 text-blue-500" />
++                      <Zap className="w-4 h-4 text-sky-500" />
+                     </div>
+                   )}
+                 </div>
+@@ -120,8 +120,8 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
+           </div>
+ 
+           {/* Info Footer */}
+-          <div className="px-4 py-3 bg-blue-50/50 border-t border-blue-100 rounded-b-xl">
+-            <div className="flex gap-2 text-xs text-blue-900">
++          <div className="px-4 py-3 bg-sky-50/50 border-t border-sky-100 rounded-b-xl">
++            <div className="flex gap-2 text-xs text-sky-900">
+               <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+               <p>
+                 I file verranno salvati sul tuo dispositivo con timestamp automatico.
+diff --git a/src/features/dashboard/ExportPreviewCard.tsx b/src/features/dashboard/ExportPreviewCard.tsx
+index 836d38a..1b1de30 100644
+--- a/src/features/dashboard/ExportPreviewCard.tsx
++++ b/src/features/dashboard/ExportPreviewCard.tsx
+@@ -30,7 +30,7 @@ export const ExportPreviewCard: React.FC<ExportPreviewCardProps> = ({
+     <div className="flex items-center justify-between text-xs py-1">
+       <span className="text-slate-700">{label}</span>
+       {checked ? (
+-        <Check size={14} className="text-green-600" />
++        <Check size={14} className="text-emerald-600" />
+       ) : (
+         <X size={14} className="text-slate-300" />
+       )}
+diff --git a/src/features/dashboard/MatchOverviewCard.tsx b/src/features/dashboard/MatchOverviewCard.tsx
+index 8008352..7c7b65b 100644
+--- a/src/features/dashboard/MatchOverviewCard.tsx
++++ b/src/features/dashboard/MatchOverviewCard.tsx
+@@ -59,8 +59,8 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+     }
+     if (state.isRunning) {
+       return (
+-        <span className="px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded flex items-center gap-1">
+-          <span className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
++        <span className="px-2 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded flex items-center gap-1">
++          <span className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse" />
+           IN CORSO
+         </span>
+       );
+@@ -131,12 +131,12 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+           </div>
+ 
+           {/* Shots on Target */}
+-          <div className="bg-blue-50 rounded-lg p-3 text-center">
+-            <div className="text-xs text-blue-700 mb-1">In Porta</div>
++          <div className="bg-sky-50 rounded-lg p-3 text-center">
++            <div className="text-xs text-sky-700 mb-1">In Porta</div>
+             <div className="flex items-center justify-center gap-2">
+-              <span className="text-lg font-bold text-blue-900">{home.shotsOnTarget}</span>
+-              <span className="text-xs text-blue-300">-</span>
+-              <span className="text-lg font-bold text-blue-900">{away.shotsOnTarget}</span>
++              <span className="text-lg font-bold text-sky-900">{home.shotsOnTarget}</span>
++              <span className="text-xs text-sky-300">-</span>
++              <span className="text-lg font-bold text-sky-900">{away.shotsOnTarget}</span>
+             </div>
+           </div>
+ 
+@@ -204,7 +204,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
+                 const isHome = event.team === 'home';
+                 const bgColor = isHome
+                   ? 'bg-slate-100 border-slate-300'
+-                  : 'bg-blue-50 border-blue-300';
++                  : 'bg-sky-50 border-sky-300';
+ 
+                 return (
+                   <div
+diff --git a/src/features/dashboard/OperationalHealthCard.tsx b/src/features/dashboard/OperationalHealthCard.tsx
+index 8086b12..6d6f4c5 100644
+--- a/src/features/dashboard/OperationalHealthCard.tsx
++++ b/src/features/dashboard/OperationalHealthCard.tsx
+@@ -18,8 +18,8 @@ export const OperationalHealthCard: React.FC<OperationalHealthCardProps> = ({ st
+   const severityConfig: Record<HealthCheck['severity'], { icon: React.ReactNode; color: string; bg: string }> = {
+     info: {
+       icon: <CheckCircle size={16} />,
+-      color: 'text-green-700',
+-      bg: 'bg-green-50 border-green-200',
++      color: 'text-emerald-700',
++      bg: 'bg-emerald-50 border-emerald-200',
+     },
+     warning: {
+       icon: <AlertCircle size={16} />,
+@@ -39,7 +39,7 @@ export const OperationalHealthCard: React.FC<OperationalHealthCardProps> = ({ st
+     <DashboardCard
+       title="Integrità Operativa"
+       subtitle="Controlli automatici"
+-      icon={<Shield size={18} className={hasIssues ? 'text-amber-600' : 'text-green-600'} />}
++      icon={<Shield size={18} className={hasIssues ? 'text-amber-600' : 'text-emerald-600'} />}
+       compact
+     >
+       <div className="space-y-2">
+diff --git a/src/features/dashboard/StatsMatrixCard.tsx b/src/features/dashboard/StatsMatrixCard.tsx
+index 1c8b742..91c9b27 100644
+--- a/src/features/dashboard/StatsMatrixCard.tsx
++++ b/src/features/dashboard/StatsMatrixCard.tsx
+@@ -62,7 +62,7 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
+             onClick={() => setViewMode('total')}
+             className={`px-2 py-1 text-xs font-medium transition-colors ${
+               viewMode === 'total'
+-                ? 'bg-blue-600 text-white'
++                ? 'bg-sky-600 text-white'
+                 : 'text-slate-700 hover:bg-slate-50'
+             }`}
+           >
+@@ -72,7 +72,7 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
+             onClick={() => setViewMode('period')}
+             className={`px-2 py-1 text-xs font-medium transition-colors ${
+               viewMode === 'period'
+-                ? 'bg-blue-600 text-white'
++                ? 'bg-sky-600 text-white'
+                 : 'text-slate-700 hover:bg-slate-50'
+             }`}
+           >
+@@ -111,7 +111,7 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
+                 <div className="w-16">
+                   <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                     <div
+-                      className="h-full bg-blue-500 transition-all"
++                      className="h-full bg-sky-500 transition-all"
+                       style={{ width: `${homePercent}%` }}
+                     />
+                   </div>
+@@ -123,7 +123,7 @@ export const StatsMatrixCard: React.FC<StatsMatrixCardProps> = ({
+       ) : (
+         <div className="space-y-3">
+           {periodBreakdown.map((period) => (
+-            <div key={period.period} className="border-l-2 border-blue-500 pl-3">
++            <div key={period.period} className="border-l-2 border-sky-500 pl-3">
+               <div className="text-xs font-semibold text-slate-700 mb-1">
+                 {periodLabels[period.period] || period.period}
+               </div>
+diff --git a/src/features/dashboard/cards/ExportPreviewCard.tsx b/src/features/dashboard/cards/ExportPreviewCard.tsx
+index eaea21c..61d559b 100644
+--- a/src/features/dashboard/cards/ExportPreviewCard.tsx
++++ b/src/features/dashboard/cards/ExportPreviewCard.tsx
+@@ -20,7 +20,7 @@ export const ExportPreviewCard: React.FC<ExportPreviewCardProps> = ({
+     <div className="flex items-center justify-between text-xs py-1">
+       <span className="text-slate-700">{label}</span>
+       {checked ? (
+-        <Check size={14} className="text-green-600" />
++        <Check size={14} className="text-emerald-600" />
+       ) : (
+         <X size={14} className="text-slate-300" />
+       )}
+diff --git a/src/features/dashboard/cards/OperationalHealthCard.tsx b/src/features/dashboard/cards/OperationalHealthCard.tsx
+index c53ea57..45ec63f 100644
+--- a/src/features/dashboard/cards/OperationalHealthCard.tsx
++++ b/src/features/dashboard/cards/OperationalHealthCard.tsx
+@@ -17,7 +17,7 @@ export const OperationalHealthCard: React.FC<OperationalHealthCardProps> = ({ ch
+   const severityConfig: Record<HealthCheck['severity'], { icon: React.ReactNode; color: string; bg: string }> = {
+     info: {
+       icon: <CheckCircle size={16} />,
+-      color: 'text-green-700',
++      color: 'text-emerald-700',
+       bg: 'bg-emerald-50 border-emerald-200',
+     },
+     warning: {
+@@ -38,7 +38,7 @@ export const OperationalHealthCard: React.FC<OperationalHealthCardProps> = ({ ch
+     <DashboardCard
+       title="Integrità Operativa"
+       subtitle="Controlli automatici"
+-      icon={<Shield size={18} className={hasIssues ? 'text-amber-600' : 'text-green-600'} />}
++      icon={<Shield size={18} className={hasIssues ? 'text-amber-600' : 'text-emerald-600'} />}
+       compact
+     >
+       <div className="space-y-2">
+diff --git a/src/features/dashboard/components/DashboardCard.tsx b/src/features/dashboard/components/DashboardCard.tsx
+index 4d9cc8e..5c23e37 100644
+--- a/src/features/dashboard/components/DashboardCard.tsx
++++ b/src/features/dashboard/components/DashboardCard.tsx
+@@ -83,7 +83,7 @@ export const CardAction: React.FC<CardActionProps> = ({
+   const baseClasses = 'p-1.5 rounded-md transition-colors';
+   const variantClasses = {
+     default: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+-    primary: 'text-blue-600 hover:bg-blue-50 hover:text-blue-700',
++    primary: 'text-sky-600 hover:bg-sky-50 hover:text-sky-700',
+     danger: 'text-red-600 hover:bg-red-50 hover:text-red-700',
+   };
+ 
+diff --git a/src/features/dashboard/components/ExportPopover.tsx b/src/features/dashboard/components/ExportPopover.tsx
+index b15516d..55596ba 100644
+--- a/src/features/dashboard/components/ExportPopover.tsx
++++ b/src/features/dashboard/components/ExportPopover.tsx
+@@ -56,7 +56,7 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
+         ref={buttonRef}
+         onClick={() => setIsOpen(!isOpen)}
+         onMouseEnter={() => setIsOpen(true)}
+-        className="p-2 text-white bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:shadow-blue-500/50 rounded-lg transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 group"
++        className="p-2 text-white bg-gradient-to-br from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 hover:shadow-lg hover:shadow-sky-500/50 rounded-lg transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 group"
+         aria-label="📥 Esporta partita"
+         aria-expanded={isOpen}
+       >
+@@ -72,9 +72,9 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
+           style={{ width: `${LAYOUT_WIDTHS.EXPORT_POPOVER}px` }}
+         >
+           {/* Header */}
+-          <div className="px-4 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 via-slate-50 to-blue-50">
++          <div className="px-4 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 via-slate-50 to-sky-50">
+             <div className="flex items-center gap-2 mb-1">
+-              <Zap className="w-5 h-5 text-blue-600" />
++              <Zap className="w-5 h-5 text-sky-600" />
+               <h3 className="font-semibold text-slate-900">Esporta Rapporto</h3>
+             </div>
+             <p className="text-xs text-slate-600 mt-2">Scegli il formato più adatto alle tue esigenze</p>
+@@ -102,7 +102,7 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
+                     {option.icon}
+                   </div>
+                   <div className="flex-1 min-w-0">
+-                    <div className="font-semibold text-sm text-slate-900 group-hover:text-blue-600 transition-colors duration-250">
++                    <div className="font-semibold text-sm text-slate-900 group-hover:text-sky-600 transition-colors duration-250">
+                       {option.label}
+                     </div>
+                     <div className="text-xs text-slate-600 mt-0.5 truncate">
+@@ -111,7 +111,7 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
+                   </div>
+                   {isLoading && (
+                     <div className="animate-spin">
+-                      <Zap className="w-4 h-4 text-blue-500" />
++                      <Zap className="w-4 h-4 text-sky-500" />
+                     </div>
+                   )}
+                 </div>
+@@ -120,8 +120,8 @@ export const ExportPopover: React.FC<ExportPopoverProps> = ({ options }) => {
+           </div>
+ 
+           {/* Info Footer */}
+-          <div className="px-4 py-3 bg-blue-50/50 border-t border-blue-100 rounded-b-xl">
+-            <div className="flex gap-2 text-xs text-blue-900">
++          <div className="px-4 py-3 bg-sky-50/50 border-t border-sky-100 rounded-b-xl">
++            <div className="flex gap-2 text-xs text-sky-900">
+               <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+               <p>
+                 I file verranno salvati sul tuo dispositivo con timestamp automatico.
+diff --git a/src/features/header/HeaderScoreboard.tsx b/src/features/header/HeaderScoreboard.tsx
+index 59490f2..58e8348 100644
+--- a/src/features/header/HeaderScoreboard.tsx
++++ b/src/features/header/HeaderScoreboard.tsx
+@@ -64,7 +64,7 @@ export const HeaderScoreboard: React.FC<HeaderScoreboardProps> = ({
+             </div>
+             <div className="bg-slate-50 rounded p-2">
+               <div className="text-slate-600">In Porta</div>
+-              <div className="font-semibold text-blue-600">{home.shotsOnTarget}</div>
++              <div className="font-semibold text-sky-600">{home.shotsOnTarget}</div>
+             </div>
+             <div className="bg-slate-50 rounded p-2">
+               <div className="text-slate-600">Angoli</div>
+@@ -123,7 +123,7 @@ export const HeaderScoreboard: React.FC<HeaderScoreboardProps> = ({
+             </div>
+             <div className="bg-slate-50 rounded p-2">
+               <div className="text-slate-600">In Porta</div>
+-              <div className="font-semibold text-blue-600">{away.shotsOnTarget}</div>
++              <div className="font-semibold text-sky-600">{away.shotsOnTarget}</div>
+             </div>
+             <div className="bg-slate-50 rounded p-2">
+               <div className="text-slate-600">Angoli</div>
+diff --git a/src/features/header/HeaderStatusIndicator.tsx b/src/features/header/HeaderStatusIndicator.tsx
+index 0878cca..8083386 100644
+--- a/src/features/header/HeaderStatusIndicator.tsx
++++ b/src/features/header/HeaderStatusIndicator.tsx
+@@ -17,7 +17,7 @@ interface HeaderStatusIndicatorProps {
+ const HeaderStatusIndicatorComponent: React.FC<HeaderStatusIndicatorProps> = ({ period }) => {
+   return (
+     <div
+-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap transition-colors duration-200 ${
++      className={`ui-badge whitespace-nowrap transition-colors duration-200 ${
+         PERIOD_COLOR_CLASSES[period]
+       }`}
+     >
+diff --git a/src/features/header/HeaderTimeTravelBar.tsx b/src/features/header/HeaderTimeTravelBar.tsx
+index 9f38280..e651485 100644
+--- a/src/features/header/HeaderTimeTravelBar.tsx
++++ b/src/features/header/HeaderTimeTravelBar.tsx
+@@ -51,14 +51,14 @@ export const HeaderTimeTravelBar: React.FC<HeaderTimeTravelBarProps> = ({
+         itemLabel: itemsBack === 1 ? 'azione' : 'azioni',
+       }
+     : {
+-        badgeBg: isActive ? 'bg-blue-100/70' : 'bg-slate-100',
+-        badgeText: isActive ? 'text-blue-900' : 'text-slate-700',
++        badgeBg: isActive ? 'bg-sky-100/70' : 'bg-slate-100',
++        badgeText: isActive ? 'text-sky-900' : 'text-slate-700',
+         metricBg: isActive ? 'bg-white/60' : 'bg-white/60',
+-        metricText: isActive ? 'text-blue-800' : 'text-slate-600',
+-        secondaryText: isActive ? 'text-blue-700' : 'text-slate-500',
+-        buttonBg: 'bg-blue-600 hover:bg-blue-700',
++        metricText: isActive ? 'text-sky-800' : 'text-slate-600',
++        secondaryText: isActive ? 'text-sky-700' : 'text-slate-500',
++        buttonBg: 'bg-sky-600 hover:bg-sky-700',
+         icon: Clock,
+-        iconColor: isActive ? 'text-blue-600' : 'text-slate-400',
++        iconColor: isActive ? 'text-sky-600' : 'text-slate-400',
+         scopeLabel: 'EVENTI',
+         liveLabel: 'LIVE',
+         itemLabel: itemsBack === 1 ? 'evento' : 'eventi',
+diff --git a/src/features/header/components/HeaderScoreboard.tsx b/src/features/header/components/HeaderScoreboard.tsx
+index 59490f2..8d5a739 100644
+--- a/src/features/header/components/HeaderScoreboard.tsx
++++ b/src/features/header/components/HeaderScoreboard.tsx
+@@ -27,7 +27,7 @@ export const HeaderScoreboard: React.FC<HeaderScoreboardProps> = ({
+   const isMatchStarted = currentPeriod !== 'pre_match';
+ 
+   return (
+-    <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
++    <div className="ui-surface p-4">
+       {/* Two Column Layout */}
+       <div className="grid grid-cols-2 gap-6">
+         {/* HOME TEAM */}
+@@ -54,35 +54,35 @@ export const HeaderScoreboard: React.FC<HeaderScoreboardProps> = ({
+               )}
+             </div>
+           </button>
+-          <div className="text-5xl font-black text-slate-900 mb-4 leading-none">
++          <div className="text-5xl font-black text-slate-900 mb-4 leading-none font-display tabular-nums">
+             {home.goals}
+           </div>
+           <div className="grid grid-cols-2 gap-2 text-xs">
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-slate-50 rounded p-2 border border-slate-100">
+               <div className="text-slate-600">Tiri</div>
+               <div className="font-semibold text-slate-900">{home.shots}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-sky-50 rounded p-2 border border-sky-100">
+               <div className="text-slate-600">In Porta</div>
+-              <div className="font-semibold text-blue-600">{home.shotsOnTarget}</div>
++              <div className="font-semibold text-sky-700">{home.shotsOnTarget}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-slate-50 rounded p-2 border border-slate-100">
+               <div className="text-slate-600">Angoli</div>
+               <div className="font-semibold text-slate-900">{home.corners}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-slate-50 rounded p-2 border border-slate-100">
+               <div className="text-slate-600">Rimesse</div>
+               <div className="font-semibold text-slate-900">{home.throwIns}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-slate-50 rounded p-2 border border-slate-100">
+               <div className="text-slate-600">Falli</div>
+               <div className="font-semibold text-slate-900">{home.fouls}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-amber-50 rounded p-2 border border-amber-100">
+               <div className="text-slate-600">Gialli</div>
+-              <div className="font-semibold text-yellow-600">{home.yellowCards}</div>
++              <div className="font-semibold text-amber-700">{home.yellowCards}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-red-50 rounded p-2 border border-red-100">
+               <div className="text-slate-600">Rossi</div>
+               <div className="font-semibold text-red-600">{home.redCards}</div>
+             </div>
+@@ -113,35 +113,35 @@ export const HeaderScoreboard: React.FC<HeaderScoreboardProps> = ({
+               )}
+             </div>
+           </button>
+-          <div className="text-5xl font-black text-slate-900 mb-4 leading-none">
++          <div className="text-5xl font-black text-slate-900 mb-4 leading-none font-display tabular-nums">
+             {away.goals}
+           </div>
+           <div className="grid grid-cols-2 gap-2 text-xs">
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-slate-50 rounded p-2 border border-slate-100">
+               <div className="text-slate-600">Tiri</div>
+               <div className="font-semibold text-slate-900">{away.shots}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-sky-50 rounded p-2 border border-sky-100">
+               <div className="text-slate-600">In Porta</div>
+-              <div className="font-semibold text-blue-600">{away.shotsOnTarget}</div>
++              <div className="font-semibold text-sky-700">{away.shotsOnTarget}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-slate-50 rounded p-2 border border-slate-100">
+               <div className="text-slate-600">Angoli</div>
+               <div className="font-semibold text-slate-900">{away.corners}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-slate-50 rounded p-2 border border-slate-100">
+               <div className="text-slate-600">Rimesse</div>
+               <div className="font-semibold text-slate-900">{away.throwIns}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-slate-50 rounded p-2 border border-slate-100">
+               <div className="text-slate-600">Falli</div>
+               <div className="font-semibold text-slate-900">{away.fouls}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-amber-50 rounded p-2 border border-amber-100">
+               <div className="text-slate-600">Gialli</div>
+-              <div className="font-semibold text-yellow-600">{away.yellowCards}</div>
++              <div className="font-semibold text-amber-700">{away.yellowCards}</div>
+             </div>
+-            <div className="bg-slate-50 rounded p-2">
++            <div className="bg-red-50 rounded p-2 border border-red-100">
+               <div className="text-slate-600">Rossi</div>
+               <div className="font-semibold text-red-600">{away.redCards}</div>
+             </div>
+diff --git a/src/features/header/components/HeaderTimeTravelBar.tsx b/src/features/header/components/HeaderTimeTravelBar.tsx
+index 9f38280..e651485 100644
+--- a/src/features/header/components/HeaderTimeTravelBar.tsx
++++ b/src/features/header/components/HeaderTimeTravelBar.tsx
+@@ -51,14 +51,14 @@ export const HeaderTimeTravelBar: React.FC<HeaderTimeTravelBarProps> = ({
+         itemLabel: itemsBack === 1 ? 'azione' : 'azioni',
+       }
+     : {
+-        badgeBg: isActive ? 'bg-blue-100/70' : 'bg-slate-100',
+-        badgeText: isActive ? 'text-blue-900' : 'text-slate-700',
++        badgeBg: isActive ? 'bg-sky-100/70' : 'bg-slate-100',
++        badgeText: isActive ? 'text-sky-900' : 'text-slate-700',
+         metricBg: isActive ? 'bg-white/60' : 'bg-white/60',
+-        metricText: isActive ? 'text-blue-800' : 'text-slate-600',
+-        secondaryText: isActive ? 'text-blue-700' : 'text-slate-500',
+-        buttonBg: 'bg-blue-600 hover:bg-blue-700',
++        metricText: isActive ? 'text-sky-800' : 'text-slate-600',
++        secondaryText: isActive ? 'text-sky-700' : 'text-slate-500',
++        buttonBg: 'bg-sky-600 hover:bg-sky-700',
+         icon: Clock,
+-        iconColor: isActive ? 'text-blue-600' : 'text-slate-400',
++        iconColor: isActive ? 'text-sky-600' : 'text-slate-400',
+         scopeLabel: 'EVENTI',
+         liveLabel: 'LIVE',
+         itemLabel: itemsBack === 1 ? 'evento' : 'eventi',
+diff --git a/src/features/operator-console/cards/EventLogCard.tsx b/src/features/operator-console/cards/EventLogCard.tsx
+index a1b0931..6b9c9bc 100644
+--- a/src/features/operator-console/cards/EventLogCard.tsx
++++ b/src/features/operator-console/cards/EventLogCard.tsx
+@@ -41,28 +41,38 @@ export const EventLogCard: React.FC<EventLogCardProps> = ({
+   };
+ 
+   return (
+-    <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-3" data-testid="event-log-card" role="log" aria-label="Registro eventi">
+-      <div 
+-        data-testid="event-status-surface" 
++    <div className="ui-surface p-4 space-y-3" data-testid="event-log-card" role="log" aria-label="Registro eventi">
++      <div
++        data-testid="event-status-surface"
+         data-active={isEventCursorActive ? 'true' : 'false'}
+-        className="flex items-center justify-between"
++        className="flex items-center justify-between gap-3"
+       >
+-        <h3 className="font-semibold text-slate-900">
+-          {isEventCursorActive ? `${currentCursor}/${events.length}` : `Eventi (${appliedEvents.length})`}
+-        </h3>
+-        {appliedEvents.length > 0 && canNav && (
+-          <button
+-            onClick={handleUndoLastEvent}
+-            aria-label="Annulla ultimo evento"
+-            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
+-          >
+-            <Undo2 className="w-4 h-4" />
+-          </button>
+-        )}
++        <div>
++          <p className="ui-kicker">Registro</p>
++          <h3 className="text-sm font-semibold text-slate-900">
++            Eventi {appliedEvents.length > 0 ? `(${appliedEvents.length})` : ''}
++          </h3>
++        </div>
++        <div className="flex items-center gap-2">
++          {isEventCursorActive && (
++            <span className="ui-chip bg-amber-50 text-amber-800 border-amber-200">
++              Revisione {currentCursor}/{events.length}
++            </span>
++          )}
++          {appliedEvents.length > 0 && canNav && (
++            <button
++              onClick={handleUndoLastEvent}
++              aria-label="Annulla ultimo evento"
++              className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
++            >
++              <Undo2 className="w-4 h-4" />
++            </button>
++          )}
++        </div>
+       </div>
+       
+       {appliedEvents.length === 0 && (
+-        <p className="text-sm text-slate-500">Nessun evento registrato</p>
++        <p className="text-sm text-slate-500">Nessun evento registrato. Avvia la partita per iniziare.</p>
+       )}
+ 
+       {appliedEvents.length > 0 && (
+@@ -71,21 +81,15 @@ export const EventLogCard: React.FC<EventLogCardProps> = ({
+             const teamName = event.team === 'home' ? homeTeamName : awayTeamName;
+             const minutes = Math.floor(event.timestamp / 60);
+             return (
+-              <div key={event.id || idx} className="flex items-center justify-between text-xs p-2 bg-slate-50 rounded">
+-                <span className="font-medium">{teamName}</span>
++              <div key={event.id || idx} className="flex items-center justify-between text-xs p-2 bg-slate-50 rounded border border-slate-100">
++                <span className="font-medium text-slate-900 truncate max-w-[120px]">{teamName}</span>
+                 <span className="text-slate-600">{event.type}</span>
+-                <span className="text-slate-500">{minutes}'</span>
++                <span className="text-slate-500 tabular-nums">{minutes}'</span>
+               </div>
+             );
+           })}
+         </div>
+       )}
+-
+-      {isEventCursorActive && (
+-        <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
+-          Visualizzando evento {currentCursor} di {events.length}
+-        </div>
+-      )}
+     </div>
+   );
+ };
+diff --git a/src/features/operator-console/cards/MatchControlCard.tsx b/src/features/operator-console/cards/MatchControlCard.tsx
+index 588c7e8..d548269 100644
+--- a/src/features/operator-console/cards/MatchControlCard.tsx
++++ b/src/features/operator-console/cards/MatchControlCard.tsx
+@@ -89,7 +89,36 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+   const [exactSeconds, setExactSeconds] = useState('');
+   const [stoppageMinutes, setStoppageMinutes] = useState(1);
+ 
+-  const phaseLabel = PHASE_LABELS[state.matchPhase];
++  const PHASE_LABELS_IT: Partial<Record<MatchPhase, string>> = {
++    prematch_ready: 'Pre-partita',
++    first_half_regulation: '1o tempo',
++    first_half_recovery: '1o tempo - Recupero',
++    half_time_interval: 'Intervallo',
++    second_half_regulation: '2o tempo',
++    second_half_recovery: '2o tempo - Recupero',
++    extra_time_interval: 'Intervallo suppl.',
++    extra_time_first_regulation: 'Suppl. 1',
++    extra_time_first_recovery: 'Suppl. 1 - Recupero',
++    extra_time_second_regulation: 'Suppl. 2',
++    extra_time_second_recovery: 'Suppl. 2 - Recupero',
++    penalties: 'Rigori',
++    postmatch_complete: 'Fine partita',
++    suspended: 'Sospesa',
++    terminated: 'Terminata',
++    resetting: 'Reset in corso',
++  };
++
++  const phaseLabel = PHASE_LABELS_IT[state.matchPhase] ?? PHASE_LABELS[state.matchPhase];
++  const statusLabel =
++    state.matchStatus === 'suspended'
++      ? 'Sospesa'
++      : state.matchStatus === 'terminated'
++      ? 'Terminata'
++      : state.matchStatus === 'finished'
++      ? 'Terminata'
++      : isPlaying
++      ? 'In corso'
++      : 'In pausa';
+ 
+   const nextPhases = useMemo(() => defaultNextPhases(state), [state]);
+ 
+@@ -132,40 +161,39 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+         onClick();
+         setFlag(false);
+       }}
+-      className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
+-        confirmFlag ? 'bg-red-600 text-white' : color
++      className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors border ${
++        confirmFlag ? 'bg-red-600 text-white border-red-700' : color
+       }`}
+     >
+       <IconComp className="w-4 h-4" />
+-      {confirmFlag ? 'Confirm' : label}
++      {confirmFlag ? 'Conferma' : label}
+     </button>
+   );
+ 
+   return (
+-    <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-3 flex flex-col gap-4">
+-      <div className="flex items-center justify-between gap-3">
+-        <div className="space-y-0.5">
+-          <p className="text-[11px] font-semibold text-slate-600">Phase</p>
++    <div className="ui-surface p-4 flex flex-col gap-4">
++      <div className="flex items-start justify-between gap-3">
++        <div className="space-y-1">
++          <p className="ui-kicker">Fase gara</p>
+           <p className="text-sm font-bold text-slate-900">{phaseLabel}</p>
+-          <p className="text-[11px] text-slate-500">{state.matchStatus === 'suspended' ? 'Suspended' : isPlaying ? 'Running' : 'Paused'}</p>
++          <span className={`ui-chip ${state.matchStatus === 'suspended' ? 'bg-red-50 text-red-700 border-red-200' : isPlaying ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
++            {statusLabel}
++          </span>
+         </div>
+         <div className="flex items-center gap-2">
+           <button
+             onClick={onToggleTimerLock}
+-            className={`px-2 py-1 rounded text-xs border ${state.timerLocked ? 'border-red-200 text-red-700 bg-red-50' : 'border-slate-200 text-slate-700'}`}
++            className={`px-2.5 py-1.5 rounded-md text-xs border ${state.timerLocked ? 'border-amber-200 text-amber-800 bg-amber-50' : 'border-slate-200 text-slate-700 bg-white'}`}
+           >
+             {state.timerLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+           </button>
+-          {state.matchStatus === 'suspended' && (
+-            <span className="text-[11px] px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Suspended</span>
+-          )}
+           {onUndo && (
+             <IconButton
+               size="sm"
+               variant="ghost"
+               onClick={onUndo}
+               disabled={undoDisabled}
+-              title="Undo"
++              title="Annulla evento"
+             >
+               <Undo2 className="w-4 h-4" />
+             </IconButton>
+@@ -176,7 +204,7 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+               variant="ghost"
+               onClick={onRedo}
+               disabled={redoDisabled}
+-              title="Redo"
++              title="Ripeti evento"
+             >
+               <Redo2 className="w-4 h-4" />
+             </IconButton>
+@@ -186,22 +214,14 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+ 
+       <div className="flex flex-col gap-2">
+         <div className="flex items-center gap-2">
+-          <button
+-            onClick={onPlayPause}
+-            className={`flex-1 px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 ${
+-              isPlaying ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'
+-            }`}
+-          >
++          <ActionButton action={isPlaying ? 'warning' : 'success'} size="sm" onClick={onPlayPause} className="flex-1">
+             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+-            {isPlaying ? 'Pause' : 'Start'}
+-          </button>
+-          <button
+-            onClick={onEndPeriod}
+-            className="flex-1 px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 bg-slate-900 text-white"
+-          >
++            {isPlaying ? 'Pausa' : 'Avvia'}
++          </ActionButton>
++          <ActionButton action="primary" size="sm" onClick={onEndPeriod} className="flex-1">
+             <Flag className="w-4 h-4" />
+-            End segment
+-          </button>
++            Termina periodo
++          </ActionButton>
+         </div>
+         <div className="flex items-center gap-1">
+           {timeAdjustments.map((delta) => (
+@@ -217,21 +237,21 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+           ))}
+         </div>
+         {state.timerLocked && (
+-          <p className="text-[11px] text-red-600">Timer locked: unlock to edit time or change phase.</p>
++          <p className="text-[11px] text-amber-700">Timer bloccato: sblocca per modificare tempo o fase.</p>
+         )}
+       </div>
+ 
+       <div className="space-y-2">
+         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+-          <span>Time controls</span>
+-          <span className="text-[11px] text-slate-500">Total {Math.round(state.totalPeriodSeconds / 60)}m</span>
++          <span>Controlli tempo</span>
++          <span className="text-[11px] text-slate-500">Totale {Math.round(state.totalPeriodSeconds / 60)}m</span>
+         </div>
+         <div className="flex items-center gap-2">
+           <input
+             type="number"
+             value={exactMinutes}
+             onChange={(e) => setExactMinutes(e.target.value)}
+-            className="w-16 border border-slate-200 rounded px-2 py-1 text-sm"
++            className="w-16 ui-input"
+             placeholder="mm"
+             min={0}
+           />
+@@ -240,25 +260,21 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+             type="number"
+             value={exactSeconds}
+             onChange={(e) => setExactSeconds(e.target.value)}
+-            className="w-16 border border-slate-200 rounded px-2 py-1 text-sm"
++            className="w-16 ui-input"
+             placeholder="ss"
+             min={0}
+             max={59}
+           />
+-          <button
+-            onClick={handleExactSubmit}
+-            className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold"
+-            disabled={state.timerLocked}
+-          >
+-            Set exact
+-          </button>
++          <ActionButton action="primary" size="sm" onClick={handleExactSubmit} disabled={state.timerLocked}>
++            Imposta
++          </ActionButton>
+         </div>
+         <div className="grid grid-cols-3 gap-2">
+           {durationPresets.map((m) => (
+             <button
+               key={m}
+               onClick={() => onSetTotalPeriodSeconds(m * 60)}
+-              className="px-3 py-2 bg-slate-100 rounded-lg text-sm font-semibold text-slate-800"
++              className="px-3 py-2 bg-slate-100 rounded-lg text-sm font-semibold text-slate-800 hover:bg-slate-200"
+               disabled={state.timerLocked}
+             >
+               {m}m
+@@ -269,8 +285,8 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+ 
+       <div className="space-y-2">
+         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+-          <span>Recovery</span>
+-          <span className="text-[11px] text-slate-500">Configured {currentRecoveryValue / 60}m</span>
++          <span>Recupero</span>
++          <span className="text-[11px] text-slate-500">Configurato {currentRecoveryValue / 60}m</span>
+         </div>
+         <div className="flex items-center gap-2">
+           <button
+@@ -286,23 +302,25 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+           >
+             <Plus className="w-4 h-4" />
+           </button>
+-          <button
++          <ActionButton
++            action="success"
++            size="sm"
+             onClick={() => currentRecoveryPeriod && onAddRecovery(currentRecoveryPeriod, stoppageMinutes * 60)}
+-            className="flex-1 px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold"
++            className="flex-1"
+             disabled={!currentRecoveryPeriod || state.timerLocked}
+           >
+-            Add recovery
+-          </button>
++            Aggiungi recupero
++          </ActionButton>
+         </div>
+         {currentRecoveryPeriod && (
+           <div className="flex items-center gap-2 text-xs text-slate-600">
+-            <span>Set recovery (min)</span>
++            <span>Imposta recupero (min)</span>
+             <input
+               type="number"
+               min={0}
+               value={(currentRecoveryValue / 60).toFixed(0)}
+               onChange={(e) => onSetRecovery(currentRecoveryPeriod, Math.max(0, Number(e.target.value)) * 60)}
+-              className="w-16 border border-slate-200 rounded px-2 py-1 text-sm"
++              className="w-16 ui-input"
+               disabled={state.timerLocked}
+             />
+           </div>
+@@ -311,38 +329,39 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+ 
+       <div className="space-y-2">
+         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+-          <span>Phase & Decision</span>
++          <span>Fase e decisioni</span>
+           <label className="flex items-center gap-2 text-[11px]">
+             <input
+               type="checkbox"
+               checked={state.allowPhaseOverride}
+               onChange={(e) => onAllowOverride(e.target.checked)}
++              className="accent-slate-900"
+             />
+-            Override
++            Forza transizioni
+           </label>
+         </div>
+         <div className="grid grid-cols-2 gap-2">
+           <ActionButton action="secondary" size="sm" onClick={onSkipHalftime} disabled={state.timerLocked}>
+             <CornerUpRight className="w-4 h-4" />
+-            Skip halftime
++            Salta intervallo
+           </ActionButton>
+           <ActionButton action="secondary" size="sm" onClick={() => onRequireExtraTime(!state.requireExtraTime)}>
+             <Clock className="w-4 h-4" />
+-            {state.requireExtraTime ? 'Tie-break on' : 'Tie-break off'}
++            {state.requireExtraTime ? 'Supplementari: si' : 'Supplementari: no'}
+           </ActionButton>
+         </div>
+         <div className="space-y-1">
+-          <p className="text-[11px] text-slate-600">Allowed next steps</p>
++          <p className="text-[11px] text-slate-600">Prossime fasi consentite</p>
+           <div className="flex flex-wrap gap-2">
+             {nextPhases.map((phase) => (
+               <button
+                 key={phase}
+                 onClick={() => onSetMatchPhase(phase)}
+-                className="px-3 py-1 rounded-full bg-slate-100 text-xs font-semibold text-slate-800 flex items-center gap-1"
++                className="px-3 py-1 rounded-full bg-slate-100 text-xs font-semibold text-slate-800 flex items-center gap-1 hover:bg-slate-200"
+                 disabled={state.timerLocked}
+               >
+                 <ChevronRight className="w-3 h-3" />
+-                {PHASE_LABELS[phase]}
++                {PHASE_LABELS_IT[phase] ?? PHASE_LABELS[phase]}
+               </button>
+             ))}
+           </div>
+@@ -351,41 +370,40 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+ 
+       <div className="space-y-2">
+         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+-          <span>Status</span>
++          <span>Stato gara</span>
+         </div>
+         {state.matchStatus === 'suspended' ? (
+-          <button
+-            className="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
+-            onClick={onResume}
+-          >
++          <ActionButton action="success" size="sm" onClick={onResume} className="w-full">
+             <Play className="w-4 h-4" />
+-            Resume
+-          </button>
++            Riprendi
++          </ActionButton>
+         ) : (
+           <div className="space-y-2">
+             <textarea
+-              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"
+-              placeholder="Suspend reason"
++              className="ui-textarea"
++              placeholder="Motivo sospensione"
+               value={suspensionReason}
+               onChange={(e) => setSuspensionReason(e.target.value)}
+               rows={2}
+             />
+-            <button
+-              className="w-full px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2"
++            <ActionButton
++              action="warning"
++              size="sm"
+               onClick={() => suspensionReason.trim() && onSuspend(suspensionReason.trim())}
++              className="w-full"
+             >
+               <PauseCircle className="w-4 h-4" />
+-              Suspend
+-            </button>
++              Sospendi
++            </ActionButton>
+           </div>
+         )}
+         <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
+-          {dangerousButton('Terminate', onTerminateMatch, confirmTerminate, setConfirmTerminate, ShieldOff, 'bg-red-50 text-red-700')}
+-          {dangerousButton('Reset', onReset, confirmReset, setConfirmReset, RefreshCw, 'bg-slate-100 text-slate-700')}
++          {dangerousButton('Termina gara', onTerminateMatch, confirmTerminate, setConfirmTerminate, ShieldOff, 'bg-red-50 text-red-700 border-red-200')}
++          {dangerousButton('Reset', onReset, confirmReset, setConfirmReset, RefreshCw, 'bg-slate-100 text-slate-700 border-slate-200')}
+         </div>
+         <div className="border-t border-slate-200 pt-3">
+           <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+-            <span>Emergency</span>
++            <span>Emergenza</span>
+             <AlertTriangle className="w-4 h-4 text-red-500" />
+           </div>
+           <button
+@@ -397,15 +415,15 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
+               onTerminateMatch();
+               setConfirmEmergency(false);
+             }}
+-            className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 ${
+-              confirmEmergency ? 'bg-red-600 text-white' : 'bg-red-100 text-red-700'
++            className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 border ${
++              confirmEmergency ? 'bg-red-600 text-white border-red-700' : 'bg-red-100 text-red-700 border-red-200'
+             }`}
+           >
+-            <AlertTriangle className="w-4 h-4" /> {confirmEmergency ? 'Confirm end' : 'Emergency End'}
++            <AlertTriangle className="w-4 h-4" /> {confirmEmergency ? 'Conferma termine' : "Termina d'emergenza"}
+           </button>
+         </div>
+         <div className="text-[11px] text-slate-500">
+-          Score: <span className="font-mono font-semibold">{homeTeamGoals} - {awayTeamGoals}</span>
++          Risultato: <span className="font-mono font-semibold">{homeTeamGoals} - {awayTeamGoals}</span>
+         </div>
+       </div>
+     </div>
+diff --git a/src/features/operator-console/cards/TeamCard.tsx b/src/features/operator-console/cards/TeamCard.tsx
+index 7703daf..71f4689 100644
+--- a/src/features/operator-console/cards/TeamCard.tsx
++++ b/src/features/operator-console/cards/TeamCard.tsx
+@@ -25,42 +25,61 @@ export const TeamCard: React.FC<TeamCardProps> = ({
+   homeTeamName,
+   awayTeamName,
+   state,
++  teamStats,
+ }) => {
+-  const homeInitial = homeTeamName.charAt(0).toUpperCase();
+-  const awayInitial = awayTeamName.charAt(0).toUpperCase();
+-  
+-  // Allow events even in pre_match for testing purposes
++  const homeGoals = teamStats?.home.goals ?? '-';
++  const awayGoals = teamStats?.away.goals ?? '-';
+   const isDisabled = state?.period === 'finished';
+ 
+   return (
+-    <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-4" data-testid="team-card-b1-b5-fixed">
++    <div className="ui-surface p-4 space-y-4" data-testid="team-card-b1-b5-fixed">
++      <div className="flex items-center justify-between gap-3">
++        <div>
++          <p className="ui-kicker">Squadra attiva</p>
++          <p className="text-sm font-semibold text-slate-900 truncate">
++            {selectedTeam === 'home' ? homeTeamName : awayTeamName}
++          </p>
++        </div>
++        <span
++          className={`ui-chip ${
++            selectedTeam === 'home'
++              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
++              : 'bg-sky-50 text-sky-700 border-sky-200'
++          }`}
++        >
++          {selectedTeam === 'home' ? 'CASA' : 'OSPITE'}
++        </span>
++      </div>
++
+       {/* Team Selection Radiogroup */}
+-      <div role="radiogroup" aria-label="Seleziona squadra" className="flex gap-2">
++      <div role="radiogroup" aria-label="Seleziona squadra" className="grid grid-cols-2 gap-2">
+         <button
+           role="radio"
+           aria-checked={selectedTeam === 'home'}
+           aria-label={`Seleziona ${homeTeamName}`}
+           onClick={() => onSelectTeam('home')}
+-          className={`flex-1 h-12 rounded-lg flex items-center justify-center font-bold text-base transition-all ${
++          className={`rounded-lg border px-3 py-2 flex items-center justify-between gap-2 text-sm font-semibold transition-all ${
+             selectedTeam === 'home'
+-              ? 'bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-400'
+-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
++              ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
++              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+           }`}
+         >
+-          {homeInitial}
++          <span className="truncate">{homeTeamName}</span>
++          <span className="text-lg font-bold tabular-nums">{homeGoals}</span>
+         </button>
+         <button
+           role="radio"
+           aria-checked={selectedTeam === 'away'}
+           aria-label={`Seleziona ${awayTeamName}`}
+           onClick={() => onSelectTeam('away')}
+-          className={`flex-1 h-12 rounded-lg flex items-center justify-center font-bold text-base transition-all ${
++          className={`rounded-lg border px-3 py-2 flex items-center justify-between gap-2 text-sm font-semibold transition-all ${
+             selectedTeam === 'away'
+-              ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
+-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
++              ? 'bg-sky-600 text-white border-sky-500 shadow-sm'
++              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+           }`}
+         >
+-          {awayInitial}
++          <span className="truncate">{awayTeamName}</span>
++          <span className="text-lg font-bold tabular-nums">{awayGoals}</span>
+         </button>
+       </div>
+ 
+diff --git a/src/features/operator-console/cards/TimeCard.tsx b/src/features/operator-console/cards/TimeCard.tsx
+index 8be9b3f..01170c3 100644
+--- a/src/features/operator-console/cards/TimeCard.tsx
++++ b/src/features/operator-console/cards/TimeCard.tsx
+@@ -5,6 +5,7 @@
+ import React from 'react';
+ import { Play, Pause } from 'lucide-react';
+ import type { DomainMatchState, MatchEvent } from '@/domain/match/types';
++import { PERIOD_LABELS } from '@/constants/periods';
+ 
+ interface TimeCardProps {
+   state: DomainMatchState;
+@@ -33,12 +34,31 @@ export const TimeCard: React.FC<TimeCardProps> = ({
+   const minutes = Math.floor(state.elapsedSeconds / 60);
+   const seconds = state.elapsedSeconds % 60;
+   const displayTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
++  const periodLabel = PERIOD_LABELS[state.period] ?? state.period.replace(/_/g, ' ');
++  const statusLabel =
++    state.matchStatus === 'suspended'
++      ? 'Sospesa'
++      : state.matchStatus === 'finished'
++      ? 'Terminata'
++      : state.matchStatus === 'paused'
++      ? 'In pausa'
++      : state.matchStatus === 'in_progress'
++      ? 'In corso'
++      : 'Pronta';
+ 
+   return (
+-    <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-3" data-testid="time-card">
+-      <div className="flex items-center justify-between">
+-        <h3 className="font-semibold text-slate-900">Tempo</h3>
+-        <span className="text-2xl font-mono font-bold text-slate-900">{displayTime}</span>
++    <div className="ui-surface p-4 space-y-3" data-testid="time-card">
++      <div className="flex items-center justify-between gap-3">
++        <div>
++          <p className="ui-kicker">Cronometro</p>
++          <div className="flex items-center gap-2">
++            <span className="text-2xl font-semibold text-slate-900 tabular-nums font-display" aria-live="polite">
++              {displayTime}
++            </span>
++            <span className="ui-chip bg-slate-50 text-slate-600 border-slate-200">{statusLabel}</span>
++          </div>
++        </div>
++        <span className="ui-chip bg-white text-slate-700 border-slate-200">{periodLabel}</span>
+       </div>
+       
+       <button
+@@ -47,7 +67,7 @@ export const TimeCard: React.FC<TimeCardProps> = ({
+         aria-pressed={isPlaying}
+         role="switch"
+         disabled={state.period === 'pre_match'}
+-        className={`w-full h-14 rounded-lg flex items-center justify-center gap-2 font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 ${
++        className={`w-full h-14 rounded-lg flex items-center justify-center gap-2 font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-0 ${
+           isPlaying
+             ? 'bg-red-500 text-white hover:bg-red-600 active:bg-red-700'
+             : 'bg-emerald-500 text-white hover:bg-emerald-600 active:bg-emerald-700'
+@@ -57,9 +77,11 @@ export const TimeCard: React.FC<TimeCardProps> = ({
+         {isPlaying ? 'Pausa' : 'Avvia'}
+       </button>
+ 
+-      <div className="text-xs text-slate-600 text-center capitalize">
+-        {state.period.replace(/_/g, ' ')}
+-      </div>
++      {state.timerLocked && (
++        <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-2 py-1 text-center">
++          Timer bloccato: sblocca per modifiche al tempo
++        </div>
++      )}
+     </div>
+   );
+ };
+diff --git a/src/features/operator-console/desktop/ResizeHandle.tsx b/src/features/operator-console/desktop/ResizeHandle.tsx
+index 4fca245..a583a0e 100644
+--- a/src/features/operator-console/desktop/ResizeHandle.tsx
++++ b/src/features/operator-console/desktop/ResizeHandle.tsx
+@@ -164,9 +164,9 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
+         cursor-col-resize
+         flex items-center justify-center
+         hover:bg-slate-200/50
+-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset
++        focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-inset
+         transition-colors duration-150
+-        ${isDragging ? 'bg-blue-300/70' : 'bg-transparent'}
++        ${isDragging ? 'bg-sky-300/70' : 'bg-transparent'}
+         group
+       `}
+       data-dragging={isDragging}
+@@ -176,8 +176,8 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
+         w-1 h-12 rounded-full
+         bg-slate-300
+         group-hover:bg-slate-400
+-        group-focus:bg-blue-500
+-        ${isDragging ? 'bg-blue-500' : ''}
++        group-focus:bg-sky-500
++        ${isDragging ? 'bg-sky-500' : ''}
+         transition-colors duration-150
+       `} />
+     </div>
+diff --git a/src/features/operator-console/desktop/Sidebar.tsx b/src/features/operator-console/desktop/Sidebar.tsx
+index dc2ec04..d43533b 100644
+--- a/src/features/operator-console/desktop/Sidebar.tsx
++++ b/src/features/operator-console/desktop/Sidebar.tsx
+@@ -25,6 +25,7 @@ import { MatchControlCard } from '../cards/MatchControlCard';
+ import { LAYOUT_WIDTHS, ANIMATION_TIMINGS } from '@/constants/layout';
+ import { getLayoutMode, getLayoutConfig, type LayoutMode } from '@/utils/responsive-layout';
+ import { StreamingControl } from '@/features/streaming/StreamingControl';
++import { ConsoleStatusStrip } from '@/features/console/components/ConsoleStatusStrip';
+ 
+ interface SidebarProps {
+   state: DomainMatchState;
+@@ -121,6 +122,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
+   const isPlaying = state.isRunning && state.period !== 'pre_match';
+   const appliedEvents = state.events.slice(0, state.cursor);
+   const lastEvent = appliedEvents.length > 0 ? appliedEvents[appliedEvents.length - 1] : null;
++  const currentCursor = state.cursor ?? state.events.length;
++  const isEventCursorActive = currentCursor < state.events.length;
+ 
+   // Detect layout mode for responsive constraints
+   const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => getLayoutMode());
+@@ -194,7 +197,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
+       {/* In-flow sidebar: no scroll; only event list scrolls (§P0) */}
+       {/* Dynamic width based on collapse state with smooth transition */}
+       <aside 
+-        className="hidden md:flex md:flex-col flex-none bg-gradient-to-b from-slate-50 to-white border-r border-slate-200 overflow-hidden relative"
++        className="hidden md:flex md:flex-col flex-none bg-white/85 backdrop-blur-xl border-r border-slate-200/80 overflow-hidden relative"
+         style={transitionStyle}
+       >        {isCollapsed ? (
+           /* COLLAPSED MODE: Icon-only compact rail */
+@@ -213,12 +216,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
+           <>
+             {/* Card container: scrollable area with all 5 cards always visible */}
+             <div className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto relative">
+-              {/* Scroll Indicator: mostra quando Card 5 non è visibile */}
+-              <div className="sticky top-0 z-10 flex justify-center py-1 bg-gradient-to-b from-gray-900 via-gray-900/90 to-transparent pointer-events-none">
+-                <div className="px-3 py-1 bg-purple-600/20 border border-purple-500/30 rounded-full text-purple-300 text-xs font-medium animate-pulse">
+-                  ↓ Scroll per Streaming
+-                </div>
+-              </div>
++              <ConsoleStatusStrip
++                state={state}
++                isEventCursorActive={isEventCursorActive}
++                currentCursor={currentCursor}
++                totalEvents={state.events.length}
++              />
+               {/* CARD 1: Event Log - Flexible height */}
+               <div className="flex-none" style={{ minHeight: '300px' }}>
+                 <EventLogCard
+@@ -303,7 +306,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
+             </div>
+ 
+             {/* CARD 5: Streaming Control - STICKY BOTTOM (sempre visibile) */}
+-            <div className="flex-none border-t border-gray-700/50 bg-gray-900/95 backdrop-blur-sm">
++            <div className="flex-none border-t border-slate-200 bg-white/90 backdrop-blur-sm">
+               <div className="p-3">
+                 <StreamingControl
+                   matchState={state}
+diff --git a/src/features/operator-console/desktop/SidebarCollapsed.tsx b/src/features/operator-console/desktop/SidebarCollapsed.tsx
+index dff0835..b1d168b 100644
+--- a/src/features/operator-console/desktop/SidebarCollapsed.tsx
++++ b/src/features/operator-console/desktop/SidebarCollapsed.tsx
+@@ -54,8 +54,8 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
+           onClick={() => onSelectTeam('home')}
+           className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-sm transition-all ${
+             selectedTeam === 'home'
+-              ? 'bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-400'
+-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
++              ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-400'
++              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+           }`}
+           aria-label={`Seleziona ${homeTeamName}`}
+           title={homeTeamName}
+@@ -66,8 +66,8 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
+           onClick={() => onSelectTeam('away')}
+           className={`w-12 h-12 rounded-lg flex items-center justify-center font-bold text-sm transition-all ${
+             selectedTeam === 'away'
+-              ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
+-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
++              ? 'bg-sky-600 text-white shadow-sm ring-2 ring-sky-400'
++              : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+           }`}
+           aria-label={`Seleziona ${awayTeamName}`}
+           title={awayTeamName}
+@@ -95,7 +95,7 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
+         <button
+           onClick={() => onAddEvent('shot_on_target', selectedTeam)}
+           disabled={state.period === 'pre_match' || state.period === 'finished'}
+-          className="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all"
++          className="w-12 h-12 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all"
+           aria-label="Aggiungi Tiro in porta"
+           title="Tiro in Porta (O)"
+         >
+@@ -161,7 +161,7 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
+         <button
+           onClick={() => onAddEvent('timeout', selectedTeam)}
+           disabled={state.period === 'pre_match' || state.period === 'finished'}
+-          className="w-12 h-12 rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all"
++          className="w-12 h-12 rounded-lg bg-cyan-50 text-cyan-600 hover:bg-cyan-100 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all"
+           aria-label="Aggiungi Timeout"
+           title="Timeout (T)"
+         >
+@@ -178,7 +178,7 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
+         className={`w-12 h-12 rounded-lg flex items-center justify-center transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+           isPlaying
+             ? 'bg-amber-500 text-white hover:bg-amber-600'
+-            : 'bg-emerald-500 text-white hover:bg-emerald-600'
++            : 'bg-emerald-600 text-white hover:bg-emerald-700'
+         }`}
+         aria-label={isPlaying ? 'Pausa' : 'Avvia'}
+         title={isPlaying ? 'Pausa (Spazio)' : 'Avvia (Spazio)'}
+@@ -192,13 +192,13 @@ export const SidebarCollapsed: React.FC<SidebarCollapsedProps> = ({
+       {/* Event Log Access - Expands sidebar with event count badge */}
+       <button
+         onClick={onToggleExpand}
+-        className="w-12 h-12 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all relative"
++        className="w-12 h-12 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all relative border border-slate-200"
+         aria-label="Espandi registro eventi"
+         title="Registro Eventi (Ctrl+\)"
+       >
+         <History className="w-5 h-5" />
+         {totalEvents > 0 && (
+-          <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
++          <span className="absolute -top-1 -right-1 bg-sky-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+             {totalEvents}
+           </span>
+         )}
+diff --git a/src/features/operator-console/mobile/BottomDock.tsx b/src/features/operator-console/mobile/BottomDock.tsx
+index 4288ae2..9336538 100644
+--- a/src/features/operator-console/mobile/BottomDock.tsx
++++ b/src/features/operator-console/mobile/BottomDock.tsx
+@@ -81,13 +81,13 @@ const STORAGE_KEY_PANEL_HEIGHT = 'subbuteo_mobile_panel_height_v3';
+  */
+ const MOBILE_EVENT_BUTTONS = [
+   { type: 'goal' as const, icon: Goal, color: 'text-emerald-600', bg: 'bg-emerald-50', hoverBg: 'hover:bg-emerald-100', label: 'Goal', shortcut: 'G' },
+-  { type: 'shot_on_target' as const, icon: Target, color: 'text-blue-600', bg: 'bg-blue-50', hoverBg: 'hover:bg-blue-100', label: 'Tiro Porta', shortcut: 'O' },
++  { type: 'shot_on_target' as const, icon: Target, color: 'text-sky-600', bg: 'bg-sky-50', hoverBg: 'hover:bg-sky-100', label: 'Tiro Porta', shortcut: 'O' },
+   { type: 'shot' as const, icon: AlertCircle, color: 'text-slate-600', bg: 'bg-slate-50', hoverBg: 'hover:bg-slate-100', label: 'Tiro', shortcut: 'S' },
+   { type: 'corner' as const, icon: Zap, color: 'text-orange-600', bg: 'bg-orange-50', hoverBg: 'hover:bg-orange-100', label: 'Angolo', shortcut: 'C' },
+   { type: 'foul' as const, icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50', hoverBg: 'hover:bg-amber-100', label: 'Fallo', shortcut: 'F' },
+   { type: 'yellow_card' as const, icon: AlertCircle, color: 'text-yellow-600', bg: 'bg-yellow-50', hoverBg: 'hover:bg-yellow-100', label: 'Giallo', shortcut: 'Y' },
+   { type: 'red_card' as const, icon: Zap, color: 'text-red-600', bg: 'bg-red-50', hoverBg: 'hover:bg-red-100', label: 'Rosso', shortcut: 'R', border: 'border-2 border-red-200' },
+-  { type: 'timeout' as const, icon: Clock, color: 'text-purple-600', bg: 'bg-purple-50', hoverBg: 'hover:bg-purple-100', label: 'Timeout', shortcut: 'T' },
++  { type: 'timeout' as const, icon: Clock, color: 'text-cyan-600', bg: 'bg-cyan-50', hoverBg: 'hover:bg-cyan-100', label: 'Timeout', shortcut: 'T' },
+ ] as const;
+ 
+ export const BottomDock: React.FC<BottomDockProps> = ({
+@@ -357,7 +357,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
+                     onClick={() => onSelectTeam('away')}
+                     className={`flex-1 h-12 rounded-lg flex items-center justify-center font-bold text-base transition-all ${FOCUS_RING} ${
+                       selectedTeam === 'away'
+-                        ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
++                        ? 'bg-sky-600 text-white shadow-lg ring-2 ring-sky-400'
+                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200 active:bg-slate-300'
+                     }`}
+                     aria-label={`Seleziona ${awayTeamName}`}
+@@ -395,7 +395,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
+                     className={`flex-1 h-14 rounded-lg flex items-center justify-center gap-2 font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm ${FOCUS_RING} ${
+                       isPlaying
+                         ? 'bg-amber-500 text-white hover:bg-amber-600 active:bg-amber-700'
+-                        : 'bg-emerald-500 text-white hover:bg-emerald-600 active:bg-emerald-700'
++                        : 'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800'
+                     }`}
+                     aria-label={isPlaying ? 'Metti in pausa il cronometro' : 'Avvia il cronometro'}
+                     aria-pressed={isPlaying}
+@@ -412,7 +412,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
+                   >
+                     <History className="w-5 h-5" />
+                     {totalEvents > 0 && (
+-                      <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
++                      <span className="absolute -top-1 -right-1 bg-sky-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                         {totalEvents > 9 ? '9+' : totalEvents}
+                       </span>
+                     )}
+@@ -425,7 +425,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
+               {contentHeight >= 400 && (
+                 <div className="space-y-4" role="region" aria-label="Controlli completi operatore">
+                   {/* Event Log - Scrollable, takes most space */}
+-                  <div className="bg-white rounded-xl border border-slate-200 shadow-sm" style={{ maxHeight: 'calc(100vh - 480px)', minHeight: '200px' }} role="log" aria-label="Registro eventi partita">
++                  <div className="ui-surface" style={{ maxHeight: 'calc(100vh - 480px)', minHeight: '200px' }} role="log" aria-label="Registro eventi partita">
+                     <EventLogCard
+                       state={state}
+                       teamStats={teamStats}
+@@ -441,7 +441,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
+                   </div>
+ 
+                   {/* Team Card - Full with all events */}
+-                  <div className="bg-white rounded-xl border border-slate-200 shadow-sm" role="group" aria-label="Eventi squadra">
++                  <div className="ui-surface" role="group" aria-label="Eventi squadra">
+                     <TeamCard
+                       state={state}
+                       teamStats={teamStats}
+@@ -456,7 +456,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({
+                   </div>
+ 
+                   {/* Time Card - Period and stoppage time */}
+-                  <div className="bg-white rounded-xl border border-slate-200 shadow-sm" role="group" aria-label="Controlli tempo e periodo">
++                  <div className="ui-surface" role="group" aria-label="Controlli tempo e periodo">
+                     <TimeCard
+                       state={state}
+                       isPlaying={isPlaying}
+diff --git a/src/features/settings/components/AudioSettingsSection.tsx b/src/features/settings/components/AudioSettingsSection.tsx
+index 0872ead..b1649f8 100644
+--- a/src/features/settings/components/AudioSettingsSection.tsx
++++ b/src/features/settings/components/AudioSettingsSection.tsx
+@@ -58,7 +58,7 @@ export const AudioSettingsSection: React.FC<AudioSettingsSectionProps> = ({
+           <button
+             onClick={() => onToggleEnabled(!enabled)}
+             className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
+-              enabled ? 'bg-emerald-600' : 'bg-slate-300'
++              enabled ? 'bg-slate-900' : 'bg-slate-300'
+             }`}
+             aria-label={enabled ? 'Disabilita audio' : 'Abilita audio'}
+           >
+@@ -144,8 +144,8 @@ export const AudioSettingsSection: React.FC<AudioSettingsSectionProps> = ({
+ 
+       {/* Info box */}
+       {enabled && (
+-        <div className="bg-blue-50 rounded-lg p-3 text-xs text-blue-900 space-y-1">
+-          <p className="font-medium">Audio abilitato</p>
++        <div className="ui-surface-muted p-3 text-xs text-slate-700 space-y-1">
++          <p className="font-medium text-slate-900">Audio abilitato</p>
+           <p>
+             I suoni riprodotti per ogni evento di partita contribuiranno a una miglior
+             esperienza di arbitraggio.
+@@ -154,7 +154,7 @@ export const AudioSettingsSection: React.FC<AudioSettingsSectionProps> = ({
+       )}
+ 
+       {!enabled && (
+-        <div className="bg-slate-50 rounded-lg p-3 text-xs text-slate-600">
++        <div className="ui-surface-muted p-3 text-xs text-slate-600">
+           <p>L'audio è disabilitato. Abilita l'audio sopra per attivare effetti sonori.</p>
+         </div>
+       )}
+diff --git a/src/features/settings/components/FormationEditor.tsx b/src/features/settings/components/FormationEditor.tsx
+index 28b81c4..2589183 100644
+--- a/src/features/settings/components/FormationEditor.tsx
++++ b/src/features/settings/components/FormationEditor.tsx
+@@ -69,12 +69,12 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
+ 
+   return (
+     <div className="space-y-2">
+-      <label className="block text-sm font-medium text-slate-900">Formazione</label>
++      <label className="block ui-label">Formazione</label>
+ 
+       {/* Summary Card */}
+       <button
+         onClick={() => setIsModalOpen(true)}
+-        className="w-full p-3 border border-slate-300 rounded-lg bg-white hover:bg-slate-50 transition-colors text-left"
++        className="w-full p-3 border border-slate-200 rounded-lg bg-white hover:bg-slate-50 transition-colors text-left"
+       >
+         <p className="text-sm font-semibold text-slate-900">{formationName}</p>
+         <p className="text-xs text-slate-600">{playerCount} giocatori</p>
+@@ -85,7 +85,7 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
+         <>
+           <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50" onClick={() => setIsModalOpen(false)} />
+           <div className="fixed inset-0 flex items-center justify-center z-50">
+-            <div className="w-full max-w-md bg-white rounded-lg shadow-2xl p-6 max-h-[80vh] overflow-y-auto">
++            <div className="w-full max-w-md ui-surface p-6 max-h-[80vh] overflow-y-auto">
+               <h3 className="font-semibold text-slate-900 mb-4">Modifica Formazione</h3>
+ 
+               {/* Formation Name */}
+@@ -98,7 +98,7 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
+                   value={formationName}
+                   onChange={(e) => setFormationName(e.target.value)}
+                   placeholder="es. 4-4-2"
+-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
++                  className="ui-input"
+                 />
+               </div>
+ 
+@@ -152,7 +152,7 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
+                     value={editForm.name}
+                     onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                     placeholder="Nome giocatore"
+-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
++                    className="ui-input"
+                   />
+                 </div>
+ 
+@@ -164,14 +164,14 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
+                     placeholder="Numero"
+                     min="1"
+                     max="99"
+-                    className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
++                    className="ui-input"
+                   />
+                   <input
+                     type="text"
+                     value={editForm.position}
+                     onChange={(e) => setEditForm({ ...editForm, position: e.target.value })}
+                     placeholder="Ruolo (GK, DEF...)"
+-                    className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
++                    className="ui-input"
+                   />
+                 </div>
+ 
+@@ -180,14 +180,14 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
+                     type="checkbox"
+                     checked={editForm.isCaptain}
+                     onChange={(e) => setEditForm({ ...editForm, isCaptain: e.target.checked })}
+-                    className="w-4 h-4 text-emerald-500 border-slate-300 rounded"
++                    className="w-4 h-4 text-slate-900 border-slate-300 rounded"
+                   />
+                   <span className="text-sm text-slate-700">Capitano</span>
+                 </label>
+ 
+                 <button
+                   onClick={handleAddPlayer}
+-                  className="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
++                  className="w-full px-3 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
+                 >
+                   <Plus className="w-4 h-4" />
+                   {editingId ? 'Aggiorna' : 'Aggiungi'}
+@@ -199,7 +199,7 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
+                       setEditingId(null);
+                       setEditForm({ name: '', number: '', position: '', isCaptain: false });
+                     }}
+-                    className="w-full px-3 py-2 bg-slate-300 text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-400 transition-colors"
++                    className="w-full px-3 py-2 bg-slate-100 text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-200 transition-colors"
+                   >
+                     Annulla Modifica
+                   </button>
+@@ -209,7 +209,7 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
+               {/* Save Button */}
+               <button
+                 onClick={handleSave}
+-                className="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors"
++                className="w-full px-4 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors"
+               >
+                 Salva Formazione
+               </button>
+diff --git a/src/features/settings/components/MatchConfigDisplay.tsx b/src/features/settings/components/MatchConfigDisplay.tsx
+index e33748b..f510346 100644
+--- a/src/features/settings/components/MatchConfigDisplay.tsx
++++ b/src/features/settings/components/MatchConfigDisplay.tsx
+@@ -12,8 +12,11 @@ interface MatchConfigDisplayProps {
+ 
+ export const MatchConfigDisplay: React.FC<MatchConfigDisplayProps> = () => {
+   return (
+-    <div className="p-4">
+-      <p className="text-sm text-slate-600">MatchConfigDisplay stub - implementation needed</p>
++    <div className="ui-surface-muted p-4">
++      <p className="text-sm text-slate-700 font-medium mb-1">Configurazione match</p>
++      <p className="text-xs text-slate-500">
++        Dettagli avanzati verranno mostrati qui. Per ora, modifica tempi e regole nelle impostazioni.
++      </p>
+     </div>
+   );
+ };
+diff --git a/src/features/settings/components/OfficiatingSection.tsx b/src/features/settings/components/OfficiatingSection.tsx
+index 2ae353c..9ffbb23 100644
+--- a/src/features/settings/components/OfficiatingSection.tsx
++++ b/src/features/settings/components/OfficiatingSection.tsx
+@@ -12,8 +12,11 @@ interface OfficiatingSectionProps {
+ 
+ export const OfficiatingSection: React.FC<OfficiatingSectionProps> = () => {
+   return (
+-    <div className="p-4">
+-      <p className="text-sm text-slate-600">OfficiatingSection stub - implementation needed</p>
++    <div className="ui-surface-muted p-4">
++      <p className="text-sm text-slate-700 font-medium mb-1">Sezione arbitri</p>
++      <p className="text-xs text-slate-500">
++        Configurazione avanzata in arrivo. Usa le impostazioni per inserire i nomi.
++      </p>
+     </div>
+   );
+ };
+diff --git a/src/features/settings/components/SettingsTabs.tsx b/src/features/settings/components/SettingsTabs.tsx
+index cbe936f..498f88c 100644
+--- a/src/features/settings/components/SettingsTabs.tsx
++++ b/src/features/settings/components/SettingsTabs.tsx
+@@ -25,7 +25,7 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = ({ tabs }) => {
+       {/* Tab List - Always on single row */}
+       <div
+         role="tablist"
+-        className="flex gap-0 border-b border-slate-200"
++        className="flex gap-0 border-b border-slate-200 bg-slate-50/70"
+         aria-orientation="horizontal"
+       >
+         {tabs.map((tab) => (
+@@ -37,9 +37,9 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = ({ tabs }) => {
+             aria-controls={`tabpanel-${tab.id}`}
+             tabIndex={activeTabId === tab.id ? 0 : -1}
+             onClick={() => setActiveTabId(tab.id)}
+-            className={`flex-1 px-3 py-4 text-sm font-medium transition-all whitespace-nowrap border-b-2 text-center ${
++            className={`flex-1 px-3 py-3 text-sm font-medium transition-all whitespace-nowrap border-b-2 text-center ${
+               activeTabId === tab.id
+-                ? 'text-blue-600 border-b-blue-600 bg-blue-50'
++                ? 'text-slate-900 border-b-slate-900 bg-white'
+                 : 'text-slate-600 border-b-transparent hover:text-slate-900'
+             }`}
+           >
+diff --git a/src/features/settings/components/TeamColorPicker.tsx b/src/features/settings/components/TeamColorPicker.tsx
+index 948d728..65d57d4 100644
+--- a/src/features/settings/components/TeamColorPicker.tsx
++++ b/src/features/settings/components/TeamColorPicker.tsx
+@@ -40,7 +40,7 @@ export const TeamColorPicker: React.FC<TeamColorPickerProps> = ({ color, onChang
+ 
+   return (
+     <div className="space-y-3">
+-      <label className="block text-sm font-medium text-slate-900">Colore Squadra</label>
++      <label className="block ui-label">Colore Squadra</label>
+ 
+       {/* Preset Palette */}
+       <div className="grid grid-cols-4 gap-2">
+@@ -48,7 +48,7 @@ export const TeamColorPicker: React.FC<TeamColorPickerProps> = ({ color, onChang
+           <button
+             key={key}
+             onClick={() => handlePresetClick(palette)}
+-            className={`h-10 rounded-lg border-2 transition-transform hover:scale-110 ${
++            className={`h-10 rounded-lg border-2 transition-transform hover:scale-105 ${
+               color.primary === palette.primary
+                 ? 'border-slate-900 ring-2 ring-slate-900 ring-offset-2'
+                 : 'border-slate-300'
+@@ -64,7 +64,7 @@ export const TeamColorPicker: React.FC<TeamColorPickerProps> = ({ color, onChang
+       <div>
+         <button
+           onClick={() => setShowCustom(!showCustom)}
+-          className="text-sm text-emerald-600 hover:text-emerald-700 font-medium"
++          className="text-sm text-sky-700 hover:text-sky-800 font-medium"
+         >
+           {showCustom ? '✕ Annulla' : '+ Colore personalizzato'}
+         </button>
+@@ -81,13 +81,13 @@ export const TeamColorPicker: React.FC<TeamColorPickerProps> = ({ color, onChang
+               className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 ${
+                 customError
+                   ? 'border-red-300 focus:ring-red-500'
+-                  : 'border-slate-300 focus:ring-emerald-500'
++                  : 'border-slate-300 focus:ring-sky-500'
+               }`}
+             />
+             {customError && <p className="text-xs text-red-600">{customError}</p>}
+             <button
+               onClick={handleCustomSubmit}
+-              className="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
++              className="w-full px-3 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
+             >
+               Applica
+             </button>
+diff --git a/src/features/settings/sheets/MatchInfoSheet.tsx b/src/features/settings/sheets/MatchInfoSheet.tsx
+index 6030451..208ede6 100644
+--- a/src/features/settings/sheets/MatchInfoSheet.tsx
++++ b/src/features/settings/sheets/MatchInfoSheet.tsx
+@@ -34,9 +34,9 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+     <>
+       <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40" onClick={onClose} />
+       <div className="fixed inset-0 flex items-end lg:items-center justify-center z-50">
+-        <div className="w-full lg:w-96 bg-white rounded-t-2xl lg:rounded-lg shadow-2xl max-h-[90vh] lg:max-h-none overflow-y-auto">
++        <div className="w-full lg:w-96 ui-surface rounded-t-2xl lg:rounded-xl shadow-2xl max-h-[90vh] lg:max-h-none overflow-y-auto">
+           {/* Header */}
+-          <div className="sticky top-0 bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between">
++          <div className="sticky top-0 bg-white/95 backdrop-blur-xl border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+             <h2 className="font-semibold text-slate-900">Informazioni Partita</h2>
+             <button
+               onClick={onClose}
+@@ -48,12 +48,12 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+           </div>
+ 
+           {/* Tabs */}
+-          <div className="flex border-b border-slate-200 bg-slate-50 overflow-x-auto">
++          <div className="flex border-b border-slate-200 bg-slate-50/80 overflow-x-auto">
+             <button
+               onClick={() => setActiveTab('config')}
+               className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors ${
+                 activeTab === 'config'
+-                  ? 'border-b-2 border-emerald-500 text-emerald-600 bg-white'
++                  ? 'border-b-2 border-slate-900 text-slate-900 bg-white'
+                   : 'text-slate-600 hover:text-slate-900'
+               }`}
+             >
+@@ -63,7 +63,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+               onClick={() => setActiveTab('teams')}
+               className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors ${
+                 activeTab === 'teams'
+-                  ? 'border-b-2 border-emerald-500 text-emerald-600 bg-white'
++                  ? 'border-b-2 border-slate-900 text-slate-900 bg-white'
+                   : 'text-slate-600 hover:text-slate-900'
+               }`}
+             >
+@@ -73,7 +73,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+               onClick={() => setActiveTab('officiating')}
+               className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors ${
+                 activeTab === 'officiating'
+-                  ? 'border-b-2 border-emerald-500 text-emerald-600 bg-white'
++                  ? 'border-b-2 border-slate-900 text-slate-900 bg-white'
+                   : 'text-slate-600 hover:text-slate-900'
+               }`}
+             >
+@@ -83,7 +83,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+               onClick={() => setActiveTab('settings')}
+               className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors ${
+                 activeTab === 'settings'
+-                  ? 'border-b-2 border-emerald-500 text-emerald-600 bg-white'
++                  ? 'border-b-2 border-slate-900 text-slate-900 bg-white'
+                   : 'text-slate-600 hover:text-slate-900'
+               }`}
+             >
+@@ -102,7 +102,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+             {activeTab === 'teams' && (
+               <div className="space-y-4">
+                 {/* Home Team */}
+-                <div className="border border-slate-200 rounded-lg overflow-hidden">
++                <div className="ui-surface overflow-hidden">
+                   <button
+                     onClick={() => setExpandedTeam(expandedTeam === 'home' ? null : 'home')}
+                     className="w-full flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 transition-colors"
+@@ -145,7 +145,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+                               },
+                             });
+                           }}
+-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
++                          className="ui-input"
+                         />
+                       </div>
+ 
+@@ -179,7 +179,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+                 </div>
+ 
+                 {/* Away Team */}
+-                <div className="border border-slate-200 rounded-lg overflow-hidden">
++                <div className="ui-surface overflow-hidden">
+                   <button
+                     onClick={() => setExpandedTeam(expandedTeam === 'away' ? null : 'away')}
+                     className="w-full flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 transition-colors"
+@@ -222,7 +222,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+                               },
+                             });
+                           }}
+-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
++                          className="ui-input"
+                         />
+                       </div>
+ 
+@@ -269,7 +269,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+             {activeTab === 'settings' && (
+               <div className="space-y-4">
+                 <div>
+-                  <label className="block text-sm font-medium text-slate-900 mb-2">
++                  <label className="block ui-label mb-2">
+                     Durata tempo (minuti)
+                   </label>
+                   <input
+@@ -282,12 +282,12 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+                         periodDurationMinutes: parseInt(e.target.value) || 45,
+                       })
+                     }
+-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
++                    className="ui-input"
+                   />
+                 </div>
+ 
+                 <div>
+-                  <label className="block text-sm font-medium text-slate-900 mb-2">
++                  <label className="block ui-label mb-2">
+                     Timeout per squadra
+                   </label>
+                   <input
+@@ -300,7 +300,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+                         timeoutsPerTeam: parseInt(e.target.value) || 1,
+                       })
+                     }
+-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
++                    className="ui-input"
+                   />
+                 </div>
+ 
+@@ -309,7 +309,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+                     type="checkbox"
+                     checked={settings.audioEnabled}
+                     onChange={(e) => handleSettingsChange({ audioEnabled: e.target.checked })}
+-                    className="w-4 h-4 text-emerald-500 border-slate-300 rounded"
++                    className="w-4 h-4 text-slate-900 border-slate-300 rounded"
+                   />
+                   <span className="text-sm font-medium text-slate-900">Suoni abilitati</span>
+                 </label>
+@@ -321,7 +321,7 @@ export const MatchInfoSheet: React.FC<MatchInfoSheetProps> = ({
+                     onChange={(e) =>
+                       handleSettingsChange({ vibrationEnabled: e.target.checked })
+                     }
+-                    className="w-4 h-4 text-emerald-500 border-slate-300 rounded"
++                    className="w-4 h-4 text-slate-900 border-slate-300 rounded"
+                   />
+                   <span className="text-sm font-medium text-slate-900">Vibrazione abilitata</span>
+                 </label>
+diff --git a/src/features/settings/sheets/SettingsSheet.tsx b/src/features/settings/sheets/SettingsSheet.tsx
+index 0b02b17..0da8986 100644
+--- a/src/features/settings/sheets/SettingsSheet.tsx
++++ b/src/features/settings/sheets/SettingsSheet.tsx
+@@ -149,46 +149,46 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
+       id: 'arbitri',
+       label: '👨‍⚖️ Arbitri',
+       content: (
+-        <div className="space-y-6 pb-4">
++          <div className="space-y-6 pb-4">
+           {/* Referee 1 */}
+           <div>
+-            <label className="block text-sm font-medium text-slate-900 mb-2">
++            <label className="block ui-label mb-2">
+               Arbitro Principale
+             </label>
+             <input
+               type="text"
+               value={referee1}
+               onChange={(e) => setReferee1(e.target.value)}
+-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
++              className="ui-input"
+               placeholder="Nome arbitro principale"
+             />
+-            <p className="text-xs text-slate-500 mt-1">
++            <p className="ui-help mt-1">
+               L'arbitro responsabile della partita
+             </p>
+           </div>
+ 
+           {/* Referee 2 */}
+           <div>
+-            <label className="block text-sm font-medium text-slate-900 mb-2">
++            <label className="block ui-label mb-2">
+               Arbitro di Linea
+             </label>
+             <input
+               type="text"
+               value={referee2}
+               onChange={(e) => setReferee2(e.target.value)}
+-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
++              className="ui-input"
+               placeholder="Nome arbitro di linea (opzionale)"
+             />
+-            <p className="text-xs text-slate-500 mt-1">
++            <p className="ui-help mt-1">
+               L'arbitro assistente (opzionale)
+             </p>
+           </div>
+ 
+-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-800">
++          <div className="ui-surface-muted p-3 text-xs text-slate-700">
+             <div className="flex gap-2">
+-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
++              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-sky-600" />
+               <div>
+-                <p className="font-medium mb-1">ℹ️ Informazioni Arbitri</p>
++                <p className="font-medium mb-1">Informazioni Arbitri</p>
+                 <p>Inserisci i nomi degli arbitri per il record ufficiale della partita.</p>
+               </div>
+             </div>
+@@ -279,18 +279,18 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
+                   matchControl: 1.0,
+                 });
+               }}
+-              className="w-full px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white text-slate-900 hover:bg-slate-50 transition text-center"
++              className="w-full px-3 py-2 text-xs font-medium rounded-lg border border-slate-200 bg-white text-slate-900 hover:bg-slate-50 transition text-center"
+             >
+               🔄 Ripristina Valori Standard
+             </button>
+           </div>
+ 
+           {/* Support */}
+-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
++          <div className="ui-surface-muted p-3 text-xs text-slate-700">
+             <div className="flex gap-2">
+-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
++              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" />
+               <div>
+-                <p className="font-medium mb-1">💡 Suggerimenti</p>
++                <p className="font-medium mb-1">Suggerimenti</p>
+                 <p>Accedi regolarmente alle impostazioni per mantenere i dati della squadra aggiornati.</p>
+               </div>
+             </div>
+@@ -307,18 +307,18 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
+         onClick={onClose}
+       />
+       <div className="fixed inset-0 flex items-end lg:items-center justify-center z-50 p-4 lg:p-0">
+-        <div className="w-full lg:w-[600px] bg-white rounded-t-2xl lg:rounded-lg shadow-2xl max-h-[90vh] overflow-hidden flex flex-col">
++        <div className="w-full lg:w-[600px] ui-surface rounded-t-2xl lg:rounded-xl shadow-2xl max-h-[90vh] overflow-hidden flex flex-col">
+           {/* Header - Fixed */}
+-          <div className="sticky top-0 bg-gradient-to-r from-slate-900 to-slate-800 text-white px-6 py-4 flex items-center justify-between border-b border-slate-700 z-10">
++          <div className="sticky top-0 bg-white/95 backdrop-blur-xl text-slate-900 px-6 py-4 flex items-center justify-between border-b border-slate-200 z-10">
+             <div className="flex-1 min-w-0">
+               <h2 className="font-bold text-xl">Impostazioni</h2>
+-              <p className="text-sm text-slate-300 truncate">
++              <p className="text-sm text-slate-500 truncate">
+                 {homeTeamConfig.displayName} vs {awayTeamConfig.displayName} • {periodDuration}′
+               </p>
+             </div>
+             <button
+               onClick={onClose}
+-              className="p-2 hover:bg-slate-700 rounded-lg transition-colors flex-shrink-0 ml-2"
++              className="p-2 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0 ml-2"
+               aria-label="Chiudi"
+             >
+               <X className="w-5 h-5" />
+@@ -333,7 +333,7 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
+           </div>
+ 
+           {/* Footer - Fixed */}
+-          <div className="sticky bottom-0 bg-slate-50 border-t border-slate-200 px-6 py-4 flex gap-3 flex-shrink-0">
++          <div className="sticky bottom-0 bg-slate-50/80 border-t border-slate-200 px-6 py-4 flex gap-3 flex-shrink-0">
+             <ActionButton
+               action="secondary"
+               size="md"
+diff --git a/src/features/settings/tabs/AudioTab.tsx b/src/features/settings/tabs/AudioTab.tsx
+index a65aa29..e3d169f 100644
+--- a/src/features/settings/tabs/AudioTab.tsx
++++ b/src/features/settings/tabs/AudioTab.tsx
+@@ -70,11 +70,11 @@ export const AudioTab: React.FC<AudioTabProps> = ({
+       {/* Master Audio Toggle */}
+       <div>
+         <div className="flex items-center justify-between mb-3">
+-          <label className="text-sm font-medium text-slate-900">Audio</label>
++          <label className="ui-label">Audio</label>
+           <button
+             onClick={() => onToggleAudio(!audioEnabled)}
+             className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
+-              audioEnabled ? 'bg-emerald-600' : 'bg-slate-300'
++              audioEnabled ? 'bg-slate-900' : 'bg-slate-300'
+             }`}
+             aria-label={audioEnabled ? 'Disabilita audio' : 'Abilita audio'}
+           >
+@@ -94,7 +94,7 @@ export const AudioTab: React.FC<AudioTabProps> = ({
+       {audioEnabled && (
+         <div>
+           <div className="flex items-center justify-between mb-2">
+-            <label className="text-sm font-medium text-slate-900">
++            <label className="ui-label">
+               Volume Principale
+             </label>
+             <span className="text-sm font-semibold text-slate-900 tabular-nums">
+@@ -164,7 +164,7 @@ export const AudioTab: React.FC<AudioTabProps> = ({
+                           disabled={testingSoundId !== null}
+                           className={`p-1.5 rounded transition-colors ${
+                             testingSoundId === category
+-                              ? 'bg-emerald-100 text-emerald-600'
++                              ? 'bg-emerald-100 text-emerald-700'
+                               : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                           }`}
+                           title={`Test ${CATEGORY_LABELS[category]}`}
+@@ -202,13 +202,13 @@ export const AudioTab: React.FC<AudioTabProps> = ({
+       {/* Vibration Toggle */}
+       <div>
+         <div className="flex items-center justify-between">
+-          <label className="text-sm font-medium text-slate-900">
++          <label className="ui-label">
+             Vibrazione
+           </label>
+           <button
+             onClick={() => onToggleVibration(!vibrationEnabled)}
+             className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
+-              vibrationEnabled ? 'bg-emerald-600' : 'bg-slate-300'
++              vibrationEnabled ? 'bg-slate-900' : 'bg-slate-300'
+             }`}
+             aria-label={vibrationEnabled ? 'Disabilita vibrazione' : 'Abilita vibrazione'}
+           >
+@@ -225,8 +225,8 @@ export const AudioTab: React.FC<AudioTabProps> = ({
+       </div>
+ 
+       {/* Info Box */}
+-      <div className="bg-slate-50 rounded-lg p-3 text-xs text-slate-600 space-y-1">
+-        <p className="font-medium text-slate-900">💡 Nota</p>
++      <div className="ui-surface-muted p-3 text-xs text-slate-600 space-y-1">
++        <p className="font-medium text-slate-900">Nota</p>
+         <p>
+           L'audio si inizializza al primo evento di gioco. Le impostazioni vengono salvate
+           automaticamente.
+diff --git a/src/features/settings/tabs/MatchTab.tsx b/src/features/settings/tabs/MatchTab.tsx
+index 94dcfdc..c8354ea 100644
+--- a/src/features/settings/tabs/MatchTab.tsx
++++ b/src/features/settings/tabs/MatchTab.tsx
+@@ -17,10 +17,10 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+   return (
+     <div className="space-y-6 pb-4">
+       {/* SECTION: Regular Time */}
+-      <div className="border-b border-gray-200 pb-6">
++      <div className="border-b border-slate-200 pb-6">
+         <div className="flex items-center gap-2 mb-4">
+-          <h3 className="text-sm font-bold text-gray-900">Tempi Regolamentari</h3>
+-          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
++          <h3 className="text-sm font-bold text-slate-900">Tempi Regolamentari</h3>
++          <span className="ui-chip bg-sky-50 text-sky-800 border-sky-200">
+             Tempo Standard
+           </span>
+         </div>
+@@ -28,7 +28,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+         <div className="space-y-4">
+           {/* Period Duration */}
+           <div>
+-            <label className="block text-sm font-medium text-gray-700 mb-2">
++            <label className="block ui-label mb-2">
+               Durata di ogni Tempo (minuti)
+             </label>
+             <div className="flex items-center gap-3">
+@@ -41,21 +41,21 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+                 onChange={(e) =>
+                   handleChange("periodDurationMinutes", parseInt(e.target.value))
+                 }
+-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-semibold"
++                className="w-24 ui-input text-center font-semibold"
+               />
+-              <span className="text-gray-600">minuti</span>
+-              <div className="text-xs text-gray-500 ml-auto">
++              <span className="text-slate-600">minuti</span>
++              <div className="text-xs text-slate-500 ml-auto">
+                 Totale: {(settings.periodDurationMinutes || 45) * 2} minuti
+               </div>
+             </div>
+-            <p className="text-xs text-gray-500 mt-1">
++            <p className="ui-help mt-1">
+               Tempo di gioco per il primo e il secondo tempo
+             </p>
+           </div>
+ 
+           {/* Halftime Duration */}
+           <div>
+-            <label className="block text-sm font-medium text-gray-700 mb-2">
++            <label className="block ui-label mb-2">
+               Durata Intervallo (minuti)
+             </label>
+             <div className="flex items-center gap-3">
+@@ -68,11 +68,11 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+                 onChange={(e) =>
+                   handleChange("halftimeDurationMinutes", parseInt(e.target.value))
+                 }
+-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-semibold"
++                className="w-24 ui-input text-center font-semibold"
+               />
+-              <span className="text-gray-600">minuti</span>
++              <span className="text-slate-600">minuti</span>
+             </div>
+-            <p className="text-xs text-gray-500 mt-1">
++            <p className="ui-help mt-1">
+               Pausa tra il primo e il secondo tempo
+             </p>
+           </div>
+@@ -80,10 +80,10 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+       </div>
+ 
+       {/* SECTION: Extra Time */}
+-      <div className="border-b border-gray-200 pb-6">
++      <div className="border-b border-slate-200 pb-6">
+         <div className="flex items-center gap-2 mb-4">
+-          <h3 className="text-sm font-bold text-gray-900">Tempo Supplementare</h3>
+-          <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
++          <h3 className="text-sm font-bold text-slate-900">Tempo Supplementare</h3>
++          <span className="ui-chip bg-sky-50 text-sky-800 border-sky-200">
+             Opzionale
+           </span>
+         </div>
+@@ -91,7 +91,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+         <div className="space-y-4">
+           {/* Extra Time Duration */}
+           <div>
+-            <label className="block text-sm font-medium text-gray-700 mb-2">
++            <label className="block ui-label mb-2">
+               Durata di ogni Supplementare (minuti)
+             </label>
+             <div className="flex items-center gap-3">
+@@ -104,21 +104,21 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+                 onChange={(e) =>
+                   handleChange("extratimeDurationMinutes", parseInt(e.target.value))
+                 }
+-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-center font-semibold"
++                className="w-24 ui-input text-center font-semibold"
+               />
+-              <span className="text-gray-600">minuti</span>
+-              <div className="text-xs text-gray-500 ml-auto">
++              <span className="text-slate-600">minuti</span>
++              <div className="text-xs text-slate-500 ml-auto">
+                 Totale: {(settings.extratimeDurationMinutes || 15) * 2} minuti
+               </div>
+             </div>
+-            <p className="text-xs text-gray-500 mt-1">
++            <p className="ui-help mt-1">
+               Tempo di gioco per il primo e il secondo supplementare (se necessario)
+             </p>
+           </div>
+ 
+           {/* Extra Time Interval */}
+           <div>
+-            <label className="block text-sm font-medium text-gray-700 mb-2">
++            <label className="block ui-label mb-2">
+               Intervallo tra i Supplementari (minuti)
+             </label>
+             <div className="flex items-center gap-3">
+@@ -134,11 +134,11 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+                 onChange={(e) =>
+                   handleChange("extratimeIntervalMinutes", parseInt(e.target.value))
+                 }
+-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-center font-semibold"
++                className="w-24 ui-input text-center font-semibold"
+               />
+-              <span className="text-gray-600">minuti</span>
++              <span className="text-slate-600">minuti</span>
+             </div>
+-            <p className="text-xs text-gray-500 mt-1">
++            <p className="ui-help mt-1">
+               Pausa tra il primo e il secondo supplementare
+             </p>
+           </div>
+@@ -146,10 +146,10 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+       </div>
+ 
+       {/* SECTION: Timeouts */}
+-      <div className="border-b border-gray-200 pb-6">
++      <div className="border-b border-slate-200 pb-6">
+         <div className="flex items-center gap-2 mb-4">
+-          <h3 className="text-sm font-bold text-gray-900">Richieste di Pausa</h3>
+-          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
++          <h3 className="text-sm font-bold text-slate-900">Richieste di Pausa</h3>
++          <span className="ui-chip bg-emerald-50 text-emerald-800 border-emerald-200">
+             Timeout
+           </span>
+         </div>
+@@ -157,7 +157,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+         <div className="space-y-4">
+           {/* Timeouts per Team */}
+           <div>
+-            <label className="block text-sm font-medium text-gray-700 mb-2">
++            <label className="block ui-label mb-2">
+               Numero di Timeout per Squadra
+             </label>
+             <div className="flex items-center gap-3">
+@@ -170,18 +170,18 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+                 onChange={(e) =>
+                   handleChange("timeoutsPerTeam", parseInt(e.target.value))
+                 }
+-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-semibold"
++                className="w-24 ui-input text-center font-semibold"
+               />
+-              <span className="text-gray-600">timeout</span>
++              <span className="text-slate-600">timeout</span>
+             </div>
+-            <p className="text-xs text-gray-500 mt-1">
++            <p className="ui-help mt-1">
+               Quante volte ogni squadra può chiedere una pausa
+             </p>
+           </div>
+ 
+           {/* Timeout Duration */}
+           <div>
+-            <label className="block text-sm font-medium text-gray-700 mb-2">
++            <label className="block ui-label mb-2">
+               Durata di un Timeout (secondi)
+             </label>
+             <div className="flex items-center gap-3">
+@@ -194,16 +194,16 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+                 onChange={(e) =>
+                   handleChange("timeoutDurationSeconds", parseInt(e.target.value))
+                 }
+-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-semibold"
++                className="w-24 ui-input text-center font-semibold"
+               />
+-              <span className="text-gray-600">secondi</span>
+-              <div className="text-xs text-gray-500 ml-auto">
++              <span className="text-slate-600">secondi</span>
++              <div className="text-xs text-slate-500 ml-auto">
+                 {Math.floor((settings.timeoutDurationSeconds || 60) / 60)}:{String(
+                   ((settings.timeoutDurationSeconds || 60) % 60)
+                 ).padStart(2, "0")}
+               </div>
+             </div>
+-            <p className="text-xs text-gray-500 mt-1">
++            <p className="ui-help mt-1">
+               Durata di una singola richiesta di pausa
+             </p>
+           </div>
+@@ -211,7 +211,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+       </div>
+ 
+       {/* SECTION: Match Summary / Info */}
+-      <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
++      <div className="ui-surface-muted p-4">
+         <div className="flex items-start gap-3">
+           <Info className="w-5 h-5 text-slate-500 flex-shrink-0 mt-0.5" />
+           <div className="text-xs text-slate-700 space-y-2">
+@@ -237,8 +237,8 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+       </div>
+ 
+       {/* SECTION: Presets */}
+-      <div className="border-t border-gray-200 pt-4">
+-        <p className="text-xs font-semibold text-gray-700 mb-3">Regolamenti Predefiniti</p>
++      <div className="border-t border-slate-200 pt-4">
++        <p className="text-xs font-semibold text-slate-700 mb-3">Regolamenti Predefiniti</p>
+         <div className="grid grid-cols-2 gap-2">
+           <button
+             onClick={() => {
+@@ -249,7 +249,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+               handleChange("timeoutsPerTeam", 1);
+               handleChange("timeoutDurationSeconds", 60);
+             }}
+-            className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition text-gray-700"
++            className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white hover:bg-slate-50 transition text-slate-700"
+           >
+             🏆 Calcio (45+15+15)
+           </button>
+@@ -263,7 +263,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+               handleChange("timeoutsPerTeam", 2);
+               handleChange("timeoutDurationSeconds", 60);
+             }}
+-            className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition text-gray-700"
++            className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white hover:bg-slate-50 transition text-slate-700"
+           >
+             🏀 Pallone Elastico
+           </button>
+@@ -277,7 +277,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+               handleChange("timeoutsPerTeam", 3);
+               handleChange("timeoutDurationSeconds", 45);
+             }}
+-            className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition text-gray-700"
++            className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white hover:bg-slate-50 transition text-slate-700"
+           >
+             🎾 Futsal/Volley
+           </button>
+@@ -291,12 +291,12 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
+               handleChange("timeoutsPerTeam", 2);
+               handleChange("timeoutDurationSeconds", 30);
+             }}
+-            className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition text-gray-700"
++            className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white hover:bg-slate-50 transition text-slate-700"
+           >
+             ⚾ Altre Attività
+           </button>
+         </div>
+-        <p className="text-xs text-gray-500 mt-2">
++        <p className="text-xs text-slate-500 mt-2">
+           Clicca sui pulsanti per applicare configurazioni standard di vari sport
+         </p>
+       </div>
+diff --git a/src/features/settings/tabs/TeamsTab.tsx b/src/features/settings/tabs/TeamsTab.tsx
+index 18bf0ac..1d04988 100644
+--- a/src/features/settings/tabs/TeamsTab.tsx
++++ b/src/features/settings/tabs/TeamsTab.tsx
+@@ -51,12 +51,12 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+     setFormationExpanded: (v: boolean) => void;
+     teamHandlers: ReturnType<typeof useTeamConfig>;
+   }) => (
+-    <div className="border border-gray-300 rounded-lg overflow-hidden">
++    <div className="ui-surface overflow-hidden">
+       <button
+         onClick={() => setExpanded(!expanded)}
+-        className="w-full px-4 py-3 flex items-center justify-between bg-gray-100 hover:bg-gray-200 transition"
++        className="w-full px-4 py-3 flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition"
+       >
+-        <span className="font-semibold text-gray-800">{config.displayName || 'Squadra'}</span>
++        <span className="font-semibold text-slate-900">{config.displayName || 'Squadra'}</span>
+         <ChevronDown
+           size={20}
+           className={`transition-transform ${expanded ? 'rotate-180' : ''}`}
+@@ -67,20 +67,20 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+         <div className="p-4 space-y-4 bg-white">
+           {/* Team Name */}
+           <div>
+-            <label className="block text-sm font-medium text-gray-700 mb-1">
++            <label className="block ui-label mb-1">
+               Nome Squadra
+             </label>
+             <input
+               type="text"
+               value={config.displayName}
+               onChange={(e) => teamHandlers.updateName(e.target.value)}
+-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
++              className="ui-input"
+             />
+           </div>
+ 
+           {/* Coach */}
+           <div>
+-            <label className="block text-sm font-medium text-gray-700 mb-1">
++            <label className="block ui-label mb-1">
+               Allenatore
+             </label>
+             <input
+@@ -88,13 +88,13 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+               value={config.coach || ''}
+               onChange={(e) => teamHandlers.updateCoach(e.target.value)}
+               placeholder="Nome allenatore/manager"
+-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
++              className="ui-input"
+             />
+           </div>
+ 
+           {/* Color Palette */}
+           <div>
+-            <label className="block text-sm font-medium text-gray-700 mb-2">
++            <label className="block ui-label mb-2">
+               Colore Squadra
+             </label>
+             <div className="grid grid-cols-4 gap-2">
+@@ -104,8 +104,8 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+                   onClick={() => teamHandlers.updateColor(key, TEAM_COLOR_PALETTE)}
+                   className={`h-10 rounded-md border-2 transition ${
+                     config.color.primary === color.primary
+-                      ? 'border-gray-800'
+-                      : 'border-gray-300'
++                      ? 'border-slate-900'
++                      : 'border-slate-300'
+                   }`}
+                   style={{ backgroundColor: color.primary }}
+                   title={key}
+@@ -121,7 +121,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+                 className="w-6 h-6 rounded"
+                 style={{ backgroundColor: config.color.secondary }}
+               />
+-              <span className="text-xs text-gray-600">
++              <span className="text-xs text-slate-600">
+                 {config.color.primary} / {config.color.secondary}
+               </span>
+             </div>
+@@ -131,9 +131,9 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+           <div className="border-t pt-4">
+             <button
+               onClick={() => setFormationExpanded(!formationExpanded)}
+-              className="w-full px-3 py-2 flex items-center justify-between bg-blue-50 hover:bg-blue-100 rounded-md transition"
++              className="w-full px-3 py-2 flex items-center justify-between bg-slate-50 hover:bg-slate-100 rounded-md transition"
+             >
+-              <span className="font-medium text-blue-900">
++              <span className="font-medium text-slate-900">
+                 Formazione: {config.formation.name} ({config.formation.players.length} giocatori)
+               </span>
+               <ChevronDown
+@@ -143,10 +143,10 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+             </button>
+ 
+             {formationExpanded && (
+-              <div className="mt-3 space-y-3 bg-blue-50 p-3 rounded-md">
++              <div className="mt-3 space-y-3 bg-slate-50 p-3 rounded-md border border-slate-200">
+                 {/* Formation Presets */}
+                 <div>
+-                  <label className="block text-xs font-semibold text-gray-700 mb-2">
++                  <label className="block text-xs font-semibold text-slate-700 mb-2">
+                     Formazione Predefinita
+                   </label>
+                   <div className="grid grid-cols-3 gap-2">
+@@ -156,8 +156,8 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+                         onClick={() => teamHandlers.updateFormation(f)}
+                         className={`px-3 py-2 text-xs font-medium rounded-md transition ${
+                           config.formation.name === f
+-                            ? 'bg-blue-600 text-white'
+-                            : 'bg-white border border-blue-300 text-blue-700 hover:bg-blue-100'
++                            ? 'bg-slate-900 text-white'
++                            : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100'
+                         }`}
+                       >
+                         {f}
+@@ -169,12 +169,12 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+                 {/* Players List */}
+                 <div>
+                   <div className="flex items-center justify-between mb-2">
+-                    <label className="text-xs font-semibold text-gray-700">
++                    <label className="text-xs font-semibold text-slate-700">
+                       Giocatori ({config.formation.players.length})
+                     </label>
+                     <button
+                       onClick={teamHandlers.addPlayer}
+-                      className="flex items-center gap-1 px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600 transition"
++                      className="flex items-center gap-1 px-2 py-1 text-xs bg-slate-900 text-white rounded hover:bg-slate-800 transition"
+                     >
+                       <Plus size={14} />
+                       Aggiungi
+@@ -183,12 +183,12 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+ 
+                   <div className="space-y-2 max-h-48 overflow-y-auto">
+                     {config.formation.players.length === 0 ? (
+-                      <p className="text-xs text-gray-500 italic">
++                      <p className="text-xs text-slate-500 italic">
+                         Nessun giocatore. Aggiungi i giocatori della squadra.
+                       </p>
+                     ) : (
+                       config.formation.players.map((player: Player, idx: number) => (
+-                        <div key={player.id} className="flex items-center gap-2 bg-white p-2 rounded border border-blue-200">
++                        <div key={player.id} className="flex items-center gap-2 bg-white p-2 rounded border border-slate-200">
+                           <input
+                             type="number"
+                             min="0"
+@@ -199,7 +199,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+                                 number: parseInt(e.target.value) || 0,
+                               })
+                             }
+-                            className="w-10 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
++                            className="w-10 px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-sky-500"
+                             placeholder="N"
+                           />
+ 
+@@ -209,7 +209,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+                             onChange={(e) =>
+                               teamHandlers.updatePlayer(player.id, { name: e.target.value })
+                             }
+-                            className="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
++                            className="flex-1 px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-sky-500"
+                             placeholder="Nome"
+                           />
+ 
+@@ -218,7 +218,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({
+                             onChange={(e) =>
+                               teamHandlers.updatePlayer(player.id, { position: e.target.value })
+                             }
+-                            className="w-16 px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
++                            className="w-16 px-2 py-1 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-sky-500"
+                           >
+                             <option value="GK">GK</option>
+                             <option value="DEF">DEF</option>
+diff --git a/src/features/streaming/MiniStreamPreview.tsx b/src/features/streaming/MiniStreamPreview.tsx
+index f093f8b..31fd2b8 100644
+--- a/src/features/streaming/MiniStreamPreview.tsx
++++ b/src/features/streaming/MiniStreamPreview.tsx
+@@ -22,9 +22,9 @@ export function MiniStreamPreview({ onExpand, onClose }: MiniStreamPreviewProps)
+   if (!isStreaming || !localStream) return null;
+ 
+   return (
+-    <div className="fixed bottom-20 right-6 z-50 w-64 bg-gray-900 rounded-lg shadow-2xl border border-gray-700 overflow-hidden">
++    <div className="fixed bottom-20 right-6 z-50 w-64 ui-surface-dark overflow-hidden">
+       {/* Header */}
+-      <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-red-600 to-red-500 cursor-move">
++      <div className="flex items-center justify-between px-3 py-2 bg-red-600 cursor-move">
+         <div className="flex items-center gap-2">
+           <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+           <span className="text-white text-xs font-semibold">STREAMING</span>
+@@ -69,10 +69,10 @@ export function MiniStreamPreview({ onExpand, onClose }: MiniStreamPreviewProps)
+       </div>
+ 
+       {/* Footer */}
+-      <div className="px-3 py-2 bg-gray-800 text-center">
++      <div className="px-3 py-2 bg-slate-900/70 text-center">
+         <button
+           onClick={onExpand}
+-          className="text-xs text-gray-300 hover:text-white transition-colors"
++          className="text-xs text-slate-200 hover:text-white transition-colors"
+         >
+           Click per aprire dashboard →
+         </button>
+diff --git a/src/features/streaming/StreamingControl.tsx b/src/features/streaming/StreamingControl.tsx
+index 77585de..310be4e 100644
+--- a/src/features/streaming/StreamingControl.tsx
++++ b/src/features/streaming/StreamingControl.tsx
+@@ -56,22 +56,22 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
+ 
+   if (!isSupported) {
+     return (
+-      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+-        <p className="text-xs text-yellow-800">Browser non supporta streaming</p>
++      <div className="p-3 ui-surface-muted">
++        <p className="text-xs text-amber-800">Browser non supporta streaming</p>
+       </div>
+     );
+   }
+ 
+   return (
+-    <div className="space-y-3 p-4 bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
++    <div className="space-y-3 p-4 ui-surface">
+       <div className="flex items-center justify-between">
+         <div className="flex items-center gap-2">
+-          <Video className="w-4 h-4 text-blue-600" />
++          <Video className="w-4 h-4 text-slate-700" />
+           <h4 className="font-semibold text-sm">Streaming</h4>
+         </div>
+         {isStreaming && (
+-          <div className="flex items-center gap-1 px-2 py-0.5 bg-red-600 text-white rounded-full text-xs">
+-            <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
++          <div className="ui-chip bg-red-50 text-red-700 border-red-200">
++            <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+             LIVE
+           </div>
+         )}
+@@ -81,7 +81,7 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
+         <button
+           onClick={handleStartStream}
+           disabled={isConnecting}
+-          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
++          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+         >
+           {isConnecting ? (
+             <>
+@@ -98,7 +98,7 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
+       ) : (
+         <div className="space-y-3">
+           {localStream && (
+-            <div className="relative aspect-video bg-black rounded-lg overflow-hidden border-2 border-red-500">
++            <div className="relative aspect-video bg-black rounded-lg overflow-hidden border border-red-500/70">
+               <video
+                 autoPlay
+                 muted
+@@ -114,7 +114,7 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
+               {onExpandDashboard && (
+                 <button
+                   onClick={onExpandDashboard}
+-                  className="absolute top-2 right-2 p-2 bg-black/70 text-white rounded"
++                  className="absolute top-2 right-2 p-2 bg-black/70 text-white rounded hover:bg-black/80"
+                 >
+                   <Maximize2 className="w-4 h-4" />
+                 </button>
+@@ -131,22 +131,22 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
+               type="text"
+               value={getStreamURL() || ''}
+               readOnly
+-              className="flex-1 px-2 py-1.5 text-xs bg-white border rounded font-mono"
++              className="flex-1 px-2 py-1.5 text-xs bg-white border border-slate-200 rounded font-mono"
+               onClick={(e) => e.currentTarget.select()}
+             />
+-            <button onClick={handleCopyLink} className="px-2 bg-blue-600 text-white rounded" title="Copia link">
++            <button onClick={handleCopyLink} className="px-2 bg-sky-600 text-white rounded hover:bg-sky-700" title="Copia link">
+               {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+             </button>
+           </div>
+ 
+           {/* How to test instructions */}
+-          <div className="p-2 bg-blue-50 border border-blue-200 rounded">
+-            <p className="text-xs text-blue-800 mb-2">
++          <div className="p-2 ui-surface-muted">
++            <p className="text-xs text-slate-700 mb-2">
+               <strong>Come testare:</strong> Apri il link in un altro tab/browser per vedere il viewer count aumentare
+             </p>
+             <button
+               onClick={handleOpenViewer}
+-              className="w-full flex items-center justify-center gap-2 px-2 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs"
++              className="w-full flex items-center justify-center gap-2 px-2 py-1.5 bg-sky-600 text-white rounded hover:bg-sky-700 text-xs"
+             >
+               <Eye className="w-3 h-3" />
+               Apri viewer in nuovo tab (test)
+@@ -157,7 +157,7 @@ export function StreamingControl({ onExpandDashboard }: StreamingControlProps) {
+             {onExpandDashboard && (
+               <button
+                 onClick={onExpandDashboard}
+-                className="flex-1 px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm"
++                className="flex-1 px-3 py-2 bg-slate-900 text-white rounded hover:bg-slate-800 text-sm"
+               >
+                 <ExternalLink className="w-4 h-4 inline mr-1" />
+                 Dashboard
+diff --git a/src/features/streaming/StreamingDashboard.tsx b/src/features/streaming/StreamingDashboard.tsx
+index 42689aa..820718a 100644
+--- a/src/features/streaming/StreamingDashboard.tsx
++++ b/src/features/streaming/StreamingDashboard.tsx
+@@ -173,7 +173,7 @@ export function StreamingDashboard({
+               </button>
+               <div className="w-px h-6 bg-gray-700" />
+               <div className="flex items-center gap-3">
+-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
++                <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-sky-700 rounded-lg flex items-center justify-center">
+                   <Video className="w-6 h-6 text-white" />
+                 </div>
+                 <div>
+@@ -185,12 +185,12 @@ export function StreamingDashboard({
+ 
+             <div className="flex items-center gap-3">
+               {isStreaming && (
+-                <div className="flex items-center gap-6 px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-lg">
++                <div className="flex items-center gap-6 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+                   <div className="flex items-center gap-2">
+-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+-                    <span className="text-green-500 font-semibold text-sm">LIVE</span>
++                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
++                    <span className="text-emerald-500 font-semibold text-sm">LIVE</span>
+                   </div>
+-                  <div className="w-px h-4 bg-green-500/30" />
++                  <div className="w-px h-4 bg-emerald-500/30" />
+                   <div className="flex items-center gap-2 text-white text-sm">
+                     <Clock className="w-4 h-4" />
+                     {formatDuration(streamDuration)}
+@@ -201,7 +201,7 @@ export function StreamingDashboard({
+               {!isStreaming ? (
+                 <button
+                   onClick={handleStartStream}
+-                  className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
++                  className="px-6 py-2.5 bg-gradient-to-r from-sky-600 to-sky-500 text-white font-semibold rounded-lg hover:from-sky-700 hover:to-sky-600 transition-all shadow-lg shadow-sky-500/30"
+                 >
+                   Vai in Diretta
+                 </button>
+@@ -246,28 +246,28 @@ export function StreamingDashboard({
+                 label="Spettatori"
+                 value={viewerCount.toString()}
+                 subtext={`Picco: ${peakViewers}`}
+-                color="blue"
++                color="sky"
+               />
+               <MetricCard
+                 icon={<Activity />}
+                 label="Bitrate"
+                 value={`${metrics.bitrate} kbps`}
+                 subtext={`${metrics.fps} FPS`}
+-                color="green"
++                color="emerald"
+               />
+               <MetricCard
+                 icon={<Wifi />}
+                 label="Latenza"
+                 value={`${metrics.latency}ms`}
+                 subtext={`Jitter: ${metrics.jitter}ms`}
+-                color="purple"
++                color="cyan"
+               />
+               <MetricCard
+                 icon={<Zap />}
+                 label="Qualità"
+                 value={metrics.resolution}
+                 subtext={`${metrics.packetsLost} pacchetti persi`}
+-                color="orange"
++                color="amber"
+               />
+             </div>
+ 
+@@ -353,7 +353,7 @@ export function StreamingDashboard({
+                   </div>
+                   <div className="h-2 bg-gray-800 rounded-full overflow-hidden mt-4">
+                     <div
+-                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
++                      className="h-full bg-gradient-to-r from-sky-500 to-cyan-500 transition-all duration-300"
+                       style={{ width: `${Math.min((viewerCount / 20) * 100, 100)}%` }}
+                     />
+                   </div>
+@@ -378,7 +378,7 @@ export function StreamingDashboard({
+                 ) : (
+                   comments.map((comment) => (
+                     <div key={comment.id} className="flex gap-3">
+-                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex-shrink-0" />
++                      <div className="w-8 h-8 bg-gradient-to-br from-sky-500 to-slate-700 rounded-full flex-shrink-0" />
+                       <div className="flex-1">
+                         <div className="flex items-center gap-2 mb-1">
+                           <span className="text-white text-sm font-medium">{comment.user}</span>
+@@ -416,15 +416,15 @@ interface MetricCardProps {
+   label: string;
+   value: string;
+   subtext: string;
+-  color: 'blue' | 'green' | 'purple' | 'orange';
++  color: 'sky' | 'emerald' | 'cyan' | 'amber';
+ }
+ 
+ function MetricCard({ icon, label, value, subtext, color }: MetricCardProps) {
+   const colorClasses = {
+-    blue: 'from-blue-500/20 to-blue-600/20 border-blue-500/30 text-blue-500',
+-    green: 'from-green-500/20 to-green-600/20 border-green-500/30 text-green-500',
+-    purple: 'from-purple-500/20 to-purple-600/20 border-purple-500/30 text-purple-500',
+-    orange: 'from-orange-500/20 to-orange-600/20 border-orange-500/30 text-orange-500',
++    sky: 'from-sky-500/20 to-sky-600/20 border-sky-500/30 text-sky-500',
++    emerald: 'from-emerald-500/20 to-emerald-600/20 border-emerald-500/30 text-emerald-500',
++    cyan: 'from-cyan-500/20 to-cyan-600/20 border-cyan-500/30 text-cyan-500',
++    amber: 'from-amber-500/20 to-amber-600/20 border-amber-500/30 text-amber-500',
+   };
+ 
+   return (
+@@ -462,7 +462,7 @@ function ActionButton({ icon, label, onClick, variant = 'default', badge }: Acti
+       {icon}
+       <span className="text-xs font-medium">{label}</span>
+       {badge !== undefined && badge > 0 && (
+-        <span className="absolute top-2 right-2 w-5 h-5 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
++        <span className="absolute top-2 right-2 w-5 h-5 bg-sky-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+           {badge}
+         </span>
+       )}
+@@ -492,7 +492,7 @@ function InfoRow({ label, value, copyable, badge }: InfoRowProps) {
+       <div className="flex items-center gap-2">
+         {badge && (
+           <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+-            badge === 'success' ? 'bg-green-500/20 text-green-500' :
++            badge === 'success' ? 'bg-emerald-500/20 text-emerald-500' :
+             badge === 'warning' ? 'bg-yellow-500/20 text-yellow-500' :
+             'bg-red-500/20 text-red-500'
+           }`}>
+diff --git a/src/features/streaming/StreamingPanel.tsx b/src/features/streaming/StreamingPanel.tsx
+index fb8e49d..385c872 100644
+--- a/src/features/streaming/StreamingPanel.tsx
++++ b/src/features/streaming/StreamingPanel.tsx
+@@ -122,14 +122,14 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
+   }
+ 
+   return (
+-    <div className="space-y-4 p-4 bg-white border border-gray-200 rounded-lg">
++    <div className="space-y-4 p-4 ui-surface">
+       {/* Header */}
+       <div className="flex items-center justify-between">
+         <h3 className="text-lg font-semibold">Streaming Live</h3>
+         {isStreaming && (
+-          <div className="flex items-center gap-2 text-sm text-green-600">
+-            <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
+-            IN DIRETTA
++          <div className="ui-chip bg-emerald-50 text-emerald-700 border-emerald-200">
++            <div className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse" />
++            <span className="font-semibold">IN DIRETTA</span>
+           </div>
+         )}
+       </div>
+@@ -137,13 +137,13 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
+       {/* Camera Selection */}
+       {!isStreaming && cameras.length > 1 && (
+         <div>
+-          <label className="block text-sm font-medium text-gray-700 mb-1">
++          <label className="ui-label mb-1">
+             Seleziona fotocamera
+           </label>
+           <select
+             value={selectedCamera}
+             onChange={(e) => setSelectedCamera(e.target.value)}
+-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
++            className="ui-input"
+           >
+             <option value="">Fotocamera predefinita</option>
+             {cameras.map((camera) => (
+@@ -176,7 +176,7 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
+         {!isStreaming ? (
+           <button
+             onClick={handleStartStream}
+-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
++            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
+           >
+             <Video className="w-4 h-4" />
+             Avvia Streaming
+@@ -194,9 +194,9 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
+ 
+       {/* Viewer Count */}
+       {isStreaming && (
+-        <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+-          <Users className="w-4 h-4 text-blue-600" />
+-          <span className="text-sm font-medium text-blue-900">
++        <div className="flex items-center gap-2 p-3 ui-surface-muted">
++          <Users className="w-4 h-4 text-sky-600" />
++          <span className="text-sm font-medium text-slate-900">
+             {viewerCount} {viewerCount === 1 ? 'spettatore' : 'spettatori'}
+           </span>
+         </div>
+@@ -205,7 +205,7 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
+       {/* Shareable Link */}
+       {isStreaming && (
+         <div className="space-y-2">
+-          <label className="block text-sm font-medium text-gray-700">
++          <label className="ui-label">
+             Link per spettatori
+           </label>
+           <div className="flex gap-2">
+@@ -213,17 +213,17 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
+               type="text"
+               value={generateStreamURL(streamKey)}
+               readOnly
+-              className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm"
++              className="ui-input font-mono text-sm"
+             />
+             <button
+               onClick={handleCopyLink}
+-              className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
++              className="px-3 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700"
+               title="Copia link"
+             >
+               {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+             </button>
+           </div>
+-          <p className="text-xs text-gray-500">
++          <p className="ui-help">
+             Condividi questo link per permettere agli spettatori di vedere la partita in diretta
+           </p>
+         </div>
+@@ -238,8 +238,8 @@ export function StreamingPanel({ onStreamStart, onStreamStop }: StreamingPanelPr
+ 
+       {/* Info */}
+       {!isStreaming && (
+-        <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">
+-          <p className="text-xs text-gray-600">
++        <div className="p-3 ui-surface-muted">
++          <p className="text-xs text-slate-600">
+             💡 Lo streaming è completamente gratuito e peer-to-peer. Nessun server richiesto!
+           </p>
+         </div>
+diff --git a/src/features/streaming/WatchStream.tsx b/src/features/streaming/WatchStream.tsx
+index c66406c..4cfb484 100644
+--- a/src/features/streaming/WatchStream.tsx
++++ b/src/features/streaming/WatchStream.tsx
+@@ -109,7 +109,7 @@ export function WatchStream() {
+           <p className="text-white text-xl mb-4">Stream key mancante</p>
+           <button
+             onClick={navigateToHome}
+-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
++            className="px-6 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700"
+           >
+             Torna alla Home
+           </button>
+@@ -179,10 +179,10 @@ export function WatchStream() {
+             <div className="bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800">
+               <div className="aspect-video bg-black relative">
+                 {isConnecting ? (
+-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-blue-900/20 to-purple-900/20">
++                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-sky-900/20 to-slate-900/40">
+                     <div className="relative">
+-                      <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+-                      <RefreshCw className="absolute inset-0 m-auto w-8 h-8 text-blue-500 animate-pulse" />
++                      <div className="w-16 h-16 border-4 border-sky-500/30 border-t-sky-500 rounded-full animate-spin" />
++                      <RefreshCw className="absolute inset-0 m-auto w-8 h-8 text-sky-500 animate-pulse" />
+                     </div>
+                     <p className="text-white text-lg font-medium">Connessione allo stream...</p>
+                     <p className="text-gray-400 text-sm">Tentativo {connectionAttempt}</p>
+@@ -197,7 +197,7 @@ export function WatchStream() {
+                       <p className="text-gray-300 text-sm mb-6">{error}</p>
+                       <button
+                         onClick={handleRetry}
+-                        className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold rounded-lg transition-all shadow-lg shadow-blue-500/30 mx-auto"
++                        className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 text-white font-semibold rounded-lg transition-all shadow-lg shadow-sky-500/30 mx-auto"
+                       >
+                         <RefreshCw className="w-5 h-5" />
+                         Riprova
+@@ -233,13 +233,13 @@ export function WatchStream() {
+                   <div className="text-center flex-1 max-w-[200px]">
+                     <p className="text-gray-400 text-sm mb-2">Casa</p>
+                     <p className="text-white font-bold text-lg mb-2">{metadata.homeTeam}</p>
+-                    <p className="text-blue-400 text-5xl font-bold">{metadata.score.home}</p>
++                    <p className="text-sky-400 text-5xl font-bold">{metadata.score.home}</p>
+                   </div>
+                   <div className="text-gray-600 text-3xl font-bold">:</div>
+                   <div className="text-center flex-1 max-w-[200px]">
+                     <p className="text-gray-400 text-sm mb-2">Ospite</p>
+                     <p className="text-white font-bold text-lg mb-2">{metadata.awayTeam}</p>
+-                    <p className="text-blue-400 text-5xl font-bold">{metadata.score.away}</p>
++                    <p className="text-sky-400 text-5xl font-bold">{metadata.score.away}</p>
+                   </div>
+                 </div>
+ 
+@@ -266,7 +266,7 @@ export function WatchStream() {
+           <div className="lg:sticky lg:top-24 h-fit">
+             <div className="bg-gray-900/50 rounded-2xl border border-gray-800 overflow-hidden">
+               {/* Chat Header */}
+-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4">
++              <div className="bg-gradient-to-r from-sky-600 to-sky-700 p-4">
+                 <div className="flex items-center justify-between">
+                   <div className="flex items-center gap-2">
+                     <MessageCircle className="w-5 h-5 text-white" />
+@@ -287,7 +287,7 @@ export function WatchStream() {
+                   <div className="h-[500px] overflow-y-auto p-4 space-y-4">
+                     {messages.map((msg) => (
+                       <div key={msg.id} className="flex gap-3 group">
+-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">
++                        <div className="w-8 h-8 bg-gradient-to-br from-sky-500 to-slate-700 rounded-full flex-shrink-0 flex items-center justify-center text-white text-sm font-bold">
+                           {msg.user[0]}
+                         </div>
+                         <div className="flex-1 min-w-0">
+@@ -299,7 +299,7 @@ export function WatchStream() {
+                           </div>
+                           <p className="text-gray-300 text-sm break-words">{msg.text}</p>
+                           <div className="flex items-center gap-2 mt-2">
+-                            <button className="flex items-center gap-1 text-gray-500 hover:text-blue-500 transition-colors text-xs">
++                            <button className="flex items-center gap-1 text-gray-500 hover:text-sky-400 transition-colors text-xs">
+                               <ThumbsUp className="w-3 h-3" />
+                               {msg.reactions > 0 && msg.reactions}
+                             </button>
+@@ -318,12 +318,12 @@ export function WatchStream() {
+                         onChange={(e) => setChatMessage(e.target.value)}
+                         onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                         placeholder="Scrivi un messaggio..."
+-                        className="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
++                        className="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg outline-none focus:ring-2 focus:ring-sky-500"
+                       />
+                       <button
+                         onClick={handleSendMessage}
+                         disabled={!chatMessage.trim()}
+-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
++                        className="px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
+                       >
+                         Invia
+                       </button>
+diff --git a/src/styles/focus-ring.ts b/src/styles/focus-ring.ts
+index 328f9a0..c95ab2f 100644
+--- a/src/styles/focus-ring.ts
++++ b/src/styles/focus-ring.ts
+@@ -10,16 +10,16 @@
+  */
+ 
+ // Standard focus ring for most interactive elements
+-export const FOCUS_RING = 'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0';
++export const FOCUS_RING = 'focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-0';
+ 
+ // Focus ring with offset (for buttons with borders)
+-export const FOCUS_RING_OFFSET = 'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2';
++export const FOCUS_RING_OFFSET = 'focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2';
+ 
+ // Focus-within variant (for containers)
+-export const FOCUS_RING_WITHIN = 'focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-0';
++export const FOCUS_RING_WITHIN = 'focus-within:outline-none focus-within:ring-2 focus-within:ring-sky-500 focus-within:ring-offset-0';
+ 
+ // Active zone indicator (controlled by state, not CSS focus)
+-export const ZONE_ACTIVE_RING = 'ring-2 ring-blue-500';
++export const ZONE_ACTIVE_RING = 'ring-2 ring-sky-500';
+ 
+ // Focus ring with inset (for filled buttons)
+ export const FOCUS_RING_INSET = 'focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white';
+diff --git a/src/styles/global.css b/src/styles/global.css
+index d74392a..cc567f8 100644
+--- a/src/styles/global.css
++++ b/src/styles/global.css
+@@ -40,6 +40,10 @@
+     @apply bg-white/80 border border-slate-200/70 rounded-xl shadow-sm backdrop-blur;
+   }
+ 
++  .ui-surface-dark {
++    @apply bg-slate-950/70 border border-slate-800/80 rounded-xl text-slate-100 shadow-lg;
++  }
++
+   .ui-card-header {
+     @apply flex items-center justify-between gap-3 border-b border-slate-100;
+   }
+@@ -71,6 +75,22 @@
+   .ui-divider {
+     @apply w-px h-5 bg-slate-200;
+   }
++
++  .ui-help {
++    @apply text-xs text-slate-500;
++  }
++
++  .ui-label {
++    @apply text-sm font-medium text-slate-900;
++  }
++
++  .ui-chip-dark {
++    @apply inline-flex items-center gap-1.5 rounded-md border border-slate-700 bg-slate-900/70 px-2 py-1 text-xs font-medium text-slate-200;
++  }
++
++  .ui-badge-dark {
++    @apply inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/70 px-2.5 py-1 text-xs font-semibold text-slate-200;
++  }
+ }
+ 
+ @layer utilities {
+diff --git a/src/ui/components/CommandPalette.tsx b/src/ui/components/CommandPalette.tsx
+index 94bc2a1..4980038 100644
+--- a/src/ui/components/CommandPalette.tsx
++++ b/src/ui/components/CommandPalette.tsx
+@@ -152,11 +152,11 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
+   return (
+     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[20vh] bg-black/40 backdrop-blur-sm" onClick={onClose}>
+       <div 
+-        className="bg-white rounded-lg shadow-2xl w-full max-w-2xl mx-4 overflow-hidden" 
++        className="ui-surface w-full max-w-2xl mx-4 overflow-hidden" 
+         onClick={(e) => e.stopPropagation()}
+       >
+         {/* Search Input */}
+-        <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-200">
++        <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-200/80 bg-slate-50/70">
+           <Search className="w-5 h-5 text-slate-400" />
+           <input
+             ref={inputRef}
+@@ -191,13 +191,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
+                   key={cmd.id}
+                   onClick={cmd.action}
+                   className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
+-                    isSelected ? 'bg-blue-50 border-l-2 border-blue-500' : 'hover:bg-slate-50'
++                    isSelected ? 'bg-sky-50 border-l-2 border-sky-500' : 'hover:bg-slate-50'
+                   }`}
+                   onMouseEnter={() => setSelectedIndex(index)}
+                 >
+-                  <Icon className={`w-5 h-5 flex-shrink-0 ${isSelected ? 'text-blue-600' : 'text-slate-400'}`} />
++                  <Icon className={`w-5 h-5 flex-shrink-0 ${isSelected ? 'text-sky-600' : 'text-slate-400'}`} />
+                   <div className="flex-1 min-w-0">
+-                    <div className={`font-medium truncate ${isSelected ? 'text-blue-900' : 'text-slate-900'}`}>
++                    <div className={`font-medium truncate ${isSelected ? 'text-sky-900' : 'text-slate-900'}`}>
+                       {cmd.title}
+                     </div>
+                     {cmd.subtitle && (
+@@ -223,7 +223,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
+         </div>
+ 
+         {/* Footer Hints */}
+-        <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 flex items-center gap-4 text-xs text-slate-500">
++        <div className="px-4 py-2 bg-slate-50/80 border-t border-slate-200 flex items-center gap-4 text-xs text-slate-500">
+           <div className="flex items-center gap-1">
+             <kbd className="px-1.5 py-0.5 bg-white border border-slate-300 rounded text-[10px]">↑↓</kbd>
+             <span>Naviga</span>
+diff --git a/src/ui/components/ErrorBoundary.tsx b/src/ui/components/ErrorBoundary.tsx
+index d621cbf..2914f0c 100644
+--- a/src/ui/components/ErrorBoundary.tsx
++++ b/src/ui/components/ErrorBoundary.tsx
+@@ -42,7 +42,7 @@ class ErrorBoundary extends Component<Props, State> {
+ 
+       return (
+         <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+-          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
++          <div className="max-w-md w-full ui-surface p-6 text-center">
+             <div className="text-red-500 text-5xl mb-4">⚠️</div>
+             <h1 className="text-2xl font-bold text-slate-900 mb-2">
+               Si è verificato un errore
+@@ -53,7 +53,7 @@ class ErrorBoundary extends Component<Props, State> {
+             </p>
+             <button
+               onClick={() => window.location.reload()}
+-              className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-700 transition-colors"
++              className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+             >
+               Ricarica pagina
+             </button>
+diff --git a/src/ui/components/VideoPlayer.tsx b/src/ui/components/VideoPlayer.tsx
+index 0f93692..388bff9 100644
+--- a/src/ui/components/VideoPlayer.tsx
++++ b/src/ui/components/VideoPlayer.tsx
+@@ -246,8 +246,8 @@ export function VideoPlayer({
+       {isLoading && (
+         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+           <div className="relative">
+-            <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+-            <RefreshCw className="absolute inset-0 m-auto w-8 h-8 text-blue-500 animate-pulse" />
++            <div className="w-16 h-16 border-4 border-sky-500/30 border-t-sky-500 rounded-full animate-spin" />
++            <RefreshCw className="absolute inset-0 m-auto w-8 h-8 text-sky-500 animate-pulse" />
+           </div>
+         </div>
+       )}
+@@ -318,7 +318,7 @@ export function VideoPlayer({
+               
+               {/* Progress */}
+               <div
+-                className="relative h-full bg-blue-500 rounded-full"
++                className="relative h-full bg-sky-500 rounded-full"
+                 style={{ width: `${(currentTime / duration) * 100}%` }}
+               >
+                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover/progress:opacity-100 transition-opacity" />
+@@ -412,7 +412,7 @@ export function VideoPlayer({
+                       }}
+                       className={`w-full text-left px-3 py-2 rounded text-sm ${
+                         quality === q
+-                          ? 'bg-blue-500 text-white'
++                          ? 'bg-sky-500 text-white'
+                           : 'text-gray-300 hover:bg-white/10'
+                       }`}
+                     >
+diff --git a/src/ui/primitives/ActionButton.tsx b/src/ui/primitives/ActionButton.tsx
+index f6af0b5..f22fc19 100644
+--- a/src/ui/primitives/ActionButton.tsx
++++ b/src/ui/primitives/ActionButton.tsx
+@@ -28,12 +28,12 @@ interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
+ const actionStyles: Record<ActionType, string> = {
+   // PRIMARY: Azione principale positiva
+   primary: `
+-    bg-gradient-to-br from-blue-500 to-blue-600
++    bg-gradient-to-br from-sky-500 to-sky-600
+     text-white font-semibold
+-    hover:from-blue-600 hover:to-blue-700 hover:shadow-lg hover:shadow-blue-500/30
+-    active:from-blue-700 active:to-blue-800 active:scale-95
++    hover:from-sky-600 hover:to-sky-700 hover:shadow-lg hover:shadow-sky-500/30
++    active:from-sky-700 active:to-sky-800 active:scale-95
+     transition-all duration-250 ease-snappy
+-    focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2
++    focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2
+     disabled:opacity-50 disabled:cursor-not-allowed
+   `,
+ 
+@@ -117,10 +117,10 @@ const actionStyles: Record<ActionType, string> = {
+   edit: `
+     bg-slate-50 text-slate-900
+     border-2 border-dashed border-slate-300
+-    hover:bg-slate-100 hover:border-blue-400 hover:text-blue-600
++    hover:bg-slate-100 hover:border-sky-400 hover:text-sky-600
+     active:bg-slate-200 active:scale-95
+     transition-all duration-250 ease-smooth
+-    focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1
++    focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-1
+     disabled:opacity-50 disabled:cursor-not-allowed
+   `,
+ 
+@@ -137,12 +137,12 @@ const actionStyles: Record<ActionType, string> = {
+ 
+   // TEST: Esegui test (suoni, etc)
+   test: `
+-    bg-gradient-to-br from-violet-500 to-violet-600
++    bg-gradient-to-br from-slate-700 to-slate-800
+     text-white font-semibold
+-    hover:from-violet-600 hover:to-violet-700 hover:shadow-lg hover:shadow-violet-500/30
+-    active:from-violet-700 active:to-violet-800 active:scale-95
++    hover:from-slate-800 hover:to-slate-900 hover:shadow-lg hover:shadow-slate-500/30
++    active:from-slate-900 active:to-black active:scale-95
+     transition-all duration-250 ease-snappy
+-    focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2
++    focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2
+     disabled:opacity-50 disabled:cursor-not-allowed
+   `,
+ };
+diff --git a/src/ui/primitives/Chip.tsx b/src/ui/primitives/Chip.tsx
+index 548d4d4..e121b0a 100644
+--- a/src/ui/primitives/Chip.tsx
++++ b/src/ui/primitives/Chip.tsx
+@@ -20,11 +20,11 @@ export const Chip: React.FC<ChipProps> = ({
+   disabled = false,
+ }) => {
+   const variantClasses: Record<string, string> = {
+-    default: selected ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-900 hover:bg-slate-200',
+-    success: selected ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-900 hover:bg-emerald-200',
+-    warning: selected ? 'bg-amber-600 text-white' : 'bg-amber-100 text-amber-900 hover:bg-amber-200',
+-    danger: selected ? 'bg-red-600 text-white' : 'bg-red-100 text-red-900 hover:bg-red-200',
+-    info: selected ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-900 hover:bg-blue-200',
++    default: selected ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-100 text-slate-900 border-slate-200 hover:bg-slate-200',
++    success: selected ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100',
++    warning: selected ? 'bg-amber-600 text-white border-amber-600' : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100',
++    danger: selected ? 'bg-red-600 text-white border-red-600' : 'bg-red-50 text-red-800 border-red-200 hover:bg-red-100',
++    info: selected ? 'bg-sky-600 text-white border-sky-600' : 'bg-sky-50 text-sky-800 border-sky-200 hover:bg-sky-100',
+   };
+ 
+   const sizeClasses: Record<string, string> = {
+@@ -36,7 +36,7 @@ export const Chip: React.FC<ChipProps> = ({
+     <button
+       onClick={onClick}
+       disabled={disabled}
+-      className={`inline-flex items-center gap-1.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]}`}
++      className={`ui-chip rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]}`}
+     >
+       {icon && <span>{icon}</span>}
+       {label}
+diff --git a/src/ui/primitives/IconButton.tsx b/src/ui/primitives/IconButton.tsx
+index 7511e32..5a340db 100644
+--- a/src/ui/primitives/IconButton.tsx
++++ b/src/ui/primitives/IconButton.tsx
+@@ -35,12 +35,12 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
+       `,
+       // Primary: Main action - Blue gradient, prominent
+       primary: `
+-        text-white bg-gradient-to-br from-blue-500 to-blue-600
+-        hover:from-blue-600 hover:to-blue-700 
+-        hover:shadow-[0_8px_24px_rgba(59,130,246,0.4)]
+-        active:from-blue-700 active:to-blue-800 active:scale-95 active:shadow-md
++        text-white bg-gradient-to-br from-sky-500 to-sky-600
++        hover:from-sky-600 hover:to-sky-700 
++        hover:shadow-[0_8px_24px_rgba(56,189,248,0.4)]
++        active:from-sky-700 active:to-sky-800 active:scale-95 active:shadow-md
+         transition-all duration-250 ease-snappy
+-        focus:outline-none focus:ring-2 focus:ring-blue-400/70 focus:ring-offset-2
++        focus:outline-none focus:ring-2 focus:ring-sky-400/70 focus:ring-offset-2
+         disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none
+       `,
+       // Success: Positive actions - Green
+diff --git a/src/ui/primitives/SegmentedControl.tsx b/src/ui/primitives/SegmentedControl.tsx
+index 2f6185c..86b0eb4 100644
+--- a/src/ui/primitives/SegmentedControl.tsx
++++ b/src/ui/primitives/SegmentedControl.tsx
+@@ -24,14 +24,14 @@ export function SegmentedControl<T extends string | number>({
+   };
+ 
+   return (
+-    <div className={`inline-flex bg-slate-100 rounded-lg ${sizeClasses[size]}`}>
++    <div className={`inline-flex ui-surface-muted ${sizeClasses[size]}`}>
+       {options.map((option) => (
+         <button
+           key={option.value}
+           onClick={() => onChange(option.value)}
+-          className={`inline-flex items-center gap-1.5 rounded font-medium transition-all ${buttonClasses[size]} ${
++          className={`inline-flex items-center gap-1.5 rounded-md font-medium transition-all ${buttonClasses[size]} ${
+             value === option.value
+-              ? 'bg-white text-slate-900 shadow-sm'
++              ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
+               : 'text-slate-600 hover:text-slate-900'
+           }`}
+         >
+diff --git a/src/ui/primitives/Sheet.tsx b/src/ui/primitives/Sheet.tsx
+index 7529fb3..f9410a1 100644
+--- a/src/ui/primitives/Sheet.tsx
++++ b/src/ui/primitives/Sheet.tsx
+@@ -34,7 +34,7 @@ export const Sheet: React.FC<SheetProps> = ({
+         onClick={onClose}
+       />
+       <div
+-        className={`fixed z-50 bg-white shadow-2xl overflow-hidden flex flex-col ${
++        className={`fixed z-50 ui-surface overflow-hidden flex flex-col ${
+           position === 'bottom'
+             ? `inset-x-0 bottom-0 rounded-t-2xl slide-in-from-bottom ${sizeClasses[size]}`
+             : `inset-y-0 right-0 rounded-l-2xl slide-in-from-right ${sizeClasses[size]}`
+@@ -42,7 +42,7 @@ export const Sheet: React.FC<SheetProps> = ({
+       >
+         {/* Header */}
+         {title && (
+-          <div className="border-b border-slate-200 px-4 py-3 flex items-center justify-between bg-slate-50">
++          <div className="border-b border-slate-200 px-4 py-3 flex items-center justify-between bg-slate-50/80">
+             <h2 className="font-semibold text-slate-900">{title}</h2>
+             <IconButton size="sm" variant="ghost" onClick={onClose}>
+               <X className="w-5 h-5" />
+diff --git a/src/ui/primitives/StatsBar.tsx b/src/ui/primitives/StatsBar.tsx
+index 8f49347..8efc010 100644
+--- a/src/ui/primitives/StatsBar.tsx
++++ b/src/ui/primitives/StatsBar.tsx
+@@ -27,18 +27,16 @@ export const StatsBar: React.FC<StatsBarProps> = ({
+ }) => {
+   if (!isMatchStarted) {
+     return (
+-      <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-center text-sm text-slate-600">
+-        <p>📊 Statistiche disponibili dopo l'inizio della partita</p>
++      <div className="ui-surface-muted p-4 text-center text-sm text-slate-600">
++        <p>Statistiche disponibili dopo l'inizio della partita</p>
+       </div>
+     );
+   }
+ 
+   return (
+-    <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
++    <div className="ui-surface p-4 space-y-3">
+       {/* Header */}
+-      <div className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+-        Statistiche
+-      </div>
++      <div className="ui-kicker">Statistiche</div>
+ 
+       {/* Row 1: Goals, Shots, Shots on Target */}
+       <div className="grid grid-cols-5 gap-3">
+@@ -56,7 +54,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
+         {/* HOME - Shots */}
+         <div className="text-center border-l border-slate-200 pl-3">
+           <div className="text-xs text-slate-600 mb-1 flex items-center justify-center gap-1">
+-            <Zap className="w-3.5 h-3.5 text-blue-600" />
++            <Zap className="w-3.5 h-3.5 text-slate-600" />
+             <span>Tiri</span>
+           </div>
+           <div className="text-lg font-bold text-slate-900">{home.shots}</div>
+@@ -78,7 +76,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
+         {/* HOME - Corners */}
+         <div className="text-center border-l border-slate-200 pl-3">
+           <div className="text-xs text-slate-600 mb-1 flex items-center justify-center gap-1">
+-            <Flag className="w-3.5 h-3.5 text-violet-600" />
++            <Flag className="w-3.5 h-3.5 text-orange-500" />
+             <span>Angoli</span>
+           </div>
+           <div className="text-lg font-bold text-slate-900">{home.corners}</div>
+@@ -125,7 +123,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
+         {/* Timeouts */}
+         <div className="text-center border-l border-slate-200 pl-3">
+           <div className="text-xs text-slate-600 mb-1 flex items-center justify-center gap-1">
+-            <AlertCircle className="w-3.5 h-3.5 text-slate-600" />
++            <AlertCircle className="w-3.5 h-3.5 text-cyan-600" />
+             <span>Timeout</span>
+           </div>
+           <div className="text-lg font-bold text-slate-900">{home.timeouts}</div>
+diff --git a/src/ui/primitives/VolumeControl.tsx b/src/ui/primitives/VolumeControl.tsx
+index 016853d..15cdfa1 100644
+--- a/src/ui/primitives/VolumeControl.tsx
++++ b/src/ui/primitives/VolumeControl.tsx
+@@ -53,7 +53,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
+         value={displayVolume}
+         onChange={(e) => onChange(Number(e.target.value))}
+         disabled={!enabled}
+-        className="w-24 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900 disabled:opacity-50"
++        className="w-24 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-500 disabled:opacity-50"
+         aria-label="Controllo volume"
+         aria-valuemin={0}
+         aria-valuemax={100}
+diff --git a/src/ui/primitives/VolumeDial.tsx b/src/ui/primitives/VolumeDial.tsx
+index 18339cb..cc61690 100644
+--- a/src/ui/primitives/VolumeDial.tsx
++++ b/src/ui/primitives/VolumeDial.tsx
+@@ -165,7 +165,7 @@ export const VolumeDial: React.FC<VolumeDial> = ({
+           cy={centerY}
+           r="45"
+           fill="none"
+-          stroke="#1e293b"
++          stroke="#0ea5e9"
+           strokeWidth="3"
+           strokeDasharray={`${(angle / 360) * 2 * Math.PI * 45} ${2 * Math.PI * 45}`}
+           strokeLinecap="round"
+@@ -177,7 +177,7 @@ export const VolumeDial: React.FC<VolumeDial> = ({
+           cx={thumbX}
+           cy={thumbY}
+           r="5"
+-          fill="#1e293b"
++          fill="#0284c7"
+           opacity={enabled ? 1 : 0.5}
+         />
+ 

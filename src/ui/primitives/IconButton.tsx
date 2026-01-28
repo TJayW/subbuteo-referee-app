@@ -35,12 +35,12 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       `,
       // Primary: Main action - Blue gradient, prominent
       primary: `
-        text-white bg-gradient-to-br from-blue-500 to-blue-600
-        hover:from-blue-600 hover:to-blue-700 
-        hover:shadow-[0_8px_24px_rgba(59,130,246,0.4)]
-        active:from-blue-700 active:to-blue-800 active:scale-95 active:shadow-md
+        text-white bg-gradient-to-br from-sky-500 to-sky-600
+        hover:from-sky-600 hover:to-sky-700 
+        hover:shadow-[0_8px_24px_rgba(56,189,248,0.4)]
+        active:from-sky-700 active:to-sky-800 active:scale-95 active:shadow-md
         transition-all duration-250 ease-snappy
-        focus:outline-none focus:ring-2 focus:ring-blue-400/70 focus:ring-offset-2
+        focus:outline-none focus:ring-2 focus:ring-sky-400/70 focus:ring-offset-2
         disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none
       `,
       // Success: Positive actions - Green

@@ -70,11 +70,11 @@ export const AudioTab: React.FC<AudioTabProps> = ({
       {/* Master Audio Toggle */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <label className="text-sm font-medium text-slate-900">Audio</label>
+          <label className="ui-label">Audio</label>
           <button
             onClick={() => onToggleAudio(!audioEnabled)}
             className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
-              audioEnabled ? 'bg-emerald-600' : 'bg-slate-300'
+              audioEnabled ? 'bg-slate-900' : 'bg-slate-300'
             }`}
             aria-label={audioEnabled ? 'Disabilita audio' : 'Abilita audio'}
           >
@@ -94,7 +94,7 @@ export const AudioTab: React.FC<AudioTabProps> = ({
       {audioEnabled && (
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium text-slate-900">
+            <label className="ui-label">
               Volume Principale
             </label>
             <span className="text-sm font-semibold text-slate-900 tabular-nums">
@@ -164,7 +164,7 @@ export const AudioTab: React.FC<AudioTabProps> = ({
                           disabled={testingSoundId !== null}
                           className={`p-1.5 rounded transition-colors ${
                             testingSoundId === category
-                              ? 'bg-emerald-100 text-emerald-600'
+                              ? 'bg-emerald-100 text-emerald-700'
                               : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                           }`}
                           title={`Test ${CATEGORY_LABELS[category]}`}
@@ -202,13 +202,13 @@ export const AudioTab: React.FC<AudioTabProps> = ({
       {/* Vibration Toggle */}
       <div>
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-slate-900">
+          <label className="ui-label">
             Vibrazione
           </label>
           <button
             onClick={() => onToggleVibration(!vibrationEnabled)}
             className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
-              vibrationEnabled ? 'bg-emerald-600' : 'bg-slate-300'
+              vibrationEnabled ? 'bg-slate-900' : 'bg-slate-300'
             }`}
             aria-label={vibrationEnabled ? 'Disabilita vibrazione' : 'Abilita vibrazione'}
           >
@@ -225,8 +225,8 @@ export const AudioTab: React.FC<AudioTabProps> = ({
       </div>
 
       {/* Info Box */}
-      <div className="bg-slate-50 rounded-lg p-3 text-xs text-slate-600 space-y-1">
-        <p className="font-medium text-slate-900">💡 Nota</p>
+      <div className="ui-surface-muted p-3 text-xs text-slate-600 space-y-1">
+        <p className="font-medium text-slate-900">Nota</p>
         <p>
           L'audio si inizializza al primo evento di gioco. Le impostazioni vengono salvate
           automaticamente.

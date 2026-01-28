@@ -46,7 +46,7 @@ export const ConsoleFilterBar: React.FC<ConsoleFilterBarProps> = ({
   ];
 
   return (
-    <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-4">
+    <div className="ui-surface-muted p-3 mb-4">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         {/* Left: Filters */}
         <div className="flex items-center gap-3">
@@ -60,7 +60,7 @@ export const ConsoleFilterBar: React.FC<ConsoleFilterBarProps> = ({
                   onClick={() => onChange({ ...filters, team: option.value })}
                   className={`px-3 py-1 text-xs font-medium transition-colors ${
                     filters.team === option.value
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-slate-900 text-white'
                       : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
@@ -78,7 +78,7 @@ export const ConsoleFilterBar: React.FC<ConsoleFilterBarProps> = ({
               onChange={(e) =>
                 onChange({ ...filters, period: e.target.value as Period | 'all' })
               }
-              className="px-2 py-1 text-xs font-medium bg-white border border-slate-200 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-2 py-1 text-xs font-medium bg-white border border-slate-200 rounded-md text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
             >
               {periodOptions.map((option) => (
                 <option key={option.value} value={option.value}>

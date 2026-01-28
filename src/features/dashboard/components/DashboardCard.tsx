@@ -83,7 +83,7 @@ export const CardAction: React.FC<CardActionProps> = ({
   const baseClasses = 'p-1.5 rounded-md transition-colors';
   const variantClasses = {
     default: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
-    primary: 'text-blue-600 hover:bg-blue-50 hover:text-blue-700',
+    primary: 'text-sky-600 hover:bg-sky-50 hover:text-sky-700',
     danger: 'text-red-600 hover:bg-red-50 hover:text-red-700',
   };
 

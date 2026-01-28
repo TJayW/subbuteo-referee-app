@@ -12,8 +12,11 @@ interface OfficiatingSectionProps {
 
 export const OfficiatingSection: React.FC<OfficiatingSectionProps> = () => {
   return (
-    <div className="p-4">
-      <p className="text-sm text-slate-600">OfficiatingSection stub - implementation needed</p>
+    <div className="ui-surface-muted p-4">
+      <p className="text-sm text-slate-700 font-medium mb-1">Sezione arbitri</p>
+      <p className="text-xs text-slate-500">
+        Configurazione avanzata in arrivo. Usa le impostazioni per inserire i nomi.
+      </p>
     </div>
   );
 };

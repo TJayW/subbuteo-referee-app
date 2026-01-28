@@ -58,7 +58,7 @@ export const AudioSettingsSection: React.FC<AudioSettingsSectionProps> = ({
           <button
             onClick={() => onToggleEnabled(!enabled)}
             className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
-              enabled ? 'bg-emerald-600' : 'bg-slate-300'
+              enabled ? 'bg-slate-900' : 'bg-slate-300'
             }`}
             aria-label={enabled ? 'Disabilita audio' : 'Abilita audio'}
           >
@@ -144,8 +144,8 @@ export const AudioSettingsSection: React.FC<AudioSettingsSectionProps> = ({
 
       {/* Info box */}
       {enabled && (
-        <div className="bg-blue-50 rounded-lg p-3 text-xs text-blue-900 space-y-1">
-          <p className="font-medium">Audio abilitato</p>
+        <div className="ui-surface-muted p-3 text-xs text-slate-700 space-y-1">
+          <p className="font-medium text-slate-900">Audio abilitato</p>
           <p>
             I suoni riprodotti per ogni evento di partita contribuiranno a una miglior
             esperienza di arbitraggio.
@@ -154,7 +154,7 @@ export const AudioSettingsSection: React.FC<AudioSettingsSectionProps> = ({
       )}
 
       {!enabled && (
-        <div className="bg-slate-50 rounded-lg p-3 text-xs text-slate-600">
+        <div className="ui-surface-muted p-3 text-xs text-slate-600">
           <p>L'audio è disabilitato. Abilita l'audio sopra per attivare effetti sonori.</p>
         </div>
       )}

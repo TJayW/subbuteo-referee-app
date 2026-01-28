@@ -40,7 +40,7 @@ export const TeamColorPicker: React.FC<TeamColorPickerProps> = ({ color, onChang
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-medium text-slate-900">Colore Squadra</label>
+      <label className="block ui-label">Colore Squadra</label>
 
       {/* Preset Palette */}
       <div className="grid grid-cols-4 gap-2">
@@ -48,7 +48,7 @@ export const TeamColorPicker: React.FC<TeamColorPickerProps> = ({ color, onChang
           <button
             key={key}
             onClick={() => handlePresetClick(palette)}
-            className={`h-10 rounded-lg border-2 transition-transform hover:scale-110 ${
+            className={`h-10 rounded-lg border-2 transition-transform hover:scale-105 ${
               color.primary === palette.primary
                 ? 'border-slate-900 ring-2 ring-slate-900 ring-offset-2'
                 : 'border-slate-300'
@@ -64,7 +64,7 @@ export const TeamColorPicker: React.FC<TeamColorPickerProps> = ({ color, onChang
       <div>
         <button
           onClick={() => setShowCustom(!showCustom)}
-          className="text-sm text-emerald-600 hover:text-emerald-700 font-medium"
+          className="text-sm text-sky-700 hover:text-sky-800 font-medium"
         >
           {showCustom ? '✕ Annulla' : '+ Colore personalizzato'}
         </button>
@@ -81,13 +81,13 @@ export const TeamColorPicker: React.FC<TeamColorPickerProps> = ({ color, onChang
               className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 ${
                 customError
                   ? 'border-red-300 focus:ring-red-500'
-                  : 'border-slate-300 focus:ring-emerald-500'
+                  : 'border-slate-300 focus:ring-sky-500'
               }`}
             />
             {customError && <p className="text-xs text-red-600">{customError}</p>}
             <button
               onClick={handleCustomSubmit}
-              className="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
+              className="w-full px-3 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
             >
               Applica
             </button>

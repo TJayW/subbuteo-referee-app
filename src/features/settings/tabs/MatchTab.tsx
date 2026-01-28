@@ -17,10 +17,10 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
   return (
     <div className="space-y-6 pb-4">
       {/* SECTION: Regular Time */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-slate-200 pb-6">
         <div className="flex items-center gap-2 mb-4">
-          <h3 className="text-sm font-bold text-gray-900">Tempi Regolamentari</h3>
-          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+          <h3 className="text-sm font-bold text-slate-900">Tempi Regolamentari</h3>
+          <span className="ui-chip bg-sky-50 text-sky-800 border-sky-200">
             Tempo Standard
           </span>
         </div>
@@ -28,7 +28,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
         <div className="space-y-4">
           {/* Period Duration */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block ui-label mb-2">
               Durata di ogni Tempo (minuti)
             </label>
             <div className="flex items-center gap-3">
@@ -41,21 +41,21 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
                 onChange={(e) =>
                   handleChange("periodDurationMinutes", parseInt(e.target.value))
                 }
-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-semibold"
+                className="w-24 ui-input text-center font-semibold"
               />
-              <span className="text-gray-600">minuti</span>
-              <div className="text-xs text-gray-500 ml-auto">
+              <span className="text-slate-600">minuti</span>
+              <div className="text-xs text-slate-500 ml-auto">
                 Totale: {(settings.periodDurationMinutes || 45) * 2} minuti
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="ui-help mt-1">
               Tempo di gioco per il primo e il secondo tempo
             </p>
           </div>
 
           {/* Halftime Duration */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block ui-label mb-2">
               Durata Intervallo (minuti)
             </label>
             <div className="flex items-center gap-3">
@@ -68,11 +68,11 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
                 onChange={(e) =>
                   handleChange("halftimeDurationMinutes", parseInt(e.target.value))
                 }
-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-semibold"
+                className="w-24 ui-input text-center font-semibold"
               />
-              <span className="text-gray-600">minuti</span>
+              <span className="text-slate-600">minuti</span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="ui-help mt-1">
               Pausa tra il primo e il secondo tempo
             </p>
           </div>
@@ -80,10 +80,10 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
       </div>
 
       {/* SECTION: Extra Time */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-slate-200 pb-6">
         <div className="flex items-center gap-2 mb-4">
-          <h3 className="text-sm font-bold text-gray-900">Tempo Supplementare</h3>
-          <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+          <h3 className="text-sm font-bold text-slate-900">Tempo Supplementare</h3>
+          <span className="ui-chip bg-sky-50 text-sky-800 border-sky-200">
             Opzionale
           </span>
         </div>
@@ -91,7 +91,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
         <div className="space-y-4">
           {/* Extra Time Duration */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block ui-label mb-2">
               Durata di ogni Supplementare (minuti)
             </label>
             <div className="flex items-center gap-3">
@@ -104,21 +104,21 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
                 onChange={(e) =>
                   handleChange("extratimeDurationMinutes", parseInt(e.target.value))
                 }
-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-center font-semibold"
+                className="w-24 ui-input text-center font-semibold"
               />
-              <span className="text-gray-600">minuti</span>
-              <div className="text-xs text-gray-500 ml-auto">
+              <span className="text-slate-600">minuti</span>
+              <div className="text-xs text-slate-500 ml-auto">
                 Totale: {(settings.extratimeDurationMinutes || 15) * 2} minuti
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="ui-help mt-1">
               Tempo di gioco per il primo e il secondo supplementare (se necessario)
             </p>
           </div>
 
           {/* Extra Time Interval */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block ui-label mb-2">
               Intervallo tra i Supplementari (minuti)
             </label>
             <div className="flex items-center gap-3">
@@ -134,11 +134,11 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
                 onChange={(e) =>
                   handleChange("extratimeIntervalMinutes", parseInt(e.target.value))
                 }
-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-center font-semibold"
+                className="w-24 ui-input text-center font-semibold"
               />
-              <span className="text-gray-600">minuti</span>
+              <span className="text-slate-600">minuti</span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="ui-help mt-1">
               Pausa tra il primo e il secondo supplementare
             </p>
           </div>
@@ -146,10 +146,10 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
       </div>
 
       {/* SECTION: Timeouts */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-slate-200 pb-6">
         <div className="flex items-center gap-2 mb-4">
-          <h3 className="text-sm font-bold text-gray-900">Richieste di Pausa</h3>
-          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+          <h3 className="text-sm font-bold text-slate-900">Richieste di Pausa</h3>
+          <span className="ui-chip bg-emerald-50 text-emerald-800 border-emerald-200">
             Timeout
           </span>
         </div>
@@ -157,7 +157,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
         <div className="space-y-4">
           {/* Timeouts per Team */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block ui-label mb-2">
               Numero di Timeout per Squadra
             </label>
             <div className="flex items-center gap-3">
@@ -170,18 +170,18 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
                 onChange={(e) =>
                   handleChange("timeoutsPerTeam", parseInt(e.target.value))
                 }
-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-semibold"
+                className="w-24 ui-input text-center font-semibold"
               />
-              <span className="text-gray-600">timeout</span>
+              <span className="text-slate-600">timeout</span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="ui-help mt-1">
               Quante volte ogni squadra può chiedere una pausa
             </p>
           </div>
 
           {/* Timeout Duration */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block ui-label mb-2">
               Durata di un Timeout (secondi)
             </label>
             <div className="flex items-center gap-3">
@@ -194,16 +194,16 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
                 onChange={(e) =>
                   handleChange("timeoutDurationSeconds", parseInt(e.target.value))
                 }
-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-center font-semibold"
+                className="w-24 ui-input text-center font-semibold"
               />
-              <span className="text-gray-600">secondi</span>
-              <div className="text-xs text-gray-500 ml-auto">
+              <span className="text-slate-600">secondi</span>
+              <div className="text-xs text-slate-500 ml-auto">
                 {Math.floor((settings.timeoutDurationSeconds || 60) / 60)}:{String(
                   ((settings.timeoutDurationSeconds || 60) % 60)
                 ).padStart(2, "0")}
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="ui-help mt-1">
               Durata di una singola richiesta di pausa
             </p>
           </div>
@@ -211,7 +211,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
       </div>
 
       {/* SECTION: Match Summary / Info */}
-      <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+      <div className="ui-surface-muted p-4">
         <div className="flex items-start gap-3">
           <Info className="w-5 h-5 text-slate-500 flex-shrink-0 mt-0.5" />
           <div className="text-xs text-slate-700 space-y-2">
@@ -237,8 +237,8 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
       </div>
 
       {/* SECTION: Presets */}
-      <div className="border-t border-gray-200 pt-4">
-        <p className="text-xs font-semibold text-gray-700 mb-3">Regolamenti Predefiniti</p>
+      <div className="border-t border-slate-200 pt-4">
+        <p className="text-xs font-semibold text-slate-700 mb-3">Regolamenti Predefiniti</p>
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={() => {
@@ -249,7 +249,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
               handleChange("timeoutsPerTeam", 1);
               handleChange("timeoutDurationSeconds", 60);
             }}
-            className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition text-gray-700"
+            className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white hover:bg-slate-50 transition text-slate-700"
           >
             🏆 Calcio (45+15+15)
           </button>
@@ -263,7 +263,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
               handleChange("timeoutsPerTeam", 2);
               handleChange("timeoutDurationSeconds", 60);
             }}
-            className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition text-gray-700"
+            className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white hover:bg-slate-50 transition text-slate-700"
           >
             🏀 Pallone Elastico
           </button>
@@ -277,7 +277,7 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
               handleChange("timeoutsPerTeam", 3);
               handleChange("timeoutDurationSeconds", 45);
             }}
-            className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition text-gray-700"
+            className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white hover:bg-slate-50 transition text-slate-700"
           >
             🎾 Futsal/Volley
           </button>
@@ -291,12 +291,12 @@ export const MatchTab: React.FC<MatchTabProps> = ({ settings, onChange }) => {
               handleChange("timeoutsPerTeam", 2);
               handleChange("timeoutDurationSeconds", 30);
             }}
-            className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition text-gray-700"
+            className="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white hover:bg-slate-50 transition text-slate-700"
           >
             ⚾ Altre Attività
           </button>
         </div>
-        <p className="text-xs text-gray-500 mt-2">
+        <p className="text-xs text-slate-500 mt-2">
           Clicca sui pulsanti per applicare configurazioni standard di vari sport
         </p>
       </div>

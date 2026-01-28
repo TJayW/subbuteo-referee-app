@@ -24,14 +24,14 @@ export function SegmentedControl<T extends string | number>({
   };
 
   return (
-    <div className={`inline-flex bg-slate-100 rounded-lg ${sizeClasses[size]}`}>
+    <div className={`inline-flex ui-surface-muted ${sizeClasses[size]}`}>
       {options.map((option) => (
         <button
           key={option.value}
           onClick={() => onChange(option.value)}
-          className={`inline-flex items-center gap-1.5 rounded font-medium transition-all ${buttonClasses[size]} ${
+          className={`inline-flex items-center gap-1.5 rounded-md font-medium transition-all ${buttonClasses[size]} ${
             value === option.value
-              ? 'bg-white text-slate-900 shadow-sm'
+              ? 'bg-white text-slate-900 shadow-sm border border-slate-200'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >

@@ -12,8 +12,11 @@ interface MatchConfigDisplayProps {
 
 export const MatchConfigDisplay: React.FC<MatchConfigDisplayProps> = () => {
   return (
-    <div className="p-4">
-      <p className="text-sm text-slate-600">MatchConfigDisplay stub - implementation needed</p>
+    <div className="ui-surface-muted p-4">
+      <p className="text-sm text-slate-700 font-medium mb-1">Configurazione match</p>
+      <p className="text-xs text-slate-500">
+        Dettagli avanzati verranno mostrati qui. Per ora, modifica tempi e regole nelle impostazioni.
+      </p>
     </div>
   );
 };

@@ -42,7 +42,7 @@ class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
+          <div className="max-w-md w-full ui-surface p-6 text-center">
             <div className="text-red-500 text-5xl mb-4">⚠️</div>
             <h1 className="text-2xl font-bold text-slate-900 mb-2">
               Si è verificato un errore
@@ -53,7 +53,7 @@ class ErrorBoundary extends Component<Props, State> {
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-700 transition-colors"
+              className="bg-slate-900 text-white px-6 py-2 rounded-lg hover:bg-slate-800 transition-colors"
             >
               Ricarica pagina
             </button>

@@ -173,7 +173,7 @@ export function StreamingDashboard({
               </button>
               <div className="w-px h-6 bg-gray-700" />
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-sky-700 rounded-lg flex items-center justify-center">
                   <Video className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -185,12 +185,12 @@ export function StreamingDashboard({
 
             <div className="flex items-center gap-3">
               {isStreaming && (
-                <div className="flex items-center gap-6 px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-lg">
+                <div className="flex items-center gap-6 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-green-500 font-semibold text-sm">LIVE</span>
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                    <span className="text-emerald-500 font-semibold text-sm">LIVE</span>
                   </div>
-                  <div className="w-px h-4 bg-green-500/30" />
+                  <div className="w-px h-4 bg-emerald-500/30" />
                   <div className="flex items-center gap-2 text-white text-sm">
                     <Clock className="w-4 h-4" />
                     {formatDuration(streamDuration)}
@@ -201,7 +201,7 @@ export function StreamingDashboard({
               {!isStreaming ? (
                 <button
                   onClick={handleStartStream}
-                  className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
+                  className="px-6 py-2.5 bg-gradient-to-r from-sky-600 to-sky-500 text-white font-semibold rounded-lg hover:from-sky-700 hover:to-sky-600 transition-all shadow-lg shadow-sky-500/30"
                 >
                   Vai in Diretta
                 </button>
@@ -246,28 +246,28 @@ export function StreamingDashboard({
                 label="Spettatori"
                 value={viewerCount.toString()}
                 subtext={`Picco: ${peakViewers}`}
-                color="blue"
+                color="sky"
               />
               <MetricCard
                 icon={<Activity />}
                 label="Bitrate"
                 value={`${metrics.bitrate} kbps`}
                 subtext={`${metrics.fps} FPS`}
-                color="green"
+                color="emerald"
               />
               <MetricCard
                 icon={<Wifi />}
                 label="Latenza"
                 value={`${metrics.latency}ms`}
                 subtext={`Jitter: ${metrics.jitter}ms`}
-                color="purple"
+                color="cyan"
               />
               <MetricCard
                 icon={<Zap />}
                 label="Qualità"
                 value={metrics.resolution}
                 subtext={`${metrics.packetsLost} pacchetti persi`}
-                color="orange"
+                color="amber"
               />
             </div>
 
@@ -353,7 +353,7 @@ export function StreamingDashboard({
                   </div>
                   <div className="h-2 bg-gray-800 rounded-full overflow-hidden mt-4">
                     <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
+                      className="h-full bg-gradient-to-r from-sky-500 to-cyan-500 transition-all duration-300"
                       style={{ width: `${Math.min((viewerCount / 20) * 100, 100)}%` }}
                     />
                   </div>
@@ -378,7 +378,7 @@ export function StreamingDashboard({
                 ) : (
                   comments.map((comment) => (
                     <div key={comment.id} className="flex gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex-shrink-0" />
+                      <div className="w-8 h-8 bg-gradient-to-br from-sky-500 to-slate-700 rounded-full flex-shrink-0" />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-white text-sm font-medium">{comment.user}</span>
@@ -416,15 +416,15 @@ interface MetricCardProps {
   label: string;
   value: string;
   subtext: string;
-  color: 'blue' | 'green' | 'purple' | 'orange';
+  color: 'sky' | 'emerald' | 'cyan' | 'amber';
 }
 
 function MetricCard({ icon, label, value, subtext, color }: MetricCardProps) {
   const colorClasses = {
-    blue: 'from-blue-500/20 to-blue-600/20 border-blue-500/30 text-blue-500',
-    green: 'from-green-500/20 to-green-600/20 border-green-500/30 text-green-500',
-    purple: 'from-purple-500/20 to-purple-600/20 border-purple-500/30 text-purple-500',
-    orange: 'from-orange-500/20 to-orange-600/20 border-orange-500/30 text-orange-500',
+    sky: 'from-sky-500/20 to-sky-600/20 border-sky-500/30 text-sky-500',
+    emerald: 'from-emerald-500/20 to-emerald-600/20 border-emerald-500/30 text-emerald-500',
+    cyan: 'from-cyan-500/20 to-cyan-600/20 border-cyan-500/30 text-cyan-500',
+    amber: 'from-amber-500/20 to-amber-600/20 border-amber-500/30 text-amber-500',
   };
 
   return (
@@ -462,7 +462,7 @@ function ActionButton({ icon, label, onClick, variant = 'default', badge }: Acti
       {icon}
       <span className="text-xs font-medium">{label}</span>
       {badge !== undefined && badge > 0 && (
-        <span className="absolute top-2 right-2 w-5 h-5 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+        <span className="absolute top-2 right-2 w-5 h-5 bg-sky-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
           {badge}
         </span>
       )}
@@ -492,7 +492,7 @@ function InfoRow({ label, value, copyable, badge }: InfoRowProps) {
       <div className="flex items-center gap-2">
         {badge && (
           <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-            badge === 'success' ? 'bg-green-500/20 text-green-500' :
+            badge === 'success' ? 'bg-emerald-500/20 text-emerald-500' :
             badge === 'warning' ? 'bg-yellow-500/20 text-yellow-500' :
             'bg-red-500/20 text-red-500'
           }`}>

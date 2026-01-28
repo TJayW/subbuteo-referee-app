@@ -165,7 +165,7 @@ export const VolumeDial: React.FC<VolumeDial> = ({
           cy={centerY}
           r="45"
           fill="none"
-          stroke="#1e293b"
+          stroke="#0ea5e9"
           strokeWidth="3"
           strokeDasharray={`${(angle / 360) * 2 * Math.PI * 45} ${2 * Math.PI * 45}`}
           strokeLinecap="round"
@@ -177,7 +177,7 @@ export const VolumeDial: React.FC<VolumeDial> = ({
           cx={thumbX}
           cy={thumbY}
           r="5"
-          fill="#1e293b"
+          fill="#0284c7"
           opacity={enabled ? 1 : 0.5}
         />
 

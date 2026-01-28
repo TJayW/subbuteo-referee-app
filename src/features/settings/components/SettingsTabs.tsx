@@ -25,7 +25,7 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = ({ tabs }) => {
       {/* Tab List - Always on single row */}
       <div
         role="tablist"
-        className="flex gap-0 border-b border-slate-200"
+        className="flex gap-0 border-b border-slate-200 bg-slate-50/70"
         aria-orientation="horizontal"
       >
         {tabs.map((tab) => (
@@ -37,9 +37,9 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = ({ tabs }) => {
             aria-controls={`tabpanel-${tab.id}`}
             tabIndex={activeTabId === tab.id ? 0 : -1}
             onClick={() => setActiveTabId(tab.id)}
-            className={`flex-1 px-3 py-4 text-sm font-medium transition-all whitespace-nowrap border-b-2 text-center ${
+            className={`flex-1 px-3 py-3 text-sm font-medium transition-all whitespace-nowrap border-b-2 text-center ${
               activeTabId === tab.id
-                ? 'text-blue-600 border-b-blue-600 bg-blue-50'
+                ? 'text-slate-900 border-b-slate-900 bg-white'
                 : 'text-slate-600 border-b-transparent hover:text-slate-900'
             }`}
           >

@@ -27,18 +27,16 @@ export const StatsBar: React.FC<StatsBarProps> = ({
 }) => {
   if (!isMatchStarted) {
     return (
-      <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-center text-sm text-slate-600">
-        <p>📊 Statistiche disponibili dopo l'inizio della partita</p>
+      <div className="ui-surface-muted p-4 text-center text-sm text-slate-600">
+        <p>Statistiche disponibili dopo l'inizio della partita</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
+    <div className="ui-surface p-4 space-y-3">
       {/* Header */}
-      <div className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
-        Statistiche
-      </div>
+      <div className="ui-kicker">Statistiche</div>
 
       {/* Row 1: Goals, Shots, Shots on Target */}
       <div className="grid grid-cols-5 gap-3">
@@ -56,7 +54,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         {/* HOME - Shots */}
         <div className="text-center border-l border-slate-200 pl-3">
           <div className="text-xs text-slate-600 mb-1 flex items-center justify-center gap-1">
-            <Zap className="w-3.5 h-3.5 text-blue-600" />
+            <Zap className="w-3.5 h-3.5 text-slate-600" />
             <span>Tiri</span>
           </div>
           <div className="text-lg font-bold text-slate-900">{home.shots}</div>
@@ -78,7 +76,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         {/* HOME - Corners */}
         <div className="text-center border-l border-slate-200 pl-3">
           <div className="text-xs text-slate-600 mb-1 flex items-center justify-center gap-1">
-            <Flag className="w-3.5 h-3.5 text-violet-600" />
+            <Flag className="w-3.5 h-3.5 text-orange-500" />
             <span>Angoli</span>
           </div>
           <div className="text-lg font-bold text-slate-900">{home.corners}</div>
@@ -125,7 +123,7 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         {/* Timeouts */}
         <div className="text-center border-l border-slate-200 pl-3">
           <div className="text-xs text-slate-600 mb-1 flex items-center justify-center gap-1">
-            <AlertCircle className="w-3.5 h-3.5 text-slate-600" />
+            <AlertCircle className="w-3.5 h-3.5 text-cyan-600" />
             <span>Timeout</span>
           </div>
           <div className="text-lg font-bold text-slate-900">{home.timeouts}</div>

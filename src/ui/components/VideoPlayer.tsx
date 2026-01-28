@@ -246,8 +246,8 @@ export function VideoPlayer({
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
           <div className="relative">
-            <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-            <RefreshCw className="absolute inset-0 m-auto w-8 h-8 text-blue-500 animate-pulse" />
+            <div className="w-16 h-16 border-4 border-sky-500/30 border-t-sky-500 rounded-full animate-spin" />
+            <RefreshCw className="absolute inset-0 m-auto w-8 h-8 text-sky-500 animate-pulse" />
           </div>
         </div>
       )}
@@ -318,7 +318,7 @@ export function VideoPlayer({
               
               {/* Progress */}
               <div
-                className="relative h-full bg-blue-500 rounded-full"
+                className="relative h-full bg-sky-500 rounded-full"
                 style={{ width: `${(currentTime / duration) * 100}%` }}
               >
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover/progress:opacity-100 transition-opacity" />
@@ -412,7 +412,7 @@ export function VideoPlayer({
                       }}
                       className={`w-full text-left px-3 py-2 rounded text-sm ${
                         quality === q
-                          ? 'bg-blue-500 text-white'
+                          ? 'bg-sky-500 text-white'
                           : 'text-gray-300 hover:bg-white/10'
                       }`}
                     >

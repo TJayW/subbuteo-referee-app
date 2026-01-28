@@ -25,42 +25,61 @@ export const TeamCard: React.FC<TeamCardProps> = ({
   homeTeamName,
   awayTeamName,
   state,
+  teamStats,
 }) => {
-  const homeInitial = homeTeamName.charAt(0).toUpperCase();
-  const awayInitial = awayTeamName.charAt(0).toUpperCase();
-  
-  // Allow events even in pre_match for testing purposes
+  const homeGoals = teamStats?.home.goals ?? '-';
+  const awayGoals = teamStats?.away.goals ?? '-';
   const isDisabled = state?.period === 'finished';
 
   return (
-    <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-4" data-testid="team-card-b1-b5-fixed">
+    <div className="ui-surface p-4 space-y-4" data-testid="team-card-b1-b5-fixed">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="ui-kicker">Squadra attiva</p>
+          <p className="text-sm font-semibold text-slate-900 truncate">
+            {selectedTeam === 'home' ? homeTeamName : awayTeamName}
+          </p>
+        </div>
+        <span
+          className={`ui-chip ${
+            selectedTeam === 'home'
+              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+              : 'bg-sky-50 text-sky-700 border-sky-200'
+          }`}
+        >
+          {selectedTeam === 'home' ? 'CASA' : 'OSPITE'}
+        </span>
+      </div>
+
       {/* Team Selection Radiogroup */}
-      <div role="radiogroup" aria-label="Seleziona squadra" className="flex gap-2">
+      <div role="radiogroup" aria-label="Seleziona squadra" className="grid grid-cols-2 gap-2">
         <button
           role="radio"
           aria-checked={selectedTeam === 'home'}
           aria-label={`Seleziona ${homeTeamName}`}
           onClick={() => onSelectTeam('home')}
-          className={`flex-1 h-12 rounded-lg flex items-center justify-center font-bold text-base transition-all ${
+          className={`rounded-lg border px-3 py-2 flex items-center justify-between gap-2 text-sm font-semibold transition-all ${
             selectedTeam === 'home'
-              ? 'bg-emerald-500 text-white shadow-lg ring-2 ring-emerald-400'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
           }`}
         >
-          {homeInitial}
+          <span className="truncate">{homeTeamName}</span>
+          <span className="text-lg font-bold tabular-nums">{homeGoals}</span>
         </button>
         <button
           role="radio"
           aria-checked={selectedTeam === 'away'}
           aria-label={`Seleziona ${awayTeamName}`}
           onClick={() => onSelectTeam('away')}
-          className={`flex-1 h-12 rounded-lg flex items-center justify-center font-bold text-base transition-all ${
+          className={`rounded-lg border px-3 py-2 flex items-center justify-between gap-2 text-sm font-semibold transition-all ${
             selectedTeam === 'away'
-              ? 'bg-blue-500 text-white shadow-lg ring-2 ring-blue-400'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              ? 'bg-sky-600 text-white border-sky-500 shadow-sm'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
           }`}
         >
-          {awayInitial}
+          <span className="truncate">{awayTeamName}</span>
+          <span className="text-lg font-bold tabular-nums">{awayGoals}</span>
         </button>
       </div>
 

@@ -149,46 +149,46 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
       id: 'arbitri',
       label: '👨‍⚖️ Arbitri',
       content: (
-        <div className="space-y-6 pb-4">
+          <div className="space-y-6 pb-4">
           {/* Referee 1 */}
           <div>
-            <label className="block text-sm font-medium text-slate-900 mb-2">
+            <label className="block ui-label mb-2">
               Arbitro Principale
             </label>
             <input
               type="text"
               value={referee1}
               onChange={(e) => setReferee1(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="ui-input"
               placeholder="Nome arbitro principale"
             />
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="ui-help mt-1">
               L'arbitro responsabile della partita
             </p>
           </div>
 
           {/* Referee 2 */}
           <div>
-            <label className="block text-sm font-medium text-slate-900 mb-2">
+            <label className="block ui-label mb-2">
               Arbitro di Linea
             </label>
             <input
               type="text"
               value={referee2}
               onChange={(e) => setReferee2(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="ui-input"
               placeholder="Nome arbitro di linea (opzionale)"
             />
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="ui-help mt-1">
               L'arbitro assistente (opzionale)
             </p>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-800">
+          <div className="ui-surface-muted p-3 text-xs text-slate-700">
             <div className="flex gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-sky-600" />
               <div>
-                <p className="font-medium mb-1">ℹ️ Informazioni Arbitri</p>
+                <p className="font-medium mb-1">Informazioni Arbitri</p>
                 <p>Inserisci i nomi degli arbitri per il record ufficiale della partita.</p>
               </div>
             </div>
@@ -279,18 +279,18 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
                   matchControl: 1.0,
                 });
               }}
-              className="w-full px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 bg-white text-slate-900 hover:bg-slate-50 transition text-center"
+              className="w-full px-3 py-2 text-xs font-medium rounded-lg border border-slate-200 bg-white text-slate-900 hover:bg-slate-50 transition text-center"
             >
               🔄 Ripristina Valori Standard
             </button>
           </div>
 
           {/* Support */}
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
+          <div className="ui-surface-muted p-3 text-xs text-slate-700">
             <div className="flex gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" />
               <div>
-                <p className="font-medium mb-1">💡 Suggerimenti</p>
+                <p className="font-medium mb-1">Suggerimenti</p>
                 <p>Accedi regolarmente alle impostazioni per mantenere i dati della squadra aggiornati.</p>
               </div>
             </div>
@@ -307,18 +307,18 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
         onClick={onClose}
       />
       <div className="fixed inset-0 flex items-end lg:items-center justify-center z-50 p-4 lg:p-0">
-        <div className="w-full lg:w-[600px] bg-white rounded-t-2xl lg:rounded-lg shadow-2xl max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="w-full lg:w-[600px] ui-surface rounded-t-2xl lg:rounded-xl shadow-2xl max-h-[90vh] overflow-hidden flex flex-col">
           {/* Header - Fixed */}
-          <div className="sticky top-0 bg-gradient-to-r from-slate-900 to-slate-800 text-white px-6 py-4 flex items-center justify-between border-b border-slate-700 z-10">
+          <div className="sticky top-0 bg-white/95 backdrop-blur-xl text-slate-900 px-6 py-4 flex items-center justify-between border-b border-slate-200 z-10">
             <div className="flex-1 min-w-0">
               <h2 className="font-bold text-xl">Impostazioni</h2>
-              <p className="text-sm text-slate-300 truncate">
+              <p className="text-sm text-slate-500 truncate">
                 {homeTeamConfig.displayName} vs {awayTeamConfig.displayName} • {periodDuration}′
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-700 rounded-lg transition-colors flex-shrink-0 ml-2"
+              className="p-2 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0 ml-2"
               aria-label="Chiudi"
             >
               <X className="w-5 h-5" />
@@ -333,7 +333,7 @@ export const SettingsSheet: React.FC<SettingsSheetProps> = ({
           </div>
 
           {/* Footer - Fixed */}
-          <div className="sticky bottom-0 bg-slate-50 border-t border-slate-200 px-6 py-4 flex gap-3 flex-shrink-0">
+          <div className="sticky bottom-0 bg-slate-50/80 border-t border-slate-200 px-6 py-4 flex gap-3 flex-shrink-0">
             <ActionButton
               action="secondary"
               size="md"

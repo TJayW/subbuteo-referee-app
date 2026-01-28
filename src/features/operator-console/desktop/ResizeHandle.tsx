@@ -164,9 +164,9 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
         cursor-col-resize
         flex items-center justify-center
         hover:bg-slate-200/50
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset
+        focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-inset
         transition-colors duration-150
-        ${isDragging ? 'bg-blue-300/70' : 'bg-transparent'}
+        ${isDragging ? 'bg-sky-300/70' : 'bg-transparent'}
         group
       `}
       data-dragging={isDragging}
@@ -176,8 +176,8 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
         w-1 h-12 rounded-full
         bg-slate-300
         group-hover:bg-slate-400
-        group-focus:bg-blue-500
-        ${isDragging ? 'bg-blue-500' : ''}
+        group-focus:bg-sky-500
+        ${isDragging ? 'bg-sky-500' : ''}
         transition-colors duration-150
       `} />
     </div>

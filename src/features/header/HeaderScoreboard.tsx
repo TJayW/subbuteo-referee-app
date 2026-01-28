@@ -64,7 +64,7 @@ export const HeaderScoreboard: React.FC<HeaderScoreboardProps> = ({
             </div>
             <div className="bg-slate-50 rounded p-2">
               <div className="text-slate-600">In Porta</div>
-              <div className="font-semibold text-blue-600">{home.shotsOnTarget}</div>
+              <div className="font-semibold text-sky-600">{home.shotsOnTarget}</div>
             </div>
             <div className="bg-slate-50 rounded p-2">
               <div className="text-slate-600">Angoli</div>
@@ -123,7 +123,7 @@ export const HeaderScoreboard: React.FC<HeaderScoreboardProps> = ({
             </div>
             <div className="bg-slate-50 rounded p-2">
               <div className="text-slate-600">In Porta</div>
-              <div className="font-semibold text-blue-600">{away.shotsOnTarget}</div>
+              <div className="font-semibold text-sky-600">{away.shotsOnTarget}</div>
             </div>
             <div className="bg-slate-50 rounded p-2">
               <div className="text-slate-600">Angoli</div>

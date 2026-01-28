@@ -59,8 +59,8 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
     }
     if (state.isRunning) {
       return (
-        <span className="px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded flex items-center gap-1">
-          <span className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
+        <span className="px-2 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded flex items-center gap-1">
+          <span className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse" />
           IN CORSO
         </span>
       );
@@ -131,12 +131,12 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
           </div>
 
           {/* Shots on Target */}
-          <div className="bg-blue-50 rounded-lg p-3 text-center">
-            <div className="text-xs text-blue-700 mb-1">In Porta</div>
+          <div className="bg-sky-50 rounded-lg p-3 text-center">
+            <div className="text-xs text-sky-700 mb-1">In Porta</div>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-lg font-bold text-blue-900">{home.shotsOnTarget}</span>
-              <span className="text-xs text-blue-300">-</span>
-              <span className="text-lg font-bold text-blue-900">{away.shotsOnTarget}</span>
+              <span className="text-lg font-bold text-sky-900">{home.shotsOnTarget}</span>
+              <span className="text-xs text-sky-300">-</span>
+              <span className="text-lg font-bold text-sky-900">{away.shotsOnTarget}</span>
             </div>
           </div>
 
@@ -204,7 +204,7 @@ export const MatchOverviewCard: React.FC<MatchOverviewCardProps> = ({
                 const isHome = event.team === 'home';
                 const bgColor = isHome
                   ? 'bg-slate-100 border-slate-300'
-                  : 'bg-blue-50 border-blue-300';
+                  : 'bg-sky-50 border-sky-300';
 
                 return (
                   <div

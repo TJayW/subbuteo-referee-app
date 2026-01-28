@@ -69,12 +69,12 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-slate-900">Formazione</label>
+      <label className="block ui-label">Formazione</label>
 
       {/* Summary Card */}
       <button
         onClick={() => setIsModalOpen(true)}
-        className="w-full p-3 border border-slate-300 rounded-lg bg-white hover:bg-slate-50 transition-colors text-left"
+        className="w-full p-3 border border-slate-200 rounded-lg bg-white hover:bg-slate-50 transition-colors text-left"
       >
         <p className="text-sm font-semibold text-slate-900">{formationName}</p>
         <p className="text-xs text-slate-600">{playerCount} giocatori</p>
@@ -85,7 +85,7 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
         <>
           <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50" onClick={() => setIsModalOpen(false)} />
           <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="w-full max-w-md bg-white rounded-lg shadow-2xl p-6 max-h-[80vh] overflow-y-auto">
+            <div className="w-full max-w-md ui-surface p-6 max-h-[80vh] overflow-y-auto">
               <h3 className="font-semibold text-slate-900 mb-4">Modifica Formazione</h3>
 
               {/* Formation Name */}
@@ -98,7 +98,7 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
                   value={formationName}
                   onChange={(e) => setFormationName(e.target.value)}
                   placeholder="es. 4-4-2"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="ui-input"
                 />
               </div>
 
@@ -152,7 +152,7 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
                     value={editForm.name}
                     onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                     placeholder="Nome giocatore"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="ui-input"
                   />
                 </div>
 
@@ -164,14 +164,14 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
                     placeholder="Numero"
                     min="1"
                     max="99"
-                    className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="ui-input"
                   />
                   <input
                     type="text"
                     value={editForm.position}
                     onChange={(e) => setEditForm({ ...editForm, position: e.target.value })}
                     placeholder="Ruolo (GK, DEF...)"
-                    className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="ui-input"
                   />
                 </div>
 
@@ -180,14 +180,14 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
                     type="checkbox"
                     checked={editForm.isCaptain}
                     onChange={(e) => setEditForm({ ...editForm, isCaptain: e.target.checked })}
-                    className="w-4 h-4 text-emerald-500 border-slate-300 rounded"
+                    className="w-4 h-4 text-slate-900 border-slate-300 rounded"
                   />
                   <span className="text-sm text-slate-700">Capitano</span>
                 </label>
 
                 <button
                   onClick={handleAddPlayer}
-                  className="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+                  className="w-full px-3 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
                 >
                   <Plus className="w-4 h-4" />
                   {editingId ? 'Aggiorna' : 'Aggiungi'}
@@ -199,7 +199,7 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
                       setEditingId(null);
                       setEditForm({ name: '', number: '', position: '', isCaptain: false });
                     }}
-                    className="w-full px-3 py-2 bg-slate-300 text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-400 transition-colors"
+                    className="w-full px-3 py-2 bg-slate-100 text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-200 transition-colors"
                   >
                     Annulla Modifica
                   </button>
@@ -209,7 +209,7 @@ export const FormationEditor: React.FC<FormationEditorProps> = ({ formation, onC
               {/* Save Button */}
               <button
                 onClick={handleSave}
-                className="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors"
+                className="w-full px-4 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors"
               >
                 Salva Formazione
               </button>

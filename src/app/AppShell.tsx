@@ -202,7 +202,7 @@ export default function AppShell() {
       action: async () => {
         exportPNG(match.state, settings.homeTeamName, settings.awayTeamName);
       },
-      color: 'border-purple-200 bg-purple-50 hover:bg-purple-100 hover:border-purple-300',
+      color: 'border-sky-200 bg-sky-50 hover:bg-sky-100 hover:border-sky-300',
     },
     {
       id: 'html',

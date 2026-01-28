@@ -18,8 +18,8 @@ export const OperationalHealthCard: React.FC<OperationalHealthCardProps> = ({ st
   const severityConfig: Record<HealthCheck['severity'], { icon: React.ReactNode; color: string; bg: string }> = {
     info: {
       icon: <CheckCircle size={16} />,
-      color: 'text-green-700',
-      bg: 'bg-green-50 border-green-200',
+      color: 'text-emerald-700',
+      bg: 'bg-emerald-50 border-emerald-200',
     },
     warning: {
       icon: <AlertCircle size={16} />,
@@ -39,7 +39,7 @@ export const OperationalHealthCard: React.FC<OperationalHealthCardProps> = ({ st
     <DashboardCard
       title="Integrità Operativa"
       subtitle="Controlli automatici"
-      icon={<Shield size={18} className={hasIssues ? 'text-amber-600' : 'text-green-600'} />}
+      icon={<Shield size={18} className={hasIssues ? 'text-amber-600' : 'text-emerald-600'} />}
       compact
     >
       <div className="space-y-2">
