@@ -23,6 +23,40 @@ export interface PeerStats {
   bitrate: number; // kbps
 }
 
+function parseTurnUrls(raw: string | undefined): string[] {
+  if (!raw) return [];
+  const trimmed = raw.trim();
+  if (!trimmed) return [];
+  if (trimmed.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((url) => typeof url === 'string') as string[];
+      }
+    } catch {
+      // Fall back to comma split
+    }
+  }
+  return trimmed.split(',').map((url) => url.trim()).filter(Boolean);
+}
+
+function buildIceServers(): RTCIceServer[] {
+  const stunServers: RTCIceServer = {
+    urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'],
+  };
+  const twilioStun: RTCIceServer = { urls: 'stun:global.stun.twilio.com:3478' };
+
+  const turnUrls = parseTurnUrls(import.meta.env.VITE_TURN_URLS as string | undefined);
+  const turnUsername = import.meta.env.VITE_TURN_USERNAME as string | undefined;
+  const turnCredential = import.meta.env.VITE_TURN_CREDENTIAL as string | undefined;
+
+  const turnServers: RTCIceServer[] = turnUrls.length
+    ? [{ urls: turnUrls, username: turnUsername, credential: turnCredential }]
+    : [];
+
+  return [stunServers, twilioStun, ...turnServers];
+}
+
 /**
  * Broadcaster - Camera owner who streams to viewers
  */
@@ -52,10 +86,7 @@ export class StreamBroadcaster {
    */
   async startBroadcast(config: StreamConfig = { video: true, audio: false }): Promise<string> {
     try {
-      const iceServers = [
-        { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] },
-        { urls: 'stun:global.stun.twilio.com:3478' },
-      ];
+      const iceServers = buildIceServers();
 
       // 1. Crea peer PRIMA di getUserMedia
       const streamKey = `subbuteo-${Date.now()}-${Math.random().toString(36).substring(7)}`;
@@ -305,10 +336,7 @@ export class StreamViewer {
     try {
       console.log('👀 Tentativo connessione a stream:', streamKey);
 
-      const iceServers = [
-        { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] },
-        { urls: 'stun:global.stun.twilio.com:3478' },
-      ];
+      const iceServers = buildIceServers();
       
       // Create peer (viewer gets random ID)
       this.peer = new Peer({
