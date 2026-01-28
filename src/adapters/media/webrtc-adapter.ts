@@ -339,8 +339,8 @@ export class StreamViewer {
 
       console.log('📞 Chiamata broadcaster:', streamKey);
       
-      // Connect to broadcaster's stream
-      this.call = this.peer.call(streamKey, new MediaStream()); // Empty stream (viewer doesn't send)
+      // Connect to broadcaster's stream (recv-only)
+      this.call = this.peer.call(streamKey, undefined as unknown as MediaStream);
 
       if (!this.call) {
         throw new Error('Impossibile chiamare il broadcaster. Stream non trovato.');
@@ -379,6 +379,22 @@ export class StreamViewer {
           console.error('❌ Errore creazione video debug:', e);
         }
       });
+
+      // Fallback: attach tracks directly from peer connection (some browsers skip 'stream' event)
+      if (this.call.peerConnection) {
+        const inboundStream = new MediaStream();
+        const pc = this.call.peerConnection;
+        pc.addEventListener('track', (event) => {
+          if (event.track) {
+            inboundStream.addTrack(event.track);
+            if (!this.remoteStream) {
+              console.log('🎉 Stream ricevuto via track event');
+              this.remoteStream = inboundStream;
+              this.onStreamReceived(inboundStream);
+            }
+          }
+        });
+      }
 
       this.call.on('error', (err) => {
         clearTimeout(streamTimeout);
