@@ -16,6 +16,119 @@ import type { MatchControlCardProps } from './MatchControlCard.types';
 
 const HOLD_DURATION_MS = 3000;
 
+type HoldActionOptions = {
+  duration?: number;
+  guard?: () => boolean;
+  onGuardFail?: () => void;
+};
+
+const useHoldAction = (onComplete: () => void, options: HoldActionOptions = {}) => {
+  const { duration = HOLD_DURATION_MS, guard, onGuardFail } = options;
+  const [progress, setProgress] = useState(0);
+  const holdRaf = useRef<number | null>(null);
+  const holdStart = useRef<number | null>(null);
+
+  const clear = useCallback(() => {
+    if (holdRaf.current) {
+      cancelAnimationFrame(holdRaf.current);
+    }
+    holdRaf.current = null;
+    holdStart.current = null;
+    setProgress(0);
+  }, []);
+
+  const runHold = useCallback(() => {
+    if (!holdStart.current) return;
+    const elapsed = Date.now() - holdStart.current;
+    const nextProgress = Math.min(100, (elapsed / duration) * 100);
+    setProgress(nextProgress);
+    if (elapsed >= duration) {
+      onComplete();
+      clear();
+      return;
+    }
+    holdRaf.current = requestAnimationFrame(runHold);
+  }, [clear, duration, onComplete]);
+
+  const start = useCallback(
+    (e?: React.PointerEvent<HTMLButtonElement>) => {
+      if (guard && !guard()) {
+        onGuardFail?.();
+        return;
+      }
+      holdStart.current = Date.now();
+      if (e?.currentTarget && 'setPointerCapture' in e.currentTarget) {
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+      }
+      runHold();
+    },
+    [guard, onGuardFail, runHold]
+  );
+
+  const end = useCallback(() => {
+    clear();
+  }, [clear]);
+
+  return { progress, start, end, clear };
+};
+
+interface HoldButtonProps {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  progress: number;
+  onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => void;
+  onKeyDown: () => void;
+  onPointerUp: () => void;
+  onPointerLeave: () => void;
+  onPointerCancel: () => void;
+  onKeyUp: () => void;
+  tone: string;
+  progressTone: string;
+}
+
+const HoldButton: React.FC<HoldButtonProps> = ({
+  label,
+  icon: Icon,
+  progress,
+  onPointerDown,
+  onKeyDown,
+  onPointerUp,
+  onPointerLeave,
+  onPointerCancel,
+  onKeyUp,
+  tone,
+  progressTone,
+}) => (
+  <button
+    onPointerDown={onPointerDown}
+    onPointerUp={onPointerUp}
+    onPointerLeave={onPointerLeave}
+    onPointerCancel={onPointerCancel}
+    onKeyDown={(e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onKeyDown();
+      }
+    }}
+    onKeyUp={(e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onKeyUp();
+      }
+    }}
+    className={`relative w-full px-3 py-2 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 border ${tone}`}
+  >
+    <Icon className="w-4 h-4" />
+    {label}
+    {progress > 0 && (
+      <span
+        className={`absolute left-0 bottom-0 h-0.5 ${progressTone}`}
+        style={{ width: `${progress}%` }}
+      />
+    )}
+  </button>
+);
+
 export const MatchControlCard: React.FC<MatchControlCardProps> = ({
   state,
   homeTeamGoals,
@@ -25,13 +138,7 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
   emergencyActions,
 }) => {
   const [suspensionReason, setSuspensionReason] = useState('');
-  const [confirmTerminate, setConfirmTerminate] = useState(false);
-  const [confirmReset, setConfirmReset] = useState(false);
-  const [confirmEmergency, setConfirmEmergency] = useState(false);
-  const [holdProgress, setHoldProgress] = useState(0);
   const [holdHint, setHoldHint] = useState<string | null>(null);
-  const holdRaf = useRef<number | null>(null);
-  const holdStart = useRef<number | null>(null);
 
   const PHASE_LABELS_IT: Partial<Record<MatchPhase, string>> = {
     prematch_ready: 'Pre-partita',
@@ -66,81 +173,30 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
 
   const nextPhases = useMemo(() => defaultNextPhases(state), [state]);
 
-  const clearHold = useCallback(() => {
-    if (holdRaf.current) {
-      cancelAnimationFrame(holdRaf.current);
-    }
-    holdRaf.current = null;
-    holdStart.current = null;
-    setHoldProgress(0);
-  }, []);
-
-  const runHold = useCallback(() => {
-    if (!holdStart.current) return;
-    const elapsed = Date.now() - holdStart.current;
-    const progress = Math.min(100, (elapsed / HOLD_DURATION_MS) * 100);
-    setHoldProgress(progress);
-    if (elapsed >= HOLD_DURATION_MS) {
+  const suspendHold = useHoldAction(
+    () => {
       const reason = suspensionReason.trim();
-      if (reason) {
-        emergencyActions.onSuspend(reason);
-        setSuspensionReason('');
-      }
-      clearHold();
-      return;
+      if (!reason) return;
+      emergencyActions.onSuspend(reason);
+      setSuspensionReason('');
+    },
+    {
+      guard: () => !!suspensionReason.trim(),
+      onGuardFail: () => setHoldHint('Inserisci un motivo prima di sospendere'),
     }
-    holdRaf.current = requestAnimationFrame(runHold);
-  }, [clearHold, emergencyActions, suspensionReason]);
-
-  const handleHoldStart = (e: React.PointerEvent<HTMLButtonElement>) => {
-    if (!suspensionReason.trim()) {
-      setHoldHint('Inserisci un motivo prima di sospendere');
-      return;
-    }
-    setHoldHint(null);
-    holdStart.current = Date.now();
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    runHold();
-  };
-
-  const handleHoldEnd = () => {
-    clearHold();
-  };
-
-  const dangerousButton = (
-    label: string,
-    onClick: () => void,
-    confirmFlag: boolean,
-    setFlag: (v: boolean) => void,
-    IconComp: React.ComponentType<any>,
-    color: string
-  ) => (
-    <button
-      onClick={() => {
-        if (!confirmFlag) {
-          setFlag(true);
-          return;
-        }
-        onClick();
-        setFlag(false);
-      }}
-      className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors border ${
-        confirmFlag ? 'bg-red-600 text-white border-red-700' : color
-      }`}
-    >
-      <IconComp className="w-4 h-4" />
-      {confirmFlag ? 'Conferma' : label}
-    </button>
   );
 
+  const terminateHold = useHoldAction(() => phaseActions.onTerminateMatch());
+  const resetHold = useHoldAction(() => emergencyActions.onReset());
+
   return (
-    <div className="ui-surface p-4 flex flex-col gap-4">
+    <div className="console-card p-4 flex flex-col gap-4">
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
-          <p className="ui-kicker">Decisioni gara</p>
+          <p className="console-kicker">Decisioni gara</p>
           <p className="text-sm font-bold text-slate-900">{phaseLabel}</p>
           <span
-            className={`ui-chip ${
+            className={`console-pill ${
               state.matchStatus === 'suspended'
                 ? 'bg-red-50 text-red-700 border-red-200'
                 : state.isRunning
@@ -174,7 +230,11 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
             <CornerUpRight className="w-4 h-4" />
             Salta intervallo
           </ActionButton>
-          <ActionButton action="secondary" size="sm" onClick={() => configActions.onRequireExtraTime(!state.requireExtraTime)}>
+          <ActionButton
+            action="secondary"
+            size="sm"
+            onClick={() => configActions.onRequireExtraTime(!state.requireExtraTime)}
+          >
             <Clock className="w-4 h-4" />
             {state.requireExtraTime ? 'Supplementari: si' : 'Supplementari: no'}
           </ActionButton>
@@ -196,9 +256,10 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="console-card-muted p-3 space-y-2">
         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
-          <span>Stato gara</span>
+          <span>Sospensione</span>
+          <span className="text-[11px] text-slate-500">Tieni premuto 3s</span>
         </div>
         {state.matchStatus === 'suspended' ? (
           <ActionButton action="success" size="sm" onClick={emergencyActions.onResume} className="w-full">
@@ -211,55 +272,69 @@ export const MatchControlCard: React.FC<MatchControlCardProps> = ({
               className="ui-textarea"
               placeholder="Motivo sospensione"
               value={suspensionReason}
-              onChange={(e) => setSuspensionReason(e.target.value)}
+              onChange={(e) => {
+                setSuspensionReason(e.target.value);
+                setHoldHint(null);
+              }}
               rows={2}
             />
-            <button
-              onPointerDown={handleHoldStart}
-              onPointerUp={handleHoldEnd}
-              onPointerLeave={handleHoldEnd}
-              onPointerCancel={handleHoldEnd}
-              className="relative w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 border border-amber-200 bg-amber-50 text-amber-800"
-            >
-              <PauseCircle className="w-4 h-4" />
-              Tieni premuto 3s per sospendere
-              {holdProgress > 0 && (
-                <span
-                  className="absolute left-0 bottom-0 h-0.5 bg-amber-500"
-                  style={{ width: `${holdProgress}%` }}
-                />
-              )}
-            </button>
+          <HoldButton
+            label="Sospendi"
+            icon={PauseCircle}
+            progress={suspendHold.progress}
+            onPointerDown={(e) => {
+              setHoldHint(null);
+              suspendHold.start(e);
+            }}
+            onKeyDown={() => {
+              setHoldHint(null);
+              suspendHold.start();
+            }}
+            onPointerUp={suspendHold.end}
+            onPointerLeave={suspendHold.end}
+            onPointerCancel={suspendHold.end}
+            onKeyUp={suspendHold.end}
+            tone="border-amber-200 bg-amber-50 text-amber-800"
+            progressTone="bg-amber-500"
+          />
             {holdHint && <p className="text-[11px] text-amber-700">{holdHint}</p>}
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
-        {dangerousButton('Termina gara', phaseActions.onTerminateMatch, confirmTerminate, setConfirmTerminate, ShieldOff, 'bg-red-50 text-red-700 border-red-200')}
-        {dangerousButton('Reset', emergencyActions.onReset, confirmReset, setConfirmReset, RefreshCw, 'bg-slate-100 text-slate-700 border-slate-200')}
-      </div>
-
-      <div className="border-t border-slate-200 pt-3 space-y-2">
+      <div className="space-y-2">
         <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
-          <span>Emergenza</span>
+          <span>Azioni critiche</span>
           <AlertTriangle className="w-4 h-4 text-red-500" />
         </div>
-        <button
-          onClick={() => {
-            if (!confirmEmergency) {
-              setConfirmEmergency(true);
-              return;
-            }
-            phaseActions.onTerminateMatch();
-            setConfirmEmergency(false);
-          }}
-          className={`w-full px-3 py-2 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 border ${
-            confirmEmergency ? 'bg-red-600 text-white border-red-700' : 'bg-red-100 text-red-700 border-red-200'
-          }`}
-        >
-          <AlertTriangle className="w-4 h-4" /> {confirmEmergency ? 'Conferma termine' : "Termina d'emergenza"}
-        </button>
+        <div className="grid grid-cols-2 gap-2">
+          <HoldButton
+            label="Termina gara"
+            icon={ShieldOff}
+            progress={terminateHold.progress}
+            onPointerDown={terminateHold.start}
+            onKeyDown={() => terminateHold.start()}
+            onPointerUp={terminateHold.end}
+            onPointerLeave={terminateHold.end}
+            onPointerCancel={terminateHold.end}
+            onKeyUp={terminateHold.end}
+            tone="border-red-200 bg-red-50 text-red-700"
+            progressTone="bg-red-500"
+          />
+          <HoldButton
+            label="Reset"
+            icon={RefreshCw}
+            progress={resetHold.progress}
+            onPointerDown={resetHold.start}
+            onKeyDown={() => resetHold.start()}
+            onPointerUp={resetHold.end}
+            onPointerLeave={resetHold.end}
+            onPointerCancel={resetHold.end}
+            onKeyUp={resetHold.end}
+            tone="border-slate-200 bg-slate-100 text-slate-700"
+            progressTone="bg-slate-500"
+          />
+        </div>
         <div className="text-[11px] text-slate-500">
           Risultato: <span className="font-mono font-semibold">{homeTeamGoals} - {awayTeamGoals}</span>
         </div>

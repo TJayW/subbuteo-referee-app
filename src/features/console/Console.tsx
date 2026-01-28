@@ -261,7 +261,7 @@ export const Console: React.FC<ConsoleProps> = (props) => {
         // Console completa con tutte le card
         return (
           <>
-            <div className="flex-1 flex flex-col gap-2 p-3 overflow-y-auto">
+            <div className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto">
               <ConsoleStatusStrip
                 state={state}
                 isEventCursorActive={isCursorActive}
@@ -272,7 +272,7 @@ export const Console: React.FC<ConsoleProps> = (props) => {
               {orientation === 'vertical' ? (
               <>
                 {/* CARD 1: Event Log */}
-                <div className="flex-1 min-h-[240px]">
+                <div className="flex-1 min-h-[200px]">
                   <EventLogCard
                     appliedEvents={enrichEventsForDisplay(appliedEvents)}
                     recentEvents={recentEvents}
@@ -353,7 +353,7 @@ export const Console: React.FC<ConsoleProps> = (props) => {
 
             {/* Mobile: EventLog dopo Time */}
             {orientation === 'horizontal' && (
-              <div className="flex-none" style={{ minHeight: '200px' }}>
+              <div className="flex-none min-h-[200px]">
                 <EventLogCard
                   appliedEvents={enrichEventsForDisplay(appliedEvents)}
                   recentEvents={recentEvents}

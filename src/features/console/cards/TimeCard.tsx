@@ -2,7 +2,7 @@
  * TimeCard - Rebuilt match clock + time controls
  */
 import React, { useMemo, useState, useCallback } from 'react';
-import { Play, Pause, ChevronLeft, ChevronRight, Lock, Unlock, Flag, ChevronDown, ChevronUp, PencilLine } from 'lucide-react';
+import { Play, Pause, ChevronLeft, ChevronRight, Lock, Unlock, Flag, ChevronDown, ChevronUp } from 'lucide-react';
 import type { DomainMatchState, MatchEvent, RegulationPeriod } from '@/domain/match/types';
 import { PERIOD_LABELS } from '@/constants/periods';
 
@@ -123,19 +123,19 @@ export const TimeCard: React.FC<TimeCardProps> = ({
   }, []);
 
   return (
-    <div className="ui-surface p-4 space-y-4" data-testid="time-card">
+    <div className="console-card p-4 flex flex-col gap-3" data-testid="time-card">
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
-          <p className="ui-kicker">Cronometro</p>
-          <div className="flex items-center gap-2">
-            <span className="ui-chip bg-slate-50 text-slate-700 border-slate-200">{periodLabel}</span>
-            <span className="ui-chip bg-white text-slate-700 border-slate-200">{statusLabel}</span>
+          <p className="console-kicker">Cronometro</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="console-pill bg-slate-50 text-slate-700 border-slate-200">{periodLabel}</span>
+            <span className="console-pill bg-white text-slate-700 border-slate-200">{statusLabel}</span>
           </div>
         </div>
         <button
           onClick={() => onToggleTimerLock?.()}
           disabled={!onToggleTimerLock}
-          className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-semibold ${
+          className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold ${
             timerLocked
               ? 'bg-amber-50 text-amber-800 border-amber-200'
               : 'bg-white text-slate-700 border-slate-200'
@@ -169,18 +169,12 @@ export const TimeCard: React.FC<TimeCardProps> = ({
                 aria-label="Imposta tempo (mm:ss)"
                 autoFocus
               />
-              <button
-                onClick={commitInlineEdit}
-                className="px-2 py-1 text-xs font-semibold rounded-md bg-sky-600 text-white hover:bg-sky-700"
-              >
-                OK
-              </button>
+              <span className="text-[11px] text-slate-500">Invio per salvare</span>
             </div>
           ) : (
             <button
               type="button"
               onDoubleClick={beginInlineEdit}
-              onClick={() => undefined}
               className="text-3xl font-semibold text-slate-900 tabular-nums font-display tracking-tight"
               aria-label="Doppio click per modificare il tempo"
             >
@@ -189,29 +183,21 @@ export const TimeCard: React.FC<TimeCardProps> = ({
           )}
           {editError && <span className="text-xs text-red-600">{editError}</span>}
           {!isEditing && (
-            <button
-              type="button"
-              onClick={beginInlineEdit}
-              disabled={timerLocked}
-              className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700 disabled:opacity-40"
-            >
-              <PencilLine className="w-3 h-3" />
-              Modifica tempo
-            </button>
+            <span className="text-[11px] text-slate-500">Doppio click per modificare · Esc per annullare</span>
           )}
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={onPreviousPeriod}
-            className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50"
+            className="h-9 w-9 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center justify-center"
             aria-label="Periodo precedente"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={onNextPeriod}
-            className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50"
+            className="h-9 w-9 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center justify-center"
             aria-label="Periodo successivo"
           >
             <ChevronRight className="w-4 h-4" />
@@ -226,7 +212,7 @@ export const TimeCard: React.FC<TimeCardProps> = ({
           aria-pressed={isPlaying}
           role="switch"
           disabled={state.period === 'pre_match'}
-          className={`h-12 rounded-lg flex items-center justify-center gap-2 font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+          className={`h-11 rounded-xl flex items-center justify-center gap-2 font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 ${
             isPlaying
               ? 'bg-amber-500 text-white hover:bg-amber-600'
               : 'bg-emerald-600 text-white hover:bg-emerald-700'
@@ -238,32 +224,32 @@ export const TimeCard: React.FC<TimeCardProps> = ({
         <button
           onClick={() => onEndPeriod?.()}
           disabled={timerLocked || !onEndPeriod}
-          className="h-12 rounded-lg flex items-center justify-center gap-2 font-semibold border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40"
+          className="h-11 rounded-xl flex items-center justify-center gap-2 font-semibold border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40"
         >
           <Flag className="w-4 h-4" />
           Termina periodo
         </button>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <button
           onClick={() => onRemoveTime(10)}
           disabled={timerLocked}
-          className="flex-1 h-10 rounded-md border border-red-200 text-red-700 bg-red-50 text-xs font-semibold hover:bg-red-100 disabled:opacity-40"
+          className="h-10 rounded-xl border border-red-200 text-red-700 bg-red-50 text-xs font-semibold hover:bg-red-100 disabled:opacity-40"
         >
           -10s
         </button>
         <button
           onClick={() => onAddTime(10)}
           disabled={timerLocked}
-          className="flex-1 h-10 rounded-md border border-emerald-200 text-emerald-700 bg-emerald-50 text-xs font-semibold hover:bg-emerald-100 disabled:opacity-40"
+          className="h-10 rounded-xl border border-emerald-200 text-emerald-700 bg-emerald-50 text-xs font-semibold hover:bg-emerald-100 disabled:opacity-40"
         >
           +10s
         </button>
       </div>
 
       {timerLocked && (
-        <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-2 py-1 text-center">
+        <div className="console-card-muted px-3 py-2 text-xs text-amber-700 border-amber-200">
           Timer bloccato: sblocca per modifiche al tempo
         </div>
       )}
@@ -289,7 +275,7 @@ export const TimeCard: React.FC<TimeCardProps> = ({
                 <button
                   key={m}
                   onClick={() => onSetTotalPeriodSeconds?.(m * 60)}
-                  className="px-3 py-2 bg-slate-100 rounded-lg text-xs font-semibold text-slate-800 hover:bg-slate-200"
+                  className="px-3 py-2 bg-slate-100 rounded-xl text-xs font-semibold text-slate-800 hover:bg-slate-200"
                   disabled={timerLocked}
                 >
                   {m}m
@@ -306,22 +292,22 @@ export const TimeCard: React.FC<TimeCardProps> = ({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setStoppageMinutes(Math.max(0, stoppageMinutes - 1))}
-                className="p-2 bg-slate-100 rounded"
+                className="h-9 w-9 bg-slate-100 rounded-xl"
                 disabled={timerLocked}
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-4 h-4 mx-auto" />
               </button>
               <span className="text-lg font-bold text-slate-900 tabular-nums">{stoppageMinutes}m</span>
               <button
                 onClick={() => setStoppageMinutes(stoppageMinutes + 1)}
-                className="p-2 bg-slate-100 rounded"
+                className="h-9 w-9 bg-slate-100 rounded-xl"
                 disabled={timerLocked}
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4 mx-auto" />
               </button>
               <button
                 onClick={() => currentRecoveryPeriod && onAddRecovery?.(currentRecoveryPeriod, stoppageMinutes * 60)}
-                className="flex-1 px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700"
+                className="flex-1 px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700"
                 disabled={!currentRecoveryPeriod || timerLocked}
               >
                 Aggiungi recupero

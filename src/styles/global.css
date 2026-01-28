@@ -91,6 +91,26 @@
   .ui-badge-dark {
     @apply inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/70 px-2.5 py-1 text-xs font-semibold text-slate-200;
   }
+
+  .console-card {
+    @apply bg-white/95 border border-slate-200/80 rounded-2xl shadow-sm backdrop-blur-md;
+  }
+
+  .console-card-muted {
+    @apply bg-slate-50/80 border border-slate-200/70 rounded-2xl;
+  }
+
+  .console-kicker {
+    @apply text-[10px] uppercase tracking-[0.2em] text-slate-400 font-semibold;
+  }
+
+  .console-pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-slate-200/80 bg-white/90 px-2.5 py-1 text-xs font-semibold text-slate-700;
+  }
+
+  .console-pill-strong {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-slate-200/80 bg-slate-900 px-2.5 py-1 text-xs font-semibold text-white;
+  }
 }
 
 @layer utilities {

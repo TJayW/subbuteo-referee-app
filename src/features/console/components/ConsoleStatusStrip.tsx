@@ -35,23 +35,23 @@ export const ConsoleStatusStrip: React.FC<ConsoleStatusStripProps> = ({
   totalEvents,
 }) => {
   return (
-    <div className="ui-surface-muted px-3 py-2 flex flex-wrap items-center justify-between gap-2">
+    <div className="console-card-muted px-3 py-2 flex flex-wrap items-center justify-between gap-2">
       <div className="flex items-center gap-2">
-        <span className={`ui-badge ${statusTone[state.matchStatus]}`}>
+        <span className={`console-pill ${statusTone[state.matchStatus]}`}>
           {statusLabel[state.matchStatus]}
         </span>
-        <span className="ui-chip bg-white text-slate-700 border-slate-200">
+        <span className="console-pill bg-white text-slate-700 border-slate-200">
           <Clock className="w-3.5 h-3.5 text-slate-500" />
           {PERIOD_LABELS[state.period] ?? state.period}
         </span>
         {state.timerLocked && (
-          <span className="ui-chip bg-amber-50 text-amber-800 border-amber-200">
+          <span className="console-pill bg-amber-50 text-amber-800 border-amber-200">
             <Lock className="w-3.5 h-3.5" />
             Timer bloccato
           </span>
         )}
         {!state.timerLocked && (
-          <span className="ui-chip bg-slate-50 text-slate-600 border-slate-200">
+          <span className="console-pill bg-slate-50 text-slate-600 border-slate-200">
             <Unlock className="w-3.5 h-3.5" />
             Timer libero
           </span>
@@ -59,7 +59,7 @@ export const ConsoleStatusStrip: React.FC<ConsoleStatusStripProps> = ({
       </div>
 
       {isEventCursorActive && (
-        <span className="ui-chip bg-amber-50 text-amber-800 border-amber-200">
+        <span className="console-pill bg-amber-50 text-amber-800 border-amber-200">
           <History className="w-3.5 h-3.5" />
           Revisione eventi {currentCursor}/{totalEvents}
         </span>

@@ -52,7 +52,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
       <button
         onClick={onPlayPause}
         disabled={!isMatchActive}
-        className={`${buttonSize} rounded-lg transition-all flex items-center justify-center ${FOCUS_RING} ${
+        className={`${buttonSize} rounded-xl transition-all flex items-center justify-center ${FOCUS_RING} ${
           isPlaying
             ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-sm'
             : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm'
@@ -67,7 +67,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
       <div className={teamSelectorClass}>
         <button
           onClick={() => onSelectTeam('home')}
-          className={`${buttonSize} rounded-lg flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
+          className={`${buttonSize} rounded-xl flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
             selectedTeam === 'home'
               ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-400'
               : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
@@ -79,7 +79,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
         </button>
         <button
           onClick={() => onSelectTeam('away')}
-          className={`${buttonSize} rounded-lg flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
+          className={`${buttonSize} rounded-xl flex items-center justify-center font-bold text-sm transition-all ${FOCUS_RING} ${
             selectedTeam === 'away'
               ? 'bg-sky-600 text-white shadow-sm ring-2 ring-sky-400'
               : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
@@ -103,7 +103,7 @@ export const ConsoleActionBar: React.FC<ConsoleActionBarProps> = ({
               key={btn.type}
               onClick={() => onAddEvent(btn.type, selectedTeam)}
               disabled={!isMatchActive}
-              className={`${buttonSize} rounded-lg ${btn.bg} ${btn.color} ${btn.hoverBg} border border-transparent disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all ${FOCUS_RING} ${
+              className={`${buttonSize} rounded-xl ${btn.bg} ${btn.color} ${btn.hoverBg} border border-transparent disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all ${FOCUS_RING} ${
                 btn.type === 'red_card' ? 'ring-2 ring-red-200' : ''
               }`}
               aria-label={`Aggiungi ${btn.label}`}

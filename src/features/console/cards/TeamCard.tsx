@@ -44,23 +44,26 @@ export const TeamCard: React.FC<TeamCardProps> = ({
   }, [lastEvent, homeTeamName, awayTeamName]);
 
   return (
-    <div className="ui-surface p-4 space-y-4" data-testid="team-card">
+    <div className="console-card p-4 flex flex-col gap-3" data-testid="team-card">
       <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1">
-          <p className="ui-kicker">Squadra attiva</p>
-          <p className="text-sm font-semibold text-slate-900 truncate">
-            {selectedTeam === 'home' ? homeTeamName : awayTeamName}
-          </p>
+        <div className="space-y-1 min-w-0">
+          <p className="console-kicker">Squadra attiva</p>
+          <div className="flex items-center gap-2 min-w-0">
+            <p className="text-sm font-semibold text-slate-900 truncate">
+              {selectedTeam === 'home' ? homeTeamName : awayTeamName}
+            </p>
+            <span
+              className={`console-pill ${
+                selectedTeam === 'home'
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  : 'bg-sky-50 text-sky-700 border-sky-200'
+              }`}
+            >
+              {selectedTeam === 'home' ? 'CASA' : 'OSPITE'}
+            </span>
+          </div>
+          <p className="text-xs text-slate-500">Tocca una squadra per aggiornare gli eventi.</p>
         </div>
-        <span
-          className={`ui-chip ${
-            selectedTeam === 'home'
-              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-              : 'bg-sky-50 text-sky-700 border-sky-200'
-          }`}
-        >
-          {selectedTeam === 'home' ? 'CASA' : 'OSPITE'}
-        </span>
       </div>
 
       <div role="radiogroup" aria-label="Seleziona squadra" className="grid grid-cols-2 gap-2">
@@ -69,7 +72,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
           aria-checked={selectedTeam === 'home'}
           aria-label={`Seleziona ${homeTeamName}`}
           onClick={() => onSelectTeam('home')}
-          className={`rounded-lg border px-3 py-2 flex items-center justify-between gap-2 text-sm font-semibold transition-all ${
+          className={`rounded-2xl border px-3 py-2 flex items-center justify-between gap-2 text-sm font-semibold transition-all ${
             selectedTeam === 'home'
               ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
               : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
@@ -83,7 +86,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
           aria-checked={selectedTeam === 'away'}
           aria-label={`Seleziona ${awayTeamName}`}
           onClick={() => onSelectTeam('away')}
-          className={`rounded-lg border px-3 py-2 flex items-center justify-between gap-2 text-sm font-semibold transition-all ${
+          className={`rounded-2xl border px-3 py-2 flex items-center justify-between gap-2 text-sm font-semibold transition-all ${
             selectedTeam === 'away'
               ? 'bg-sky-600 text-white border-sky-500 shadow-sm'
               : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
@@ -95,7 +98,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
       </div>
 
       {lastEventDisplay && (
-        <div className="flex items-center justify-between gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-xs">
+        <div className="console-card-muted px-3 py-2 text-xs flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-base">{lastEventDisplay.icon}</span>
             <span className="font-semibold text-slate-700 truncate">{lastEventDisplay.label}</span>
@@ -114,10 +117,10 @@ export const TeamCard: React.FC<TeamCardProps> = ({
               onClick={() => onAddEvent(button.type, selectedTeam)}
               disabled={isDisabled}
               aria-label={`Aggiungi ${button.label}`}
-              className={`h-14 rounded-lg flex flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed ${button.bg} ${button.color} ${button.hoverBg}`}
+              className={`h-12 rounded-xl flex flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed ${button.bg} ${button.color} ${button.hoverBg}`}
             >
               <Icon className="w-4 h-4" />
-              <span>{button.label}</span>
+              <span className="leading-tight">{button.label}</span>
             </button>
           );
         })}
